@@ -58,4 +58,9 @@ public class FileNames
 	{
 		return globleConfigs.getNTriplesPath( source )+releaseVersion+"_"+sourcefileName+"_abstracts_zh.nt";
 	}
+	
+	public String getLabelFileName()
+	{
+		return globleConfigs.getNTriplesPath( source )+releaseVersion+"_"+sourcefileName+"_labels_zh.nt";
+	}
 }

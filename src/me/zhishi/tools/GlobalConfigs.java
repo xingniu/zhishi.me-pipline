@@ -13,13 +13,6 @@ public class GlobalConfigs
 	public static String Baidu = "Baidu";
 	public static String zhWiki = "zhWiki";
 	
-	// TODO clean up
-	public static String punctuations = "[¡¶¡·¡¤-¡ª¡°¡±]";
-	public static int BaiduMax = 549;
-	public static int HudongMax = 312;
-	public static int zhWikiMax = 57;
-	public static String basePath = projectDataPath + "2011/";
-	
 	public GlobalConfigs( String dumpV )
 	{
 		dumpVersion = dumpV;
