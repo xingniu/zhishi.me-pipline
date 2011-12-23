@@ -14,11 +14,11 @@ public class FileNames
 	
 	public void setSourcefileName( String source )
 	{
-		if( source.equals( "Baidu" ) )
+		if( source.equals( GlobalConfigs.source_name_baidu ) )
 			sourcefileName = baiduFileName;
-		else if( source.equals( "Hudong" ) )
+		else if( source.equals( GlobalConfigs.source_name_hudong ) )
 			sourcefileName = hudongFileName;
-		else if( source.equals( "zhWiki" ) )
+		else if( source.equals( GlobalConfigs.source_name_zhwiki ) )
 			sourcefileName = zhwikiFileName;
 	}
 	
