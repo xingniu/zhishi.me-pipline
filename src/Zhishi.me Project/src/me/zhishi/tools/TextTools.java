@@ -6,68 +6,18 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TextTools {
-	protected String txtString;
-	public String subString;
-	protected String whitespace = "[\\t\\n\\x0B\\f\\r]";
-	protected int txtStringPtr;
-	
-	public TextTools( String text )
+public class TextTools
+{
+	/**
+	 * Reverse the given string.
+	 * @param str
+	 * 			the string that to be reversed
+	 * @return
+	 * 			reversed string
+	 */
+	public static String reverse( String str )
 	{
-		txtString = text;
-		txtStringPtr = 0;
-	}
-	
-	public int find( String name )
-	{
-		return findSubstring( name, txtStringPtr );
-	}
-	
-	public int findOR( String name1, String name2 )
-	{
-		int R1 = findSubstring( name1, txtStringPtr );
-		int R2 = findSubstring( name2, txtStringPtr );
-		if( R1 <= R2 )
-			return R1;
-		else
-			return R2;
-	}
-	
-	public void skip( String name )
-	{
-		int index = txtString.indexOf( name, txtStringPtr );
-		txtStringPtr = index + name.length();
-	}
-	
-	private int findSubstring( String name, int fromIndex )
-	{
-		return txtString.indexOf( name, fromIndex );
-	}
-	
-	public int findBetween( String start, String end )
-	{
-		try
-		{
-			int startLength = start.length();
-			int left = txtString.indexOf( start, txtStringPtr );
-			int right;
-			if( left == -1 )
-				return -1;
-			else
-			{
-				right = txtString.indexOf( end, left + startLength );
-				if( right == -1 )
-					return -1;
-				else
-					subString = txtString.substring( left + startLength, right );
-			}
-			txtStringPtr = right;
-			return left + startLength;
-		}
-		catch( Exception e )
-		{
-			return -1;
-		}
+		return (new StringBuffer( str )).reverse().toString();
 	}
 	
 	/**

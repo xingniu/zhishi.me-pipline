@@ -184,12 +184,4 @@ public class NTriplesReader
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String args[]) {
-		NTriplesReader triple = new NTriplesReader("test.nt");
-		while (triple.readNextLine() != null) {
-			System.out.println(triple.getSubject() + "\t" + triple.getPredicate() + "\t" + triple.getObject());
-		}
-		triple.close();
-	}
 }
