@@ -9,9 +9,19 @@ public class GlobalConfigs
 	public static String projectDataPath = "//POSEIDON/Share/Groups/Semantic Group/Chinese LOD/";
 	public static String domainName = "http://zhishi.me/";
 	
-	public static String Hudong = "Hudong";
-	public static String Baidu = "Baidu";
-	public static String zhWiki = "zhWiki";
+	
+	public static String source_name_baidu = "Baidu";
+	public static String source_name_hudong = "Hudong";
+	public static String source_name_zhwiki = "zhWiki";
+	
+	public static String namespace_baidu = "http://zhishi.me/baidubaike/";
+	public static String namespace_hudong = "http://zhishi.me/hudongbaike/";
+	public static String namespace_zhwiki = "http://zhishi.me/zhwiki/";
+	
+	public static String predicate_label = "<http://www.w3.org/2000/01/rdf-schema#label>";
+	// TODO : Pay attention here
+	public static String predicate_article_category_old = "<http://purl.org/dc/terms/subject>";
+	public static String predicate_article_category = "<http://zhishi.me/ontology/category>";
 	
 	public GlobalConfigs( String dumpV )
 	{

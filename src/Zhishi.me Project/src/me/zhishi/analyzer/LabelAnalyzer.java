@@ -11,7 +11,7 @@ public class LabelAnalyzer
 	
 	public static void main( String[] args )
 	{
-		LabelAnalyzer ana = new LabelAnalyzer( GlobalConfigs.Hudong );
+		LabelAnalyzer ana = new LabelAnalyzer( GlobalConfigs.source_name_hudong );
 		ana.driver();
 		ana.closeReader();
 	}

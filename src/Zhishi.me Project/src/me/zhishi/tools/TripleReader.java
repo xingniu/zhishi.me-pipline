@@ -80,8 +80,8 @@ public class TripleReader
 	public String getBareObject()
 	{
 		String s = getObject();
-		if( s.contains( "\"^^" ) )
-			return TextTools.UnicodeToString(s.substring( 1, s.indexOf( "\"^^" ) ));
+		if( s.contains( "\"^^<" ) )
+			return TextTools.UnicodeToString(s.substring( 1, s.indexOf( "\"^^<" ) ));
 		else if( s.contains( "\"@" ) )
 			return TextTools.UnicodeToString(s.substring( 1, s.lastIndexOf( "\"@" ) ));
 		else
