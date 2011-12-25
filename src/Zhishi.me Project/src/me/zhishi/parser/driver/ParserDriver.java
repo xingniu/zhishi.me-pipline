@@ -11,6 +11,7 @@ import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 
 import me.zhishi.parser.Article;
+import me.zhishi.parser.BaiduParser;
 import me.zhishi.parser.HudongParser;
 import me.zhishi.parser.Parser;
 import me.zhishi.tools.FileHandler;
@@ -19,7 +20,8 @@ import me.zhishi.tools.Path;
 
 public class ParserDriver
 {
-	public static String source = IRICenter.source_name_hudong;
+	public static String source = IRICenter.source_name_baidu;
+//	public static String source = IRICenter.source_name_hudong;
 	public static double releaseVersion = 3.0;
 	
 	public static void main( String[] args ) throws IOException
@@ -27,6 +29,8 @@ public class ParserDriver
 		int maxDump = 0;
 		if( source.equals( IRICenter.source_name_hudong ) )
 			maxDump = Path.hudongMax;
+		else if( source.equals( IRICenter.source_name_baidu ) )
+			maxDump = Path.baiduMax;
 		
 		for( int i = 0; i <= maxDump; ++i )
 		{
@@ -39,30 +43,33 @@ public class ParserDriver
 			Path path = new Path( releaseVersion, source );
 			FileHandler fh = new FileHandler( path.getMainPageFilePath( archiveName ) );
 			TarInputStream tin = (TarInputStream) fh.getInputStream();
-//			ZipOutputStream zipout = new ZipOutputStream( new FileOutputStream( path.getRawStructuredDataFilePath( archiveName ) ) );
-//			zipout.putNextEntry( new ZipEntry( archiveName +".txt" ) );
-//			OutputStreamWriter writer = new OutputStreamWriter(zipout, "UTF-8");
+			ZipOutputStream zipout = new ZipOutputStream( new FileOutputStream( path.getRawStructuredDataFilePath( archiveName ) ) );
+			zipout.putNextEntry( new ZipEntry( archiveName + ".txt" ) );
+			OutputStreamWriter writer = new OutputStreamWriter( zipout, "UTF-8" );
 			
 			Parser parser = null;
 			TarEntry en;
 			while( (en = tin.getNextEntry()) != null )
 			{
-				System.out.println( en.getName() );
-				if ( source.equals( IRICenter.source_name_hudong ) )
+//				System.out.println( en.getName() );
+				if( source.equals( IRICenter.source_name_hudong ) )
 					parser = new HudongParser( tin );
+				else if ( source.equals( IRICenter.source_name_baidu ) )
+					parser = new BaiduParser( tin );
 				
 				Article article = parser.parse();
 				
 				for( String t : article.toTriples() )
 				{
-					System.out.println( t );
+					writer.write( t + "\n" );
+//					System.out.println( t );
 				}
 			}
 
 			tin.close();
 			fh.close();
-//			writer.close();
-//			zipout.close();
+			writer.close();
+			zipout.close();
 		}
 	}
 }

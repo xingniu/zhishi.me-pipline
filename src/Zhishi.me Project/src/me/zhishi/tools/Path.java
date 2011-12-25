@@ -16,7 +16,7 @@ public class Path
 	private String dumpPath;
 	
 	public static int hudongMax = 364;
-	public static int baiduMax = 0;
+	public static int baiduMax = 714;
 	
 	public void setSourcefileName( String source )
 	{

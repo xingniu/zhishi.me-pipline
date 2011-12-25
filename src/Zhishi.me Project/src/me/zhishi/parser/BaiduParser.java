@@ -12,31 +12,31 @@ import org.jsoup.nodes.Element;
 import me.zhishi.tools.IRICenter;
 import me.zhishi.tools.StringPair;
 
-public class HudongParser implements Parser
+public class BaiduParser implements Parser
 {
-	public static void main(String args[]) throws IOException
+	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/%CE%B2%E8%AE%A1%E7%AE%97%E6%9C%BA";
-		HudongParser p = new HudongParser( url );
+		String url = "http://baike.baidu.com/view/277746.htm";
+		BaiduParser p = new BaiduParser( url );
 		p.parse();
 	}
 	
 	private Document doc;
 	
-	public HudongParser( InputStream is ) throws IOException
+	public BaiduParser( InputStream is ) throws IOException
 	{
-		doc = Jsoup.parse( is, "UTF-8", "http://www.hudong.com/" );
+		doc = Jsoup.parse( is, "GB18030", "http://baike.baidu.com" );
 	}
-	
-	public HudongParser( String url ) throws IOException
+
+	public BaiduParser( String url ) throws IOException
 	{
 		doc = Jsoup.connect( url ).get();
 	}
-	
+
 	@Override
 	public Article parse()
 	{
-		Article article = new Article( IRICenter.source_name_hudong );
+		Article article = new Article( IRICenter.source_name_baidu );
 		article.label = getLabel();
 		article.categories = getCategories();
 		return article;
@@ -45,7 +45,7 @@ public class HudongParser implements Parser
 	@Override
 	public String getLabel()
 	{
-		String label = doc.select("div[class^=content-h1]").select("h1").html();
+		String label = doc.select("h1[class=title]").html();
 		label = StringEscapeUtils.unescapeHtml4(label);
 		label = label.trim();
 //		System.out.println( label );
@@ -86,9 +86,8 @@ public class HudongParser implements Parser
 	{
 		ArrayList<String> categories = new ArrayList<String>();
 		
-		for( Element cat : doc.select( "div[class=relevantinfo] > dl[id=show_tag] > dd > a" ) )
-			if( cat.hasAttr( "href" ) && cat.attr( "href" ).contains( "/categorypage" ) )
-				categories.add( cat.text() );
+		for( Element cat : doc.select( "dl#viewExtCati > dd > a" ) )
+			categories.add( cat.text() );
 		
 		return categories;
 	}
@@ -120,5 +119,4 @@ public class HudongParser implements Parser
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }
