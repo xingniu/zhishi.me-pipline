@@ -6,5 +6,7 @@
 	<classpathentry kind="lib" path="lib/hadoop/commons-cli-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop/hadoop-core-0.20.2-CDH3B4.jar"/>
+	<classpathentry kind="lib" path="lib/jsoup-1.6.1.jar" sourcepath="lib/jsoup-1.6.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar" sourcepath="lib/commons-lang3-3.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

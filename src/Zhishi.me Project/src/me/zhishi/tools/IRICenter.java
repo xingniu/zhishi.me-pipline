@@ -1,14 +1,8 @@
 package me.zhishi.tools;
 
-public class GlobalConfigs
+public class IRICenter
 {
-	// Default version info
-	private String dumpVersion;
-	private String dumpPath;
-	
-	public static String projectDataPath = "//POSEIDON/Share/Groups/Semantic Group/Chinese LOD/";
 	public static String domainName = "http://zhishi.me/";
-	
 	
 	public static String source_name_baidu = "Baidu";
 	public static String source_name_hudong = "Hudong";
@@ -23,20 +17,25 @@ public class GlobalConfigs
 	public static String predicate_article_category_old = "<http://purl.org/dc/terms/subject>";
 	public static String predicate_article_category = "<http://zhishi.me/ontology/category>";
 	
-	public GlobalConfigs( String dumpV )
+	private String namespace;
+	
+	public IRICenter( String source )
 	{
-		dumpVersion = dumpV;
-		dumpPath = projectDataPath + dumpVersion + "/";
+		if( source.equals( source_name_baidu ) )
+			namespace = namespace_baidu;
+		else if( source.equals( source_name_hudong ) )
+			namespace = namespace_hudong;
+		else if( source.equals( source_name_zhwiki ) )
+			namespace = namespace_zhwiki;
 	}
 	
-	public void setDumpVersion( String newVersion )
+	public String getResourceIRI( String label )
 	{
-		dumpVersion = newVersion;
-		dumpPath = projectDataPath + dumpVersion + "/";
+		return namespace + "resource/" + TextTools.getUnicode( label );
 	}
-
-	public String getNTriplesPath( String source )
+	
+	public String getCategoryIRI( String label )
 	{
-		return dumpPath + source + "/NTriples/";
+		return namespace + "category/" + TextTools.getUnicode( label );
 	}
 }
