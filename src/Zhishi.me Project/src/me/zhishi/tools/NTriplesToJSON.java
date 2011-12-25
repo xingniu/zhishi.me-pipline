@@ -33,20 +33,20 @@ public class NTriplesToJSON
 				TripleReader tr = new TripleReader( value.toString() );
 				
 				String source = null;
-				if( tr.getSubject().contains( IRICenter.namespace_baidu ) )
+				if( tr.getSubject().contains( URICenter.namespace_baidu ) )
 				{
-					source = IRICenter.source_name_baidu;
+					source = URICenter.source_name_baidu;
 				}
-				else if( tr.getSubject().contains( IRICenter.namespace_hudong ) )
+				else if( tr.getSubject().contains( URICenter.namespace_hudong ) )
 				{
-					source = IRICenter.source_name_hudong;
+					source = URICenter.source_name_hudong;
 				}
-				else if( tr.getSubject().contains( IRICenter.namespace_zhwiki ) )
+				else if( tr.getSubject().contains( URICenter.namespace_zhwiki ) )
 				{
-					source = IRICenter.source_name_zhwiki;
+					source = URICenter.source_name_zhwiki;
 				}
 				
-				if( predicateSet.contains( "label" ) && tr.getPredicate().equals( IRICenter.predicate_label ) )
+				if( predicateSet.contains( "label" ) && tr.getPredicate().equals( URICenter.predicate_label ) )
 				{
 					JSONObject main = new JSONObject();
 					main.put( "uri", tr.getSubject() );
@@ -55,13 +55,13 @@ public class NTriplesToJSON
 					main.put( "value", tr.getObjectValue() );
 					context.write( new Text( tr.getSubject() ), new Text( main.toString() ) );
 				}
-				else if( predicateSet.contains( "category" ) && tr.getPredicate().equals( IRICenter.predicate_article_category_old ) )
+				else if( predicateSet.contains( "category" ) && tr.getPredicate().equals( URICenter.predicate_article_category_old ) )
 				{
 					JSONObject main = new JSONObject();
 					main.put( "uri", tr.getSubject() );
 					main.put( "source", source );
 					main.put( "property", "category" );
-					main.put( "value", tr.getObjectURIContent() );
+					main.put( "value", tr.getObjectContent() );
 					context.write( new Text( tr.getSubject() ), new Text( main.toString() ) );
 				}
 				

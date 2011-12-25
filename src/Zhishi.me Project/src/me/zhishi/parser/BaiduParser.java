@@ -9,7 +9,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import me.zhishi.tools.IRICenter;
+import me.zhishi.tools.URICenter;
 import me.zhishi.tools.StringPair;
 
 public class BaiduParser implements Parser
@@ -36,7 +36,7 @@ public class BaiduParser implements Parser
 	@Override
 	public Article parse()
 	{
-		Article article = new Article( IRICenter.source_name_baidu );
+		Article article = new Article( URICenter.source_name_baidu );
 		article.label = getLabel();
 		article.categories = getCategories();
 		return article;

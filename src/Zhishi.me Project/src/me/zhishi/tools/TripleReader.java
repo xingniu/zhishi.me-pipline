@@ -27,12 +27,6 @@ public class TripleReader
 		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
-	public String getSubjectUnicodeContent()
-	{
-		String str = getSubject();
-		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
-	}
-	
 	public String getPredicate()
 	{
 		return triple.substring( SE + 1, PE );
@@ -42,12 +36,6 @@ public class TripleReader
 	{
 		String str = getPredicate();
 		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
-	}
-	
-	public String getPredicateUnicodeContent()
-	{
-		String str = getPredicate();
-		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
 //	public String getBarePredicate( String start )
@@ -62,16 +50,10 @@ public class TripleReader
 		return triple.substring( PE + 1, OE );
 	}
 	
-	public String getObjectURIContent()
+	public String getObjectContent()
 	{
 		String str = getObject();
 		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
-	}
-	
-	public String getObjectIRIContent()
-	{
-		String str = getObject();
-		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
 	public String getObjectValue()

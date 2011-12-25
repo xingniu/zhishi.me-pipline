@@ -1,6 +1,6 @@
 package me.zhishi.tools;
 
-public class IRICenter
+public class URICenter
 {
 	public static String domainName = "http://zhishi.me/";
 	
@@ -19,7 +19,7 @@ public class IRICenter
 	
 	private String namespace;
 	
-	public IRICenter( String source )
+	public URICenter( String source )
 	{
 		if( source.equals( source_name_baidu ) )
 			namespace = namespace_baidu;
@@ -29,13 +29,13 @@ public class IRICenter
 			namespace = namespace_zhwiki;
 	}
 	
-	public String getResourceIRI( String label )
+	public String getResourceURI( String label )
 	{
-		return namespace + "resource/" + TextTools.getUnicode( label );
+		return namespace + "resource/" + TextTools.encoder( label );
 	}
 	
-	public String getCategoryIRI( String label )
+	public String getCategoryURI( String label )
 	{
-		return namespace + "category/" + TextTools.getUnicode( label );
+		return namespace + "category/" + TextTools.encoder( label );
 	}
 }
