@@ -20,11 +20,11 @@ public class Path
 	
 	public void setSourcefileName( String source )
 	{
-		if( source.equals( IRICenter.source_name_baidu ) )
+		if( source.equals( URICenter.source_name_baidu ) )
 			sourcefileName = baiduFileName;
-		else if( source.equals( IRICenter.source_name_hudong ) )
+		else if( source.equals( URICenter.source_name_hudong ) )
 			sourcefileName = hudongFileName;
-		else if( source.equals( IRICenter.source_name_zhwiki ) )
+		else if( source.equals( URICenter.source_name_zhwiki ) )
 			sourcefileName = zhwikiFileName;
 	}
 	

@@ -2,7 +2,7 @@ package me.zhishi.parser;
 
 import java.util.ArrayList;
 
-import me.zhishi.tools.IRICenter;
+import me.zhishi.tools.URICenter;
 import me.zhishi.tools.StringPair;
 import me.zhishi.tools.TripleWriter;
 
@@ -45,18 +45,18 @@ public class Article
 	public ArrayList<String> toTriples()
 	{
 		ArrayList<String> tripleList = new ArrayList<String>();
-		IRICenter ic = new IRICenter( source );
+		URICenter ic = new URICenter( source );
 		
 		if( label != null && !label.equals( "" ) )
 		{
-			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceIRI( label ), IRICenter.predicate_label, label ) );
+			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
 		}
 		else
 			return tripleList;
 		
 		for( String cat : categories )
 		{
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceIRI( label ), IRICenter.predicate_article_category, ic.getCategoryIRI( cat ) ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_article_category, ic.getCategoryURI( cat ) ) );
 		}
 		
 		//TODO: other contents

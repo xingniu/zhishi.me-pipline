@@ -1,7 +1,8 @@
 package me.zhishi.analyzer;
 
 import me.zhishi.tools.Path;
-import me.zhishi.tools.IRICenter;
+import me.zhishi.tools.TripleReader;
+import me.zhishi.tools.URICenter;
 import me.zhishi.tools.NTriplesReader;
 
 public class LabelAnalyzer
@@ -11,7 +12,7 @@ public class LabelAnalyzer
 	
 	public static void main( String[] args )
 	{
-		LabelAnalyzer ana = new LabelAnalyzer( IRICenter.source_name_hudong );
+		LabelAnalyzer ana = new LabelAnalyzer( URICenter.source_name_hudong );
 		ana.driver();
 		ana.closeReader();
 	}
@@ -32,7 +33,8 @@ public class LabelAnalyzer
 	{
 		while( labelReader.readNextLine() != null )
 		{
-			String label = labelReader.getObjectValue();
+			TripleReader tr = labelReader.getTripleReader();
+			String label = tr.getObjectValue();
 			System.out.println( label );
 		}
 	}

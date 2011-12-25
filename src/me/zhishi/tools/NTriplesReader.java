@@ -87,49 +87,9 @@ public class NTriplesReader
 		return null;
 	}
 	
-	public String getSubject()
+	public TripleReader getTripleReader()
 	{
-		return tripleReader.getSubject();
-	}
-	
-	public String getSubjectContent()
-	{
-		return tripleReader.getSubjectContent();
-	}
-	
-	public String getPredicate()
-	{
-		return tripleReader.getPredicate();
-	}
-	
-	public String getPredicateContent()
-	{
-		return tripleReader.getPredicateContent();
-	}
-	
-//	public String getBarePredicate( String start )
-//	{
-//		return tripleReader.getBarePredicate( start );
-//	}
-	
-	public String getObject()
-	{
-		return tripleReader.getObject();
-	}
-	
-	public String getObjectURIContent()
-	{
-		return tripleReader.getObjectURIContent();
-	}
-	
-	public String getObjectValue()
-	{
-		return tripleReader.getObjectValue();
-	}
-	
-	public String getCurrentLine()
-	{
-		return currentLine;
+		return tripleReader;
 	}
 	
 	public void close()
