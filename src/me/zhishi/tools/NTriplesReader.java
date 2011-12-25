@@ -18,9 +18,7 @@ public class NTriplesReader
 	private InputStream fin;
 	private BufferedReader stringReader;
 	private String currentLine;
-	private int SE;
-	private int PE;
-	private int OE;
+	private TripleReader tripleReader;
 	
 	public NTriplesReader( String path )
 	{
@@ -73,13 +71,7 @@ public class NTriplesReader
 			} while( currentLine != null && !currentLine.startsWith( "<" ) );
 			if( currentLine != null )
 			{
-				SE = currentLine.indexOf( "> <" ) + 1;
-				PE = currentLine.indexOf( "> ", SE + 1 ) + 1;
-				OE = currentLine.length() - 2;
-//				if( SE<0 || PE<0 || OE<=PE )
-//				{
-//					System.out.println( currentLine );
-//				}
+				tripleReader = new TripleReader( currentLine );
 			}
 			return currentLine;
 		}
@@ -95,76 +87,44 @@ public class NTriplesReader
 		return null;
 	}
 	
-	/**
-	 * @return the URI of the subject
-	 */
 	public String getSubject()
 	{
-		return currentLine.substring( 0, SE );
+		return tripleReader.getSubject();
 	}
 	
-	/**
-	 * @return the local name of the subject
-	 */
-	public String getDecodedSubject()
+	public String getSubjectContent()
 	{
-		String s = getSubject();
-		return TextTools.decoder( s.substring( s.lastIndexOf( "/" )+1, s.indexOf( ">" ) ) );
+		return tripleReader.getSubjectContent();
 	}
 	
-	/**
-	 * @return the URI of the predicate
-	 */
 	public String getPredicate()
 	{
-		return currentLine.substring( SE + 1, PE );
+		return tripleReader.getPredicate();
 	}
 	
-	/**
-	 * @return the local name of the predicate
-	 */
-	public String getDecodedPredicate()
+	public String getPredicateContent()
 	{
-		String s = getPredicate();
-		return TextTools.decoder( s.substring( s.lastIndexOf( "/" )+1, s.indexOf( ">" ) ) );
+		return tripleReader.getPredicateContent();
 	}
 	
-	public String getBarePredicate( String start )
-	{
-		String s = getPredicate();
-		int length = start.length();
-		return s.substring( s.indexOf( start )+ length, s.lastIndexOf( ">" ) );
-	}
+//	public String getBarePredicate( String start )
+//	{
+//		return tripleReader.getBarePredicate( start );
+//	}
 	
-	/**
-	 * @return the object (URI or string)
-	 */
 	public String getObject()
 	{
-		return currentLine.substring( PE + 1, OE );
+		return tripleReader.getObject();
 	}
 	
-	/**
-	 * @return the local name of the object (will fail if the object is not URI)
-	 */
-	public String getDecodedObject()
+	public String getObjectURIContent()
 	{
-		String s = getObject();
-		return TextTools.decoder( s.substring( s.lastIndexOf( "/" )+1, s.indexOf( ">" ) ) );
+		return tripleReader.getObjectURIContent();
 	}
 	
-	/**
-	 * @return the string value of the object (will fail if the object is URI)
-	 */
-	public String getBareObject()
+	public String getObjectValue()
 	{
-		String s = getObject();
-		if( s.contains( "\"^^" ) )
-			return TextTools.UnicodeToString(s.substring( 1, s.indexOf( "\"^^" ) ));
-		else if( s.contains( "\"@" ) )
-			return TextTools.UnicodeToString(s.substring( 1, s.lastIndexOf( "\"@" ) ));
-		else
-			return "";
+		return tripleReader.getObjectValue();
 	}
 	
 	public String getCurrentLine()

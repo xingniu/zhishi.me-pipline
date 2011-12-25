@@ -33,35 +33,35 @@ public class NTriplesToJSON
 				TripleReader tr = new TripleReader( value.toString() );
 				
 				String source = null;
-				if( tr.getSubject().contains( GlobalConfigs.namespace_baidu ) )
+				if( tr.getSubject().contains( IRICenter.namespace_baidu ) )
 				{
-					source = GlobalConfigs.source_name_baidu;
+					source = IRICenter.source_name_baidu;
 				}
-				else if( tr.getSubject().contains( GlobalConfigs.namespace_hudong ) )
+				else if( tr.getSubject().contains( IRICenter.namespace_hudong ) )
 				{
-					source = GlobalConfigs.source_name_hudong;
+					source = IRICenter.source_name_hudong;
 				}
-				else if( tr.getSubject().contains( GlobalConfigs.namespace_zhwiki ) )
+				else if( tr.getSubject().contains( IRICenter.namespace_zhwiki ) )
 				{
-					source = GlobalConfigs.source_name_zhwiki;
+					source = IRICenter.source_name_zhwiki;
 				}
 				
-				if( predicateSet.contains( "label" ) && tr.getPredicate().equals( GlobalConfigs.predicate_label ) )
+				if( predicateSet.contains( "label" ) && tr.getPredicate().equals( IRICenter.predicate_label ) )
 				{
 					JSONObject main = new JSONObject();
 					main.put( "uri", tr.getSubject() );
 					main.put( "source", source );
 					main.put( "property", "label" );
-					main.put( "value", tr.getBareObject() );
+					main.put( "value", tr.getObjectValue() );
 					context.write( new Text( tr.getSubject() ), new Text( main.toString() ) );
 				}
-				else if( predicateSet.contains( "category" ) && tr.getPredicate().equals( GlobalConfigs.predicate_article_category_old ) )
+				else if( predicateSet.contains( "category" ) && tr.getPredicate().equals( IRICenter.predicate_article_category_old ) )
 				{
 					JSONObject main = new JSONObject();
 					main.put( "uri", tr.getSubject() );
 					main.put( "source", source );
 					main.put( "property", "category" );
-					main.put( "value", tr.getDecodedObject() );
+					main.put( "value", tr.getObjectURIContent() );
 					context.write( new Text( tr.getSubject() ), new Text( main.toString() ) );
 				}
 				

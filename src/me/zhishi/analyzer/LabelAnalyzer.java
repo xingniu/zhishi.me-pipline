@@ -1,24 +1,24 @@
 package me.zhishi.analyzer;
 
-import me.zhishi.tools.FileNames;
-import me.zhishi.tools.GlobalConfigs;
+import me.zhishi.tools.Path;
+import me.zhishi.tools.IRICenter;
 import me.zhishi.tools.NTriplesReader;
 
 public class LabelAnalyzer
 {
 	private NTriplesReader labelReader;
-	private FileNames fileName;
+	private Path fileName;
 	
 	public static void main( String[] args )
 	{
-		LabelAnalyzer ana = new LabelAnalyzer( GlobalConfigs.source_name_hudong );
+		LabelAnalyzer ana = new LabelAnalyzer( IRICenter.source_name_hudong );
 		ana.driver();
 		ana.closeReader();
 	}
 	
 	public LabelAnalyzer( String source )
 	{
-		fileName = new FileNames( 2.0 );
+		fileName = new Path( 2.0 );
 		fileName.setSource( source );
 		labelReader = new NTriplesReader( fileName.getLabelFileName() );
 	}
@@ -32,7 +32,7 @@ public class LabelAnalyzer
 	{
 		while( labelReader.readNextLine() != null )
 		{
-			String label = labelReader.getBareObject();
+			String label = labelReader.getObjectValue();
 			System.out.println( label );
 		}
 	}

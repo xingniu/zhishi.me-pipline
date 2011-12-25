@@ -156,19 +156,6 @@ public class TextTools
 			return "";
 		}
 	}
-
-	/**
-	 * @deprecated  Replaced by {@link #getUnicode()}
-	 * Replace " with \"
-	 * @param str
-	 * 			the string that to be replaced
-	 * @return
-	 * 			replaced string
-	 */
-	public static String formatString( String str )
-	{
-		return str.replaceAll( "\"", "\\\\\"" );
-	}
 	
 	public static double similarity( String str1, String str2 )
 	{

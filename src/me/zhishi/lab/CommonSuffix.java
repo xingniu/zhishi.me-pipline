@@ -28,7 +28,7 @@ public class CommonSuffix
 		{
 			String triple = value.toString();
 			TripleReader tr = new TripleReader( triple );
-			String label = tr.getBareObject();
+			String label = tr.getObjectValue();
 			label = label.replaceAll( " \\(.*?\\)$", "" );
 			label = label.replaceAll( "\\[.*?\\]$", "" );
 			//2: At least 2 chars

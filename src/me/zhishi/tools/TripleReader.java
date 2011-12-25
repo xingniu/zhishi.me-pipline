@@ -16,74 +16,71 @@ public class TripleReader
 		OE = triple.length() - 2;
 	}
 	
-	/**
-	 * @return the URI of the subject
-	 */
 	public String getSubject()
 	{
 		return triple.substring( 0, SE );
 	}
 	
-	/**
-	 * @return the local name of the subject
-	 */
-	public String getDecodedSubject()
+	public String getSubjectContent()
 	{
-		String s = getSubject();
-		return TextTools.decoder( s.substring( s.lastIndexOf( "/" )+1, s.indexOf( ">" ) ) );
+		String str = getSubject();
+		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
-	/**
-	 * @return the URI of the predicate
-	 */
+	public String getSubjectUnicodeContent()
+	{
+		String str = getSubject();
+		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
+	}
+	
 	public String getPredicate()
 	{
 		return triple.substring( SE + 1, PE );
 	}
 	
-	/**
-	 * @return the local name of the predicate
-	 */
-	public String getDecodedPredicate()
+	public String getPredicateContent()
 	{
-		String s = getPredicate();
-		return TextTools.decoder( s.substring( s.lastIndexOf( "/" )+1, s.indexOf( ">" ) ) );
+		String str = getPredicate();
+		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
-	public String getBarePredicate( String start )
+	public String getPredicateUnicodeContent()
 	{
-		String s = getPredicate();
-		int length = start.length();
-		return s.substring( s.indexOf( start )+ length, s.lastIndexOf( ">" ) );
+		String str = getPredicate();
+		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
-	/**
-	 * @return the object (URI or string)
-	 */
+//	public String getBarePredicate( String start )
+//	{
+//		String s = getPredicate();
+//		int length = start.length();
+//		return s.substring( s.indexOf( start )+ length, s.lastIndexOf( ">" ) );
+//	}
+	
 	public String getObject()
 	{
 		return triple.substring( PE + 1, OE );
 	}
 	
-	/**
-	 * @return the local name of the object (will fail if the object is not URI)
-	 */
-	public String getDecodedObject()
+	public String getObjectURIContent()
 	{
-		String s = getObject();
-		return TextTools.decoder( s.substring( s.lastIndexOf( "/" )+1, s.indexOf( ">" ) ) );
+		String str = getObject();
+		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
-	/**
-	 * @return the string value of the object (will fail if the object is URI)
-	 */
-	public String getBareObject()
+	public String getObjectIRIContent()
 	{
-		String s = getObject();
-		if( s.contains( "\"^^<" ) )
-			return TextTools.UnicodeToString(s.substring( 1, s.indexOf( "\"^^<" ) ));
-		else if( s.contains( "\"@" ) )
-			return TextTools.UnicodeToString(s.substring( 1, s.lastIndexOf( "\"@" ) ));
+		String str = getObject();
+		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
+	}
+	
+	public String getObjectValue()
+	{
+		String str = getObject();
+		if( str.contains( "\"^^<" ) )
+			return TextTools.UnicodeToString(str.substring( 1, str.indexOf( "\"^^<" ) ));
+		else if( str.contains( "\"@" ) )
+			return TextTools.UnicodeToString(str.substring( 1, str.lastIndexOf( "\"@" ) ));
 		else
 			return "";
 	}
