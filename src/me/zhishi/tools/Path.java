@@ -2,7 +2,13 @@ package me.zhishi.tools;
 
 public class Path
 {
+	// Poseidon
 	public static String projectDataPath = "//POSEIDON/Share/Groups/Semantic Group/Chinese LOD/";
+	
+	// Hadoop HDFS
+	public static String hdfs_username = "APEXLAB-xingniu";
+	public static String hdfs_fsName = "hdfs://172.16.7.14";
+	public static String hdfs_projectDataPath = "/Users/xingniu/CLOD/";
 	
 	public static String baiduFileName = "baidubaike";
 	public static String hudongFileName = "hudongbaike";
@@ -102,6 +108,11 @@ public class Path
 	public String getMainPageFilePath( String file )
 	{
 		return getMainPagePath() + file + ".tar.bz2";
+	}
+	
+	public String getHDFSMainPagePath()
+	{
+		return hdfs_projectDataPath + "BaikePages/" + source + "/";
 	}
 	
 	public String getRawStructuredDataPath()
