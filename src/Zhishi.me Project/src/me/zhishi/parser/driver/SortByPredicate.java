@@ -66,12 +66,10 @@ public class SortByPredicate
 			}
 			catch( IOException e )
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			catch( InterruptedException e )
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -81,7 +79,7 @@ public class SortByPredicate
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
-		String inputPath = p.getHDFSRawStructuredDataPath();
+		String inputPath = p.getRawStructuredDataPath();
 		String outputPath = p.getNTriplesPath() + "Temp/";
 		
 		Configuration conf = new Configuration();

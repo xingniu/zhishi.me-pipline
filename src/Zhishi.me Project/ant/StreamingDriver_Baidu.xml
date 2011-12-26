@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="../" default="build" name="Zhishi.me">
+	<property environment="env"/>
+	<property name="debuglevel" value="source,lines,vars"/>
+	<property name="target" value="1.6"/>
+	<property name="source" value="1.6"/>
+	<path id="Zhishi.me.classpath">
+		<pathelement location="bin"/>
+		<pathelement location="lib/ant.jar"/>
+		<pathelement location="lib/hadoop/commons-cli-1.2.jar"/>
+		<pathelement location="lib/hadoop/commons-logging-1.0.4.jar"/>
+		<pathelement location="lib/hadoop/hadoop-core-0.20.2-CDH3B4.jar"/>
+		<pathelement location="lib/jsoup-1.6.1.jar"/>
+		<pathelement location="lib/commons-lang3-3.1.jar"/>
+	</path>
+	
+	<target name="clean">
+		<delete dir="build" />
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="build" />
+	</target>
+
+	<target name="build-project" depends="init">
+		<javac debug="true" srcdir="src" destdir="build" encoding="UTF-8">
+			<classpath refid="Zhishi.me.classpath" />
+		</javac>
+	</target>
+
+	<target name="build" depends="build-project">
+		<jar destfile="build/StreamingDriver.jar">
+			<fileset dir="build" />
+			<zipgroupfileset dir="lib" includes="*.jar" />
+			<manifest>
+				<attribute name="Main-class" value="me.zhishi.parser.driver.StreamingDriver" />
+			</manifest>
+		</jar>
+		<scp file="build/StreamingDriver.jar" todir="apexlab-xingniu:422871@172.16.7.11:programs/StreamingDriver.jar" trust="true" />
+		<sshexec host="172.16.7.11" username="apexlab-xingniu" password="422871" trust="true" command="
+				hadoop dfs -rmr /Users/xingniu/CLOD/RawStructuredData/Baidu;
+				hadoop jar /usr/lib/hadoop/contrib/streaming/hadoop-streaming-0.20.2-cdh3u1.jar
+					-input /Users/xingniu/CLOD/BaikePages/Baidu/FileList.txt
+					-output /Users/xingniu/CLOD/RawStructuredData/Baidu
+					-file programs/StreamingDriver.jar
+					-mapper &quot;java -jar lib/StreamingDriver.jar&quot;
+					-reducer org.apache.hadoop.mapred.lib.IdentityReducer
+					-numReduceTasks 0
+					-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat
+					-jobconf mapred.line.input.format.linespermap=4
+					-jobconf mapred.job.name='Parse Baidu Baike HTML'"/>
+	</target>
+</project>

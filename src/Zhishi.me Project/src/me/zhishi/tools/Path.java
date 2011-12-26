@@ -9,7 +9,7 @@ public class Path
 	public static String hdfs_username = "APEXLAB-xingniu";
 	public static String hdfs_fsName = "hdfs://172.16.7.14";
 	public static String hdfs_projectDataPath = "/Users/xingniu/CLOD/";
-	private static boolean isHDFS = false;
+	private boolean isHDFS = false;
 	
 	public static String baiduFileName = "baidubaike";
 	public static String hudongFileName = "hudongbaike";
@@ -114,7 +114,10 @@ public class Path
 	
 	public String getMainPagePath()
 	{
-		return dumpPath + source + "/MainPages/";
+		if( isHDFS )
+			return hdfs_projectDataPath + "BaikePages/" + source + "/";
+		else
+			return dumpPath + source + "/MainPages/";
 	}
 	
 	public String getMainPageFilePath( String file )
@@ -122,12 +125,7 @@ public class Path
 		return getMainPagePath() + file + ".tar.bz2";
 	}
 	
-	public String getHDFSMainPagePath()
-	{
-		return hdfs_projectDataPath + "BaikePages/" + source + "/";
-	}
-	
-	public String getHDFSRawStructuredDataPath()
+	public String getRawStructuredDataPath()
 	{
 		return hdfs_projectDataPath + "RawStructuredData/" + source + "/";
 	}
