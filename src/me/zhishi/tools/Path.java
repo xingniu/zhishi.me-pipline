@@ -9,6 +9,7 @@ public class Path
 	public static String hdfs_username = "APEXLAB-xingniu";
 	public static String hdfs_fsName = "hdfs://172.16.7.14";
 	public static String hdfs_projectDataPath = "/Users/xingniu/CLOD/";
+	private static boolean isHDFS = false;
 	
 	public static String baiduFileName = "baidubaike";
 	public static String hudongFileName = "hudongbaike";
@@ -34,7 +35,7 @@ public class Path
 			sourcefileName = zhwikiFileName;
 	}
 	
-	public Path( double releaseVersion )
+	public void init( double releaseVersion )
 	{
 		this.releaseVersion = releaseVersion;
 		
@@ -45,7 +46,12 @@ public class Path
 			dumpVersion = "2011.12";
 		this.dumpVersion = dumpVersion;
 		
-		dumpPath = projectDataPath + dumpVersion + "/";
+		dumpPath = projectDataPath + dumpVersion + "/";	
+	}
+	
+	public Path( double releaseVersion )
+	{
+		init( releaseVersion );
 	}
 	
 	public Path( double releaseVersion, String source )
@@ -55,18 +61,24 @@ public class Path
 		setSourcefileName( source );
 	}
 	
-	public Path( String dumpVersion )
+	public Path( double releaseVersion, String source, boolean isHDFS )
 	{
-		this.dumpVersion = dumpVersion;
-		dumpPath = projectDataPath + dumpVersion + "/";
+		this( releaseVersion, source );
+		this.isHDFS = isHDFS;
 	}
 	
-	public Path( String dumpVersion, String source  )
-	{
-		this( dumpVersion );
-		this.source = source;
-		setSourcefileName( source );
-	}
+//	public Path( String dumpVersion )
+//	{
+//		this.dumpVersion = dumpVersion;
+//		dumpPath = projectDataPath + dumpVersion + "/";
+//	}
+//	
+//	public Path( String dumpVersion, String source  )
+//	{
+//		this( dumpVersion );
+//		this.source = source;
+//		setSourcefileName( source );
+//	}
 	
 	public void setDumpVersion( String newVersion )
 	{
@@ -115,19 +127,17 @@ public class Path
 		return hdfs_projectDataPath + "BaikePages/" + source + "/";
 	}
 	
-	public String getRawStructuredDataPath()
+	public String getHDFSRawStructuredDataPath()
 	{
-		return dumpPath + source + "/RawStructuredData/";
-	}
-	
-	public String getRawStructuredDataFilePath( String file )
-	{
-		return getRawStructuredDataPath() + file + ".zip";
+		return hdfs_projectDataPath + "RawStructuredData/" + source + "/";
 	}
 	
 	public String getNTriplesPath()
 	{
-		return dumpPath + source + "/NTriples/";
+		if( isHDFS )
+			return hdfs_projectDataPath + "NTriples/";
+		else
+			return dumpPath + source + "/NTriples/";
 	}
 	
 	public String getAbstractFileName()
@@ -138,5 +148,10 @@ public class Path
 	public String getLabelFileName()
 	{
 		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_labels_zh.nt";
+	}
+	
+	public String getCategoryFileName()
+	{
+		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_article_categories_zh.nt";
 	}
 }

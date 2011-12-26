@@ -16,7 +16,7 @@ public class HDFSFileReader
 	public HDFSFileReader( String path )
 	{
 		Configuration conf = new Configuration();
-		conf.set( "fs.default.name", "hdfs://172.16.7.14" );
+		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
 		try
 		{
 			FileSystem fs = FileSystem.get( URI.create( path ), conf );

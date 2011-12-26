@@ -1,11 +1,7 @@
 package me.zhishi.parser.driver;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.sql.Timestamp;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
@@ -43,9 +39,9 @@ public class ParserDriver
 			Path path = new Path( releaseVersion, source );
 			FileHandler fh = new FileHandler( path.getMainPageFilePath( archiveName ) );
 			TarInputStream tin = (TarInputStream) fh.getInputStream();
-			ZipOutputStream zipout = new ZipOutputStream( new FileOutputStream( path.getRawStructuredDataFilePath( archiveName ) ) );
-			zipout.putNextEntry( new ZipEntry( archiveName + ".txt" ) );
-			OutputStreamWriter writer = new OutputStreamWriter( zipout, "UTF-8" );
+//			ZipOutputStream zipout = new ZipOutputStream( new FileOutputStream( path.getRawStructuredDataFilePath( archiveName ) ) );
+//			zipout.putNextEntry( new ZipEntry( archiveName + ".txt" ) );
+//			OutputStreamWriter writer = new OutputStreamWriter( zipout, "UTF-8" );
 			
 			Parser parser = null;
 			TarEntry en;
@@ -61,15 +57,15 @@ public class ParserDriver
 				
 				for( String t : article.toTriples() )
 				{
-					writer.write( t + "\n" );
-//					System.out.println( t );
+//					writer.write( t + "\n" );
+					System.out.println( t );
 				}
 			}
 
 			tin.close();
 			fh.close();
-			writer.close();
-			zipout.close();
+//			writer.close();
+//			zipout.close();
 		}
 	}
 }

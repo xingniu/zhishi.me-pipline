@@ -284,7 +284,7 @@ public class NTriplesToJSON
 		
 		Configuration conf = new Configuration();
 		
-		conf.set( "fs.default.name", "hdfs://172.16.7.14" );
+		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
 		FileSystem fs = FileSystem.get( conf ); 
 		fs.delete( new Path( outputPath ), true );
 		
