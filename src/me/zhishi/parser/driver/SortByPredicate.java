@@ -2,6 +2,7 @@ package me.zhishi.parser.driver;
 
 import java.io.IOException;
 
+import me.zhishi.tools.SmallTools;
 import me.zhishi.tools.TripleReader;
 import me.zhishi.tools.URICenter;
 
@@ -22,7 +23,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 public class SortByPredicate
 {
 	public static String source = URICenter.source_name_hudong;
-	public static double releaseVersion =3.0;
+	public static double releaseVersion = 3.0;
+	private static int numReduceTasks = 10;
 	
 	public static class SortByPredicateMapper extends Mapper<Object, Text, Text, Text>
 	{
@@ -86,11 +88,11 @@ public class SortByPredicate
 		
 		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
 		FileSystem fs = FileSystem.get( conf );
-//		fs.delete( new Path( outputPath ), true );
+		fs.delete( new Path( outputPath ), true );
 		
 		Job job = new Job( conf, "sort NTs by predicate: " + source );
 		
-		job.setNumReduceTasks( 1 );
+		job.setNumReduceTasks( numReduceTasks );
 
 		job.setJarByClass( SortByPredicate.class );
 		job.setMapperClass( SortByPredicateMapper.class );
@@ -107,9 +109,27 @@ public class SortByPredicate
 
 		if( job.waitForCompletion( true ) )
 		{
-			FileUtil.copy( fs, new Path(outputPath+"label-r-00000"), fs, new Path(p.getLabelFileName()), false, conf );
-			FileUtil.copy( fs, new Path(outputPath+"category-r-00000"), fs, new Path(p.getCategoryFileName()), false, conf );
+			moveMergeFiles( fs, "label", p.getLabelFileName(), conf, outputPath );
+			moveMergeFiles( fs, "category", p.getCategoryFileName(), conf, outputPath );
 			fs.delete( new Path( outputPath ), true );
 		}
+	}
+	
+	public static void moveMergeFiles( FileSystem fs, String prefix, String target, Configuration conf, String folder ) throws IOException
+	{
+		String tempFolder = folder + "Temp/";
+		Path tempPath = new Path( tempFolder );
+		fs.mkdirs( tempPath );
+		
+		for( int i = 0; i < numReduceTasks; ++ i )
+		{
+			String fileName = SmallTools.getHadoopOutputName( prefix, i );
+			FileUtil.copy( fs, new Path(folder+fileName), fs, new Path(tempFolder+fileName), true, conf );
+		}
+		
+		Path targetPath = new Path( target );
+		fs.delete( targetPath, true );
+		FileUtil.copyMerge( fs, tempPath, fs, targetPath, true, conf, "" );
+		fs.delete( tempPath, true );
 	}
 }
