@@ -31,4 +31,9 @@ public class SmallTools
 		
 		fileWriter.close();
 	}
+	
+	public static String getHadoopOutputName( String prefix, int n )
+	{
+		return prefix + "-r-" + String.format( "%05d", n );
+	}
 }
