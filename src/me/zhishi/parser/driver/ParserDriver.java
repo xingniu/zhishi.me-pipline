@@ -1,16 +1,15 @@
 package me.zhishi.parser.driver;
 
-import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.sql.Timestamp;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 
 import me.zhishi.parser.Article;
-import me.zhishi.parser.BaiduParser;
-import me.zhishi.parser.HudongParser;
 import me.zhishi.parser.Parser;
 import me.zhishi.tools.FileHandler;
+import me.zhishi.tools.GlobalFactory;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.Path;
 
@@ -20,13 +19,21 @@ public class ParserDriver
 	public static String source = URICenter.source_name_hudong;
 	public static double releaseVersion = 3.0;
 	
-	public static void main( String[] args ) throws IOException
+	public static void main( String[] args ) throws Exception
 	{
+		Constructor<? extends Parser> constructor = null;
+		
 		int maxDump = 0;
 		if( source.equals( URICenter.source_name_hudong ) )
+		{
 			maxDump = Path.hudongMax;
+			constructor = (new GlobalFactory()).hudongParserConstructor;
+		}
 		else if( source.equals( URICenter.source_name_baidu ) )
+		{
 			maxDump = Path.baiduMax;
+			constructor = (new GlobalFactory()).baiduParserConstructor;
+		}
 		
 		for( int i = 0; i <= maxDump; ++i )
 		{
@@ -48,10 +55,8 @@ public class ParserDriver
 			while( (en = tin.getNextEntry()) != null )
 			{
 //				System.out.println( en.getName() );
-				if( source.equals( URICenter.source_name_hudong ) )
-					parser = new HudongParser( tin );
-				else if ( source.equals( URICenter.source_name_baidu ) )
-					parser = new BaiduParser( tin );
+				
+				parser = constructor.newInstance( tin );
 				
 				Article article = parser.parse();
 				

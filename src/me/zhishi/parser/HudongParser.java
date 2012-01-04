@@ -12,7 +12,7 @@ import org.jsoup.nodes.Element;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.StringPair;
 
-public class HudongParser implements Parser
+public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
@@ -36,7 +36,7 @@ public class HudongParser implements Parser
 	@Override
 	public Article parse()
 	{
-		Article article = new Article( URICenter.source_name_hudong );
+		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_hudong );
 		article.label = getLabel();
 		article.categories = getCategories();
 		return article;
