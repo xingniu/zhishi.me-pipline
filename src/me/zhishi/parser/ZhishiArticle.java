@@ -15,15 +15,15 @@ public class ZhishiArticle implements Article
 	public String redirect;
 	public ArrayList<StringPair> pictures;
 	public ArrayList<StringPair> properties;
-//	public ArrayList<StringPair> alias;
 	public ArrayList<String> categories;
 	public ArrayList<String> internalLinks;
 	public ArrayList<String> externalLinks;
 	public ArrayList<String> relatedPages;
+	public ArrayList<String> disambiguationLabels;
 	
 	public boolean isDisambiguationPage;
-	public ArrayList<ZhishiArticle> disambiguationArticles;
 	public boolean isRedirect;
+	public ArrayList<Article> disambiguationArticles;
 	
 	public ZhishiArticle( String source )
 	{
@@ -32,15 +32,9 @@ public class ZhishiArticle implements Article
 		label = null;
 		abs = null;
 		redirect = null;
-		pictures = new ArrayList<StringPair>();
-		properties = new ArrayList<StringPair>();
-//		alias = new ArrayList<StringPair>();
-		categories = new ArrayList<String>();
-		internalLinks = new ArrayList<String>();
-		externalLinks = new ArrayList<String>();
-		relatedPages = new ArrayList<String>();
 		
 		isDisambiguationPage = false;
+		isRedirect = false;
 	}
 	
 	@Override
@@ -48,6 +42,15 @@ public class ZhishiArticle implements Article
 	{
 		ArrayList<String> tripleList = new ArrayList<String>();
 		URICenter ic = new URICenter( source );
+		
+		if (isRedirect)
+		{
+			if (redirect != null && !redirect.equals("")) {
+				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( redirect ), URICenter.predicate_redirect, ic.getResourceURI( label ) ) );
+				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( redirect ), URICenter.predicate_label, redirect ) );
+			}
+			return tripleList;
+		}
 		
 		if( label != null && !label.equals( "" ) )
 		{
@@ -61,6 +64,38 @@ public class ZhishiArticle implements Article
 			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_article_category, ic.getCategoryURI( cat ) ) );
 		}
 		
+		if( abs != null && !abs.equals( "" ) )
+		{
+			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_abstract, abs ) );
+		}
+		
+		for( String relat : relatedPages )
+		{
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_relatedPages, ic.getResourceURI( relat ) ) );
+		}
+		
+		
+		for( int i = 0; i < pictures.size(); ++i)
+		{
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_pictures,  pictures.get(i).first ) );
+			tripleList.add( TripleWriter.getStringValueTriple(  pictures.get(i).first, URICenter.predicate_pictureLabels, pictures.get(i).second ) );
+		}
+		
+		for ( int i = 0; i < properties.size(); ++i )
+		{
+			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), ic.getPropertyPredicate( properties.get(i).first ), properties.get(i).second ) );
+		}
+		
+		for ( String innerlink : internalLinks )
+		{
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_internalLinks, ic.getResourceURI( innerlink ) ) );
+		}
+		
+		for ( String outerLink : externalLinks)
+		{
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_externalLinks, outerLink ));
+		}
+
 		//TODO: other contents
 
 		return tripleList;

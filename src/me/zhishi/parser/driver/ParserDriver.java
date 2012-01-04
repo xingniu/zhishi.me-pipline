@@ -63,7 +63,7 @@ public class ParserDriver
 				for( String t : article.toTriples() )
 				{
 //					writer.write( t + "\n" );
-					System.out.println( t );
+//					System.out.println( t );
 				}
 			}
 
