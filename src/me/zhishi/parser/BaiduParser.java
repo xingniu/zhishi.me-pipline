@@ -16,7 +16,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/277746.htm";
+		String url = "http://baike.baidu.com/view/1735.htm";
 		BaiduParser p = new BaiduParser( url );
 		p.parse();
 	}
@@ -39,6 +39,15 @@ public class BaiduParser implements ZhishiParser
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_baidu );
 		article.label = getLabel();
 		article.categories = getCategories();
+		article.abs = getAbstract();
+		article.isRedirect = isRedirectPage(); 
+		article.redirect = getRedirect();
+		article.relatedPages = getRelatedLabels();
+		article.pictures = getPictures();
+		article.properties = getProperties();
+		article.internalLinks = getInternalLinks();
+		article.externalLinks = getExternalLinks();
+		article.isDisambiguationPage = isDisambiguationPage();
 		return article;
 	}
 
@@ -56,29 +65,68 @@ public class BaiduParser implements ZhishiParser
 	@Override
 	public String getAbstract()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return (doc.select("div[class*=card-summary]").select("p").text()).replace(whitespace, "");
 	}
-
+	
+	@Override
+	public boolean isRedirectPage(){
+		return getRedirect() != null;
+	}
+	
 	@Override
 	public String getRedirect()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String redirect = null;
+		if (!doc.select("div[class^=view-tip-pannel]").select("a[href$=redirect]").isEmpty())
+			redirect = doc.select("div[class^=view-tip-pannel]").select("a[href$=redirect]").text();
+
+		if (!doc.select("div[class^=view-tip-pannel]").select("a[class$=synstd]").isEmpty()) 
+			redirect = doc.select("div[class^=view-tip-pannel]").select("a[href*=history]").text();
+		
+		if (redirect!=null){
+			redirect = StringEscapeUtils.unescapeHtml4(redirect);
+			if (redirect.length() > 80) return "";
+		}
+		return redirect;
 	}
 
 	@Override
 	public ArrayList<StringPair> getPictures()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList <StringPair> pics = new ArrayList<StringPair>();
+		
+		for(Element img:doc.select("div[class*=main-body]").select("img"))
+			if(img.hasAttr("title")) {
+				String picTitle = img.attr("title");
+				if (picTitle.length() == 0)
+					picTitle = getLabel();
+				picTitle = picTitle.replaceAll(whitespace, "");
+				picTitle = picTitle.trim();
+				pics.add(new StringPair(img.attr("src"), picTitle));
+			}
+		
+		return pics;
 	}
 
 	@Override
 	public ArrayList<StringPair> getProperties()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList <StringPair> properties = new ArrayList<StringPair>();
+		
+		for(Element e:doc.select("div[class*=card-info] td[class=cardFirstTd")){
+			StringPair p = new StringPair();
+			p.first = e.text();
+			if (p.first.contains("："))
+				p.first = p.first.substring(0, p.first.indexOf("："));
+			properties.add(p);
+		}
+		int i = 0;
+		for(Element e:doc.select("div[class*=card-info] td[class=cardSecondTd")){
+			properties.get(i).second = e.text();
+			++i;
+		}
+		
+		return properties;
 	}
 
 	@Override
@@ -95,28 +143,48 @@ public class BaiduParser implements ZhishiParser
 	@Override
 	public ArrayList<String> getInternalLinks()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> innerLinks = new ArrayList<String>();
+		
+		for (Element link: doc.select("a[href^=/view/] , a[href^=http://baike.baidu.com/view/"))
+			if(link.hasAttr("href") && link.attr("href").endsWith("htm")) {
+				if (link.parent().hasAttr("class") && link.parent().attr("class").endsWith("cardSecondTd")) {
+				} else {
+					innerLinks.add( StringEscapeUtils.unescapeHtml4(link.text()));
+				}
+			}
+		
+		return innerLinks;
 	}
 
 	@Override
 	public ArrayList<String> getExternalLinks()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> outerLinks = new ArrayList<String>();
+		
+		for (Element link: doc.select("div[class*=main-body]").select("a"))
+			if (link.hasAttr("href")){
+				String tmp = link.attr("href");
+				if (tmp.startsWith("http://") && !tmp.startsWith("http://baike.baidu.com/view/"))
+					outerLinks.add(tmp);
+			}
+		
+		return outerLinks;
 	}
 
 	@Override
 	public ArrayList<String> getRelatedLabels()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<String> relatedLabels = new ArrayList<String>();
+		for ( Element relat: doc.select( "dl#relatedLemmaDown > dd" ).select("a") )
+			if ( relat.hasAttr("href") && relat.attr("href").startsWith("/view/") ) 
+				relatedLabels.add( StringEscapeUtils.unescapeHtml4(relat.text()) );
+		
+		return relatedLabels;	
 	}
 
 	@Override
 	public boolean isDisambiguationPage()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return !doc.select("div[class*=nslog:517]").isEmpty();
 	}
 }
