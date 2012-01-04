@@ -19,10 +19,11 @@ public class ZhishiArticle implements Article
 	public ArrayList<String> categories;
 	public ArrayList<String> internalLinks;
 	public ArrayList<String> externalLinks;
-	public ArrayList<String> relatedLabels;
+	public ArrayList<String> relatedPages;
 	
 	public boolean isDisambiguationPage;
 	public ArrayList<ZhishiArticle> disambiguationArticles;
+	public boolean isRedirect;
 	
 	public ZhishiArticle( String source )
 	{
@@ -37,7 +38,7 @@ public class ZhishiArticle implements Article
 		categories = new ArrayList<String>();
 		internalLinks = new ArrayList<String>();
 		externalLinks = new ArrayList<String>();
-		relatedLabels = new ArrayList<String>();
+		relatedPages = new ArrayList<String>();
 		
 		isDisambiguationPage = false;
 	}

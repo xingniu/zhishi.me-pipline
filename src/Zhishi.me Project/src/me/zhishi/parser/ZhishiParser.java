@@ -21,4 +21,6 @@ public interface ZhishiParser extends Parser
 	public boolean isDisambiguationPage();
 
 	public static String whitespace = "[\\t\\n\\x0B\\f\\r]";
+
+	boolean isRedirectPage();
 }
