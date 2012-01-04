@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.zip.ZipInputStream;
 
@@ -14,7 +13,6 @@ import org.apache.tools.bzip2.CBZip2InputStream;
 
 public class NTriplesReader
 {
-	private String filepath;
 	private InputStream fin;
 	private BufferedReader stringReader;
 	private String currentLine;
@@ -22,19 +20,57 @@ public class NTriplesReader
 	
 	public NTriplesReader( String path )
 	{
-		filepath = path;
+		if( path.toLowerCase().endsWith( ".zip" ) )
+		{
+			if( !loadZipFile( path ) )
+				System.err.println( "An error was found in loading " + path );
+		}
+		else if( path.toLowerCase().endsWith( ".bz2" ) )
+		{
+			// TODO
+		}
+		else
+		{
+			if( loadZipFile( path + ".zip" ) )
+				System.out.println( "Zipped file was found, using it instaed." );
+			else if( !loadTextFile( path ) )
+				System.err.println(  path + " was not found!");
+		}
+	}
+	
+	private boolean loadZipFile( String path )
+	{
 		try
 		{
-			fin = new FileInputStream( filepath );
-			stringReader = new BufferedReader( new InputStreamReader( fin, "UTF-8" ) );
+			fin = new ZipInputStream( new FileInputStream( path ) );
+			((ZipInputStream) fin).getNextEntry();
+			stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName( "UTF-8" ) ) );
+			System.out.println( "Loading " + path );
+			return true;
 		}
-		catch (FileNotFoundException e)
+		catch( FileNotFoundException e )
 		{
-			System.err.println( filepath + " is not found!" );
+			return false;
 		}
-		catch (UnsupportedEncodingException e)
+		catch( IOException e )
 		{
-			System.err.println( "UTF-8 is not supported!" );
+			System.err.println( path + " has no entries!" );
+			return false;
+		}
+	}
+	
+	private boolean loadTextFile( String path )
+	{
+		try
+		{
+			fin = new FileInputStream( path );
+			stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName( "UTF-8" ) ) );
+			System.out.println( "Loading " + path );
+			return true;
+		}
+		catch( FileNotFoundException e )
+		{
+			return false;
 		}
 	}
 	
@@ -45,15 +81,16 @@ public class NTriplesReader
 		{
 			fin.getNextEntry();
 		}
-		catch (IOException e)
+		catch( IOException e )
 		{
 			System.err.println( "No entries!" );
 		}
-		stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName("UTF-8") ) );
+		stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName( "UTF-8" ) ) );
 	}
 
 	public NTriplesReader( CBZip2InputStream fin )
 	{
+		this.fin = fin;
 		stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName("UTF-8") ) );
 	}
 
@@ -75,12 +112,12 @@ public class NTriplesReader
 			}
 			return currentLine;
 		}
-		catch (NullPointerException e)
+		catch( NullPointerException e )
 		{
 			System.out.println( currentLine );
 			e.printStackTrace();
 		}
-		catch (IOException e)
+		catch( IOException e )
 		{
 			e.printStackTrace();
 		}
@@ -99,7 +136,7 @@ public class NTriplesReader
 			fin.close();
 			stringReader.close();
 		}
-		catch (IOException e)
+		catch( IOException e )
 		{
 			e.printStackTrace();
 		}
