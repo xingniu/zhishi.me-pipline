@@ -16,7 +16,7 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/%E4%B8%8A%E6%B5%B7";
+		String url = "http://www.hudong.com/wiki/%E6%9D%8E%E5%AE%81";
 		HudongParser p = new HudongParser( url );
 		p.parse();
 	}
@@ -41,20 +41,32 @@ public class HudongParser implements ZhishiParser
 		article.abs = getAbstract();
 		article.redirect = getRedirect();
 		article.pictures = getPictures();
+		article.properties = getProperties();
 		article.categories = getCategories();
 		article.isRedirect = isRedirectPage(); 
 		article.relatedPages = getRelatedLabels();
-		article.properties = getProperties();
 		article.internalLinks = getInternalLinks();
 		article.externalLinks = getExternalLinks();
 		article.isDisambiguationPage = isDisambiguationPage();
+		article.disambiguationLabels = getDisambiguations();
 		return article;
 	}
 
 	@Override
 	public String getLabel()
 	{
-		String label = doc.select("div[class^=content-h1]").select("h1").html();
+		String label = null;
+		if (!isDisambiguationPage()){
+			label = doc.select("div[class^=content-h1]").select("h1").html();
+		} else {
+			for (Element e :doc.select("div[class=prompt] > p > a"))
+				if (e.hasAttr("href") && e.attr("href").contains("/wiki/")) {
+					label = e.text();
+					if (label.contains("["))
+						label = label.substring(0, label.indexOf("["));
+					break;
+				}
+		}
 		label = StringEscapeUtils.unescapeHtml4(label);
 		label = label.trim();
 //		System.out.println( label );
@@ -78,14 +90,12 @@ public class HudongParser implements ZhishiParser
 	@Override
 	public String getRedirect()
 	{
-		int count = 0;
-		for (Element re : doc.select("div[id=unifyprompt] > p[id=unifypromptone] > a")){
-			count++;
-			if (count == 2){
-				String redirect = re.attr("href");
-				if (!redirect.contains("wiki/"))
+		if (isRedirectPage()) {
+			for (Element re : doc.select("div[id=unifyprompt] > p[id=unifypromptone] > a")){
+				String s = re.attr("href");
+				if (!s.contains("wiki/"))
 					return null;
-				redirect = redirect.substring(redirect.indexOf("wiki/")+5, redirect.length());
+				String redirect = re.text();
 				return redirect;
 			}
 		}
@@ -201,6 +211,20 @@ public class HudongParser implements ZhishiParser
 	public boolean isDisambiguationPage()
 	{
 		return !doc.select("dl[class=polysemy]").isEmpty();
+	}
+	
+	@Override
+	public ArrayList<String> getDisambiguations()
+	{
+		ArrayList<String> disambiguations = new ArrayList<String>();
+		
+		for (Element e :doc.select("div[class=prompt] > p > a"))
+			if (e.hasAttr("href") && e.attr("href").contains("/wiki/"))
+				disambiguations.add( e.text());
+		
+//		for (String s : disambiguations)
+//			System.out.println(s);
+		return disambiguations;
 	}
 
 }

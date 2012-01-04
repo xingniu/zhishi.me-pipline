@@ -17,10 +17,11 @@ public interface ZhishiParser extends Parser
 	public ArrayList<String> getInternalLinks();
 	public ArrayList<String> getExternalLinks();
 	public ArrayList<String> getRelatedLabels();
+	public ArrayList<String> getDisambiguations();
 
 	public boolean isDisambiguationPage();
+	public boolean isRedirectPage();
 
 	public static String whitespace = "[\\t\\n\\x0B\\f\\r]";
 
-	boolean isRedirectPage();
 }

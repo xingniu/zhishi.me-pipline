@@ -16,7 +16,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/1735.htm";
+		String url = "http://baike.baidu.com/view/169.htm";
 		BaiduParser p = new BaiduParser( url );
 		p.parse();
 	}
@@ -48,6 +48,9 @@ public class BaiduParser implements ZhishiParser
 		article.internalLinks = getInternalLinks();
 		article.externalLinks = getExternalLinks();
 		article.isDisambiguationPage = isDisambiguationPage();
+		article.disambiguationLabels = getDisambiguations();
+		if (article.isDisambiguationPage)
+			article.disambiguationArticles = BaiduDisParse();
 		return article;
 	}
 
@@ -84,7 +87,10 @@ public class BaiduParser implements ZhishiParser
 			redirect = doc.select("div[class^=view-tip-pannel]").select("a[href*=history]").text();
 		
 		if (redirect!=null){
+			if (redirect.contains(getLabel()) && isDisambiguationPage()) 
+				return null;
 			redirect = StringEscapeUtils.unescapeHtml4(redirect);
+			System.out.println( redirect );
 			if (redirect.length() > 80) return "";
 		}
 		return redirect;
@@ -186,5 +192,27 @@ public class BaiduParser implements ZhishiParser
 	public boolean isDisambiguationPage()
 	{
 		return !doc.select("div[class*=nslog:517]").isEmpty();
+	}
+	
+	@Override
+	public ArrayList<String> getDisambiguations()
+	{
+		ArrayList<String> disambiguations = new ArrayList<String>();
+		
+		for (Element link :doc.select("ol[data-nslog-type=503] > li > a")) {
+			String tmp = getLabel() + "[" + link.text() + "]";
+			disambiguations.add(tmp);	
+		}
+		
+//		for (String s : disambiguations)
+//			System.out.println(s);
+		return disambiguations;
+	}
+	
+	public ArrayList<Article> BaiduDisParse()
+	{
+		ArrayList<Article> disArticles = new ArrayList<Article>();
+		//To-Do
+		return disArticles;
 	}
 }
