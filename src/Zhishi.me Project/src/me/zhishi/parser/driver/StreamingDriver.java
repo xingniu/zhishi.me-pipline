@@ -1,13 +1,12 @@
 package me.zhishi.parser.driver;
 
-import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.Scanner;
 
 import me.zhishi.parser.Article;
-import me.zhishi.parser.BaiduParser;
-import me.zhishi.parser.HudongParser;
 import me.zhishi.parser.Parser;
 import me.zhishi.tools.FileHandler;
+import me.zhishi.tools.GlobalFactory;
 import me.zhishi.tools.URICenter;
 
 import org.apache.tools.tar.TarInputStream;
@@ -16,8 +15,10 @@ public class StreamingDriver
 {
 	public static double releaseVersion = 3.0;
 	
-	public static void main( String[] args ) throws IOException, InterruptedException
+	public static void main( String[] args ) throws Exception
 	{
+		Constructor<? extends Parser> constructor = null;
+		
 		Scanner scanner = new Scanner( System.in );
 		while( scanner.hasNext() )
 		{
@@ -25,10 +26,16 @@ public class StreamingDriver
 			String archiveName = scanner.next();
 			String source = null;
 			if( archiveName.contains( URICenter.source_name_baidu ) )
+			{
 				source = URICenter.source_name_baidu;
+				constructor = (new GlobalFactory()).baiduParserConstructor;
+			}
 			else if( archiveName.contains( URICenter.source_name_hudong ) )
+			{
 				source = URICenter.source_name_hudong;
-
+				constructor = (new GlobalFactory()).hudongParserConstructor;
+			}
+			
 			Runtime.getRuntime().exec( "rm -f tmp.tar.bz2" ).waitFor();
 			Runtime.getRuntime().exec( "hadoop dfs -get " + archiveName + " tmp.tar.bz2" ).waitFor();
 			
@@ -41,11 +48,8 @@ public class StreamingDriver
 			Parser parser = null;
 			while( tin.getNextEntry() != null )
 			{
-				if( source.equals( URICenter.source_name_hudong ) )
-					parser = new HudongParser( tin );
-				else if ( source.equals( URICenter.source_name_baidu ) )
-					parser = new BaiduParser( tin );
-				
+				parser = constructor.newInstance( tin );
+
 				Article article = parser.parse();
 				
 				for( String t : article.toTriples() )

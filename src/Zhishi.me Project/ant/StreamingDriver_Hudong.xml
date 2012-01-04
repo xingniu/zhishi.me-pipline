@@ -17,6 +17,7 @@
 		<pathelement location="lib/hadoop/hadoop-core-0.20.2-CDH3B4.jar"/>
 		<pathelement location="lib/jsoup-1.6.1.jar"/>
 		<pathelement location="lib/commons-lang3-3.1.jar"/>
+		<pathelement location="lib/json.org.jar"/>
 	</path>
 	
 	<target name="clean">
@@ -31,6 +32,7 @@
 		<javac debug="true" srcdir="src" destdir="build" encoding="UTF-8">
 			<classpath refid="Zhishi.me.classpath" />
 		</javac>
+		<copy file="src/config.ini" todir="build"></copy>
 	</target>
 
 	<target name="build" depends="build-project">
