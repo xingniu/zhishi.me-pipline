@@ -16,7 +16,7 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/%E6%9D%8E%E5%AE%81";
+		String url = "http://www.hudong.com/wiki/%E4%B8%8A%E6%B5%B7";
 		HudongParser p = new HudongParser( url );
 		p.parse();
 	}
@@ -38,17 +38,20 @@ public class HudongParser implements ZhishiParser
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_hudong );
 		article.label = getLabel();
-		article.abs = getAbstract();
+		article.isRedirect = isRedirectPage();
 		article.redirect = getRedirect();
-		article.pictures = getPictures();
-		article.properties = getProperties();
-		article.categories = getCategories();
-		article.isRedirect = isRedirectPage(); 
-		article.relatedPages = getRelatedLabels();
-		article.internalLinks = getInternalLinks();
-		article.externalLinks = getExternalLinks();
 		article.isDisambiguationPage = isDisambiguationPage();
 		article.disambiguationLabels = getDisambiguations();
+		if (article.isRedirect || article.isDisambiguationPage)
+			return article;
+		
+		article.abs = getAbstract();
+		article.categories = getCategories();
+		article.relatedPages = getRelatedLabels();
+		article.pictures = getPictures();
+		article.properties = getProperties();
+		article.internalLinks = getInternalLinks();
+		article.externalLinks = getExternalLinks();
 		return article;
 	}
 
@@ -69,8 +72,6 @@ public class HudongParser implements ZhishiParser
 		}
 		label = StringEscapeUtils.unescapeHtml4(label);
 		label = label.trim();
-//		System.out.println( label );
-//		System.out.println( doc.select("title").text() );
 		return label;
 	}
 
@@ -221,9 +222,7 @@ public class HudongParser implements ZhishiParser
 		for (Element e :doc.select("div[class=prompt] > p > a"))
 			if (e.hasAttr("href") && e.attr("href").contains("/wiki/"))
 				disambiguations.add( e.text());
-		
-//		for (String s : disambiguations)
-//			System.out.println(s);
+
 		return disambiguations;
 	}
 

@@ -15,8 +15,8 @@ import me.zhishi.tools.Path;
 
 public class ParserDriver
 {
-//	public static String source = URICenter.source_name_baidu;
-	public static String source = URICenter.source_name_hudong;
+	public static String source = URICenter.source_name_baidu;
+//	public static String source = URICenter.source_name_hudong;
 	public static double releaseVersion = 3.0;
 	
 	public static void main( String[] args ) throws Exception

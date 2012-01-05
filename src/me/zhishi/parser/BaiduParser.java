@@ -16,7 +16,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/169.htm";
+		String url = "http://baike.baidu.com/view/2319.htm";
 		BaiduParser p = new BaiduParser( url );
 		p.parse();
 	}
@@ -38,19 +38,24 @@ public class BaiduParser implements ZhishiParser
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_baidu );
 		article.label = getLabel();
-		article.categories = getCategories();
-		article.abs = getAbstract();
 		article.isRedirect = isRedirectPage(); 
 		article.redirect = getRedirect();
+		article.isDisambiguationPage = isDisambiguationPage();
+		article.disambiguationLabels = getDisambiguations();
+		if (article.isDisambiguationPage)
+			article.disambiguationArticles = BaiduDisParse();
+		if (article.isRedirect || article.isDisambiguationPage) {
+			return article;
+		}
+		
+		article.abs = getAbstract();
+		article.categories = getCategories();
 		article.relatedPages = getRelatedLabels();
 		article.pictures = getPictures();
 		article.properties = getProperties();
 		article.internalLinks = getInternalLinks();
 		article.externalLinks = getExternalLinks();
-		article.isDisambiguationPage = isDisambiguationPage();
-		article.disambiguationLabels = getDisambiguations();
-		if (article.isDisambiguationPage)
-			article.disambiguationArticles = BaiduDisParse();
+			
 		return article;
 	}
 
@@ -60,8 +65,6 @@ public class BaiduParser implements ZhishiParser
 		String label = doc.select("h1[class=title]").html();
 		label = StringEscapeUtils.unescapeHtml4(label);
 		label = label.trim();
-//		System.out.println( label );
-//		System.out.println( doc.select("title").text() );
 		return label;
 	}
 
@@ -90,7 +93,6 @@ public class BaiduParser implements ZhishiParser
 			if (redirect.contains(getLabel()) && isDisambiguationPage()) 
 				return null;
 			redirect = StringEscapeUtils.unescapeHtml4(redirect);
-			System.out.println( redirect );
 			if (redirect.length() > 80) return "";
 		}
 		return redirect;
@@ -203,16 +205,77 @@ public class BaiduParser implements ZhishiParser
 			String tmp = getLabel() + "[" + link.text() + "]";
 			disambiguations.add(tmp);	
 		}
-		
-//		for (String s : disambiguations)
-//			System.out.println(s);
+
 		return disambiguations;
 	}
 	
-	public ArrayList<Article> BaiduDisParse()
+	public ArrayList<Article> BaiduDisParse() 
 	{
 		ArrayList<Article> disArticles = new ArrayList<Article>();
-		//To-Do
+
+		ArrayList<String> disList = getDisambiguations();
+		ArrayList <String> list = new ArrayList<String>();
+		for (Element e: doc.select("div[class*=polysemy-item-cnt]"))
+			list.add(e.outerHtml());
+		
+		for (int i = 0; i < disList.size(); ++i) {
+			ZhishiArticle article = new ZhishiArticle( URICenter.source_name_baidu );
+			doc = Jsoup.parse(list.get(i));
+			
+			article.label = disList.get(i);
+			article.categories = getCategories();
+			article.abs = getAbstract();
+			article.isRedirect = isDisRedirectPage();
+			if (article.isRedirect) {
+				article.redirect = article.label;
+				article.label = article.label.substring(article.label.indexOf("[") + 1, article.label.indexOf("]"));
+			}
+			article.relatedPages = getRelatedLabels();
+			article.pictures = getDisPictures(article.label);
+			article.properties = getProperties();
+			article.internalLinks = getInternalLinks();
+			article.externalLinks = getDisExternalLinks();
+			article.isDisambiguationPage = false;
+			disArticles.add(article);
+		}
+		
 		return disArticles;
+	}
+	
+	public boolean isDisRedirectPage() {
+		
+		if (!doc.select("div[class^=view-tip-pannel]").select("a[href$=redirect]").isEmpty())
+			return true;
+		if (!doc.select("div[class^=view-tip-pannel]").select("a[class$=synstd]").isEmpty()) 
+			return true;
+
+		return false;
+	}
+	
+	public ArrayList<StringPair> getDisPictures(String DisLabel) {
+		ArrayList <StringPair> pics = new ArrayList<StringPair>();
+		for(Element img :doc.select("img"))
+			if(img.hasAttr("title")) {
+				String picTitle = img.attr("title");
+				if (picTitle.length() == 0)
+					picTitle = DisLabel;
+				picTitle = picTitle.replaceAll(whitespace, "");
+				picTitle = picTitle.trim();
+				pics.add(new StringPair(img.attr("src"), picTitle));
+			}
+		return pics;
+	}
+	
+	
+	public ArrayList<String> getDisExternalLinks() {
+		ArrayList<String> outerLinks = new ArrayList<String>();
+		for (Element link: doc.select("a")){
+			if (link.hasAttr("href")){
+				String tmp = link.attr("href");
+				if (tmp.startsWith("http://") && !tmp.startsWith("http://baike.baidu.com/view/"))
+					outerLinks.add(tmp);
+			}
+		}
+		return outerLinks;
 	}
 }
