@@ -1,5 +1,6 @@
 package me.zhishi.parser.driver;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import me.zhishi.tools.SmallTools;
@@ -23,6 +24,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 public class SortByPredicate
 {
 	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
 	
@@ -52,10 +54,12 @@ public class SortByPredicate
 			for( Text val : values )
 			{
 				TripleReader tr = new TripleReader( val.toString() );
-				if( tr.getPredicate().equals( URICenter.predicate_label ) )
+				if( tr.getPredicate().equals( URICenter.predicate_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
 					mos.write( "label", NullWritable.get(), val );
 				else if( tr.getPredicate().equals( URICenter.predicate_article_category ) )
 					mos.write( "category", NullWritable.get(), val );
+				else if( tr.getPredicate().equals( "<exception>" ) )
+					mos.write( "exception", NullWritable.get(), val );
 			}
 		}
 		
@@ -103,14 +107,17 @@ public class SortByPredicate
 		
 		MultipleOutputs.addNamedOutput( job, "label", TextOutputFormat.class, NullWritable.class, Text.class );
 		MultipleOutputs.addNamedOutput( job, "category", TextOutputFormat.class, NullWritable.class, Text.class );
+		MultipleOutputs.addNamedOutput( job, "exception", TextOutputFormat.class, NullWritable.class, Text.class );
 
 		FileInputFormat.addInputPath( job, new Path( inputPath ) );
 		FileOutputFormat.setOutputPath( job, new Path( outputPath ) );
 
 		if( job.waitForCompletion( true ) )
 		{
+			System.out.println( "Moving Files..." );
 			moveMergeFiles( fs, "label", p.getLabelFileName(), conf, outputPath );
 			moveMergeFiles( fs, "category", p.getCategoryFileName(), conf, outputPath );
+			moveMergeFiles( fs, "exception", p.getExceptionFileName(), conf, outputPath );
 			fs.delete( new Path( outputPath ), true );
 		}
 	}
@@ -124,7 +131,14 @@ public class SortByPredicate
 		for( int i = 0; i < numReduceTasks; ++ i )
 		{
 			String fileName = SmallTools.getHadoopOutputName( prefix, i );
-			FileUtil.copy( fs, new Path(folder+fileName), fs, new Path(tempFolder+fileName), true, conf );
+			try
+			{
+				FileUtil.copy( fs, new Path(folder+fileName), fs, new Path(tempFolder+fileName), true, conf );
+			}
+			catch( FileNotFoundException e )
+			{
+				System.err.println( folder + fileName + " not found" );
+			}
 		}
 		
 		Path targetPath = new Path( target );

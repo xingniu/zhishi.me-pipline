@@ -152,4 +152,9 @@ public class Path
 	{
 		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_article_categories_zh.nt";
 	}
+	
+	public String getExceptionFileName()
+	{
+		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_EXCEPTION_zh.nt";
+	}
 }

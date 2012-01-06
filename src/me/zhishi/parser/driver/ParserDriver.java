@@ -35,7 +35,7 @@ public class ParserDriver
 			constructor = (new GlobalFactory()).baiduParserConstructor;
 		}
 		
-		for( int i = 0; i <= maxDump; ++i )
+		for( int i = 25; i <= maxDump; ++i )
 		{
 			String archiveName = Integer.toString( i * 10000 + 1 );
 			archiveName += "-";

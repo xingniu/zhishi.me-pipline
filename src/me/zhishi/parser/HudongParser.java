@@ -174,7 +174,7 @@ public class HudongParser implements ZhishiParser
 		
 		for (Element e: doc.select("a[class=innerlink]")) 
 			if (!e.parents().hasClass("table")) 
-				innerLinks .add( e.text() );
+				innerLinks.add( e.text() );
 		
 		return innerLinks;
 	}
@@ -183,15 +183,16 @@ public class HudongParser implements ZhishiParser
 	public ArrayList<String> getExternalLinks()
 	{
 		ArrayList<String> outerLinks = new ArrayList<String>();
-		
-		for (Element link : doc.select("div[class=relevantinfo] > dl[class^=reference]").select("input"))
-			if (link.hasAttr("value"))
-				outerLinks.add(link.attr("value"));
-		for (Element link : doc.select("div[class=relevantinfo] > dl[id=show_quote]").select("a"))
-			if (link.hasAttr("href")){
-				String tmp = link.attr("href");
-				if (tmp.startsWith("http://"))
-					outerLinks.add(tmp);
+
+		for( Element link : doc.select( "div[class=relevantinfo] > dl[class^=reference]" ).select( "input" ) )
+			if( link.hasAttr( "value" ) )
+				outerLinks.add( link.attr( "value" ).replaceAll( "[\\s]", "" ) );
+		for( Element link : doc.select( "div[class=relevantinfo] > dl[id=show_quote]" ).select( "a" ) )
+			if( link.hasAttr( "href" ) )
+			{
+				String tmp = link.attr( "href" );
+				if( tmp.startsWith( "http://" ) )
+					outerLinks.add( tmp.replaceAll( "[\\s]", "" ) );
 			}
 
 		return outerLinks;
