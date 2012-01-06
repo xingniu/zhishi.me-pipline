@@ -16,9 +16,15 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/2319.htm";
+		String url = "http://baike.baidu.com/view/2160760.htm";
 		BaiduParser p = new BaiduParser( url );
-		p.parse();
+		Article article = p.parse();
+		
+		for( String t : article.toTriples() )
+		{
+//			writer.write( t + "\n" );
+			System.out.println( t );
+		}
 	}
 	
 	private Document doc;
@@ -43,7 +49,9 @@ public class BaiduParser implements ZhishiParser
 		article.isDisambiguationPage = isDisambiguationPage();
 		article.disambiguationLabels = getDisambiguations();
 		if (article.isDisambiguationPage)
+		{
 			article.disambiguationArticles = BaiduDisParse();
+		}
 		if (article.isRedirect || article.isDisambiguationPage) {
 			return article;
 		}
@@ -173,7 +181,7 @@ public class BaiduParser implements ZhishiParser
 			if (link.hasAttr("href")){
 				String tmp = link.attr("href");
 				if (tmp.startsWith("http://") && !tmp.startsWith("http://baike.baidu.com/view/"))
-					outerLinks.add(tmp);
+					outerLinks.add(tmp.replaceAll( "[\\s]", "" ));
 			}
 		
 		return outerLinks;

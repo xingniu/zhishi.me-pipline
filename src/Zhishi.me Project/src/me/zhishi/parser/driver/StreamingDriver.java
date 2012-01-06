@@ -7,8 +7,10 @@ import me.zhishi.parser.Article;
 import me.zhishi.parser.Parser;
 import me.zhishi.tools.FileHandler;
 import me.zhishi.tools.GlobalFactory;
+import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
 
+import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 
 public class StreamingDriver
@@ -46,14 +48,29 @@ public class StreamingDriver
 			TarInputStream tin = (TarInputStream) fh.getInputStream();
 			
 			Parser parser = null;
-			while( tin.getNextEntry() != null )
+			TarEntry entry;
+			while( (entry = tin.getNextEntry()) != null )
 			{
 				parser = constructor.newInstance( tin );
 
-				Article article = parser.parse();
+				Article article;
+				try
+				{
+					article = parser.parse();
+				}
+				catch( Exception e )
+				{
+					System.out.println( "<" + entry.getName() + "> <exception> \"" + TextTools.getUnicode( e.toString() ) + "\"@zh ." );
+					continue;
+				}
 				
 				for( String t : article.toTriples() )
 				{
+//					if( t.contains( "---------------> ." ) )
+//					{
+//						System.err.println( entry.getName() );
+//						throw new Exception( "!!!!!!!!!" + entry.getName() );
+//					}
 					System.out.println( t );
 				}
 			}

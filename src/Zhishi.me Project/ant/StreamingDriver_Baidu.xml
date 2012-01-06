@@ -54,7 +54,7 @@
 					-reducer org.apache.hadoop.mapred.lib.IdentityReducer
 					-numReduceTasks 0
 					-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat
-					-jobconf mapred.line.input.format.linespermap=4
+					-jobconf mapred.line.input.format.linespermap=1
 					-jobconf mapred.job.name='Parse Baidu Baike HTML'"/>
 	</target>
 </project>
