@@ -10,6 +10,7 @@ import me.zhishi.parser.Article;
 import me.zhishi.parser.Parser;
 import me.zhishi.tools.FileHandler;
 import me.zhishi.tools.GlobalFactory;
+import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.Path;
 
@@ -51,19 +52,28 @@ public class ParserDriver
 //			OutputStreamWriter writer = new OutputStreamWriter( zipout, "UTF-8" );
 			
 			Parser parser = null;
-			TarEntry en;
-			while( (en = tin.getNextEntry()) != null )
+			TarEntry entry;
+			while( (entry = tin.getNextEntry()) != null )
 			{
 //				System.out.println( en.getName() );
 				
 				parser = constructor.newInstance( tin );
 				
-				Article article = parser.parse();
+				Article article;
+				try
+				{
+					article = parser.parse();
+				}
+				catch( Exception e )
+				{
+					System.out.println( "<" + entry.getName() + "> <exception> \"" + TextTools.getUnicode( e.toString() ) + "\"@zh ." );
+					continue;
+				}
 				
 				for( String t : article.toTriples() )
 				{
 //					writer.write( t + "\n" );
-//					System.out.println( t );
+					System.out.println( t );
 				}
 			}
 

@@ -1,5 +1,7 @@
 package me.zhishi.tools;
 
+import java.util.HashMap;
+
 public class Path
 {
 	// Poseidon
@@ -24,6 +26,15 @@ public class Path
 	
 	public static int hudongMax = 364;
 	public static int baiduMax = 714;
+	
+	private static HashMap<String,String> fileNameMap = new HashMap<String,String>();
+	static
+	{
+		fileNameMap.put( "label", "labels" );
+		fileNameMap.put( "abstract", "abstracts" );
+		fileNameMap.put( "category", "article_categories" );
+		fileNameMap.put( "exception", "EXCEPTION" );
+	}
 	
 	public void setSourcefileName( String source )
 	{
@@ -138,23 +149,8 @@ public class Path
 			return dumpPath + source + "/NTriples/";
 	}
 	
-	public String getAbstractFileName()
+	public String getFileName( String keyword )
 	{
-		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_abstracts_zh.nt";
-	}
-	
-	public String getLabelFileName()
-	{
-		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_labels_zh.nt";
-	}
-	
-	public String getCategoryFileName()
-	{
-		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_article_categories_zh.nt";
-	}
-	
-	public String getExceptionFileName()
-	{
-		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_EXCEPTION_zh.nt";
+		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_" + fileNameMap.get( keyword ) + "_zh.nt";
 	}
 }
