@@ -28,6 +28,8 @@ public class SortByPredicate
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
 	
+	private static String[] contents = { "label", "category", "exception" };
+	
 	public static class SortByPredicateMapper extends Mapper<Object, Text, Text, Text>
 	{
 		public void map( Object key, Text value, Context context ) throws IOException, InterruptedException
@@ -105,19 +107,19 @@ public class SortByPredicate
 		job.setOutputKeyClass( Text.class );
 		job.setOutputValueClass( Text.class );
 		
-		MultipleOutputs.addNamedOutput( job, "label", TextOutputFormat.class, NullWritable.class, Text.class );
-		MultipleOutputs.addNamedOutput( job, "category", TextOutputFormat.class, NullWritable.class, Text.class );
-		MultipleOutputs.addNamedOutput( job, "exception", TextOutputFormat.class, NullWritable.class, Text.class );
+		for( String s : contents )
+			MultipleOutputs.addNamedOutput( job, s, TextOutputFormat.class, NullWritable.class, Text.class );
 
 		FileInputFormat.addInputPath( job, new Path( inputPath ) );
 		FileOutputFormat.setOutputPath( job, new Path( outputPath ) );
 
 		if( job.waitForCompletion( true ) )
 		{
-			System.out.println( "Moving Files..." );
-			moveMergeFiles( fs, "label", p.getLabelFileName(), conf, outputPath );
-			moveMergeFiles( fs, "category", p.getCategoryFileName(), conf, outputPath );
-			moveMergeFiles( fs, "exception", p.getExceptionFileName(), conf, outputPath );
+			for( String s : contents )
+			{
+				System.out.println( "Moving Files: " + s );
+				moveMergeFiles( fs, s, p.getFileName( s ), conf, outputPath );
+			}
 			fs.delete( new Path( outputPath ), true );
 		}
 	}

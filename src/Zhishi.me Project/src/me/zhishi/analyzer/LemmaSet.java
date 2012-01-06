@@ -40,7 +40,7 @@ public class LemmaSet
 		NTriplesReader ntReader;
 		
 		p = new Path( releaseVersion, URICenter.source_name_baidu, fromHDFS );
-		ntReader = new NTriplesReader( p.getLabelFileName() );
+		ntReader = new NTriplesReader( p.getFileName( "label" ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
@@ -49,7 +49,7 @@ public class LemmaSet
 		ntReader.close();
 		
 		p = new Path( releaseVersion, URICenter.source_name_hudong, fromHDFS );
-		ntReader = new NTriplesReader( p.getLabelFileName() );
+		ntReader = new NTriplesReader( p.getFileName( "label" ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
@@ -77,7 +77,7 @@ public class LemmaSet
 		NTriplesReader ntReader;
 		
 		p = new Path( releaseVersion, URICenter.source_name_baidu, fromHDFS );
-		ntReader = new NTriplesReader( p.getLabelFileName() );
+		ntReader = new NTriplesReader( p.getFileName( "label" ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
@@ -86,7 +86,7 @@ public class LemmaSet
 		ntReader.close();
 		
 		p = new Path( releaseVersion, URICenter.source_name_hudong, fromHDFS );
-		ntReader = new NTriplesReader( p.getLabelFileName() );
+		ntReader = new NTriplesReader( p.getFileName( "label" ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();

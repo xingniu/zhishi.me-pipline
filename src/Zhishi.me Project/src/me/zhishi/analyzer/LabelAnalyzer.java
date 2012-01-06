@@ -21,7 +21,7 @@ public class LabelAnalyzer
 	{
 		fileName = new Path( 2.0 );
 		fileName.setSource( source );
-		labelReader = new NTriplesReader( fileName.getLabelFileName() );
+		labelReader = new NTriplesReader( fileName.getFileName( "label" ) );
 	}
 	
 	public void closeReader()
