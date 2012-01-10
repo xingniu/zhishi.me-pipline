@@ -1,4 +1,6 @@
-package me.zhishi.tools;
+package me.zhishi.tools.file;
+
+import me.zhishi.tools.TextTools;
 
 public class TripleWriter
 {	

@@ -1,4 +1,4 @@
-package me.zhishi.tools;
+package me.zhishi.tools.file;
 
 import java.io.BufferedReader;
 import java.io.IOException;

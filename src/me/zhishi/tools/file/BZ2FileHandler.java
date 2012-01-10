@@ -1,4 +1,4 @@
-package me.zhishi.tools;
+package me.zhishi.tools.file;
 
 import java.io.FileInputStream;
 import java.io.FilterInputStream;
@@ -7,12 +7,12 @@ import java.io.IOException;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.tar.TarInputStream;
 
-public class FileHandler
+public class BZ2FileHandler
 {
 	private String fileName;
 	private FileInputStream fileIn;
 	
-	public FileHandler( String fileName )
+	public BZ2FileHandler( String fileName )
 	{
 		this.fileName = fileName;
 	}

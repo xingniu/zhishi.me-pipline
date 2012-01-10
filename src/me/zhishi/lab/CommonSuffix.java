@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.regex.Pattern;
 
 import me.zhishi.tools.TextTools;
-import me.zhishi.tools.TripleReader;
+import me.zhishi.tools.file.TripleReader;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;

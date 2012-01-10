@@ -6,9 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 
-import me.zhishi.tools.FileHandler;
 import me.zhishi.tools.Path;
 import me.zhishi.tools.URICenter;
+import me.zhishi.tools.file.BZ2FileHandler;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
@@ -40,7 +40,7 @@ public class FileExtractor
 		System.out.println( archiveName );
 		
 		Path path = new Path( releaseVersion, source );
-		FileHandler fh = new FileHandler( path.getMainPageFilePath( archiveName ) );
+		BZ2FileHandler fh = new BZ2FileHandler( path.getMainPageFilePath( archiveName ) );
 		TarInputStream tin = (TarInputStream) fh.getInputStream();
 		
 		TarEntry entry;

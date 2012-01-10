@@ -1,9 +1,9 @@
 package me.zhishi.analyzer;
 
 import me.zhishi.tools.Path;
-import me.zhishi.tools.TripleReader;
 import me.zhishi.tools.URICenter;
-import me.zhishi.tools.NTriplesReader;
+import me.zhishi.tools.file.NTriplesReader;
+import me.zhishi.tools.file.TripleReader;
 
 public class LabelAnalyzer
 {
@@ -21,7 +21,7 @@ public class LabelAnalyzer
 	{
 		fileName = new Path( 2.0 );
 		fileName.setSource( source );
-		labelReader = new NTriplesReader( fileName.getFileName( "label" ) );
+		labelReader = new NTriplesReader( fileName.getFilePath( "label" ) );
 	}
 	
 	public void closeReader()
