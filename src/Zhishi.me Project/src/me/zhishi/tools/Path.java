@@ -149,8 +149,13 @@ public class Path
 			return dumpPath + source + "/NTriples/";
 	}
 	
+	public String getFilePath( String keyword )
+	{
+		return getNTriplesPath() + getFileName( keyword );
+	}
+	
 	public String getFileName( String keyword )
 	{
-		return getNTriplesPath()+releaseVersion+"_"+sourcefileName+"_" + fileNameMap.get( keyword ) + "_zh.nt";
+		return releaseVersion+"_"+sourcefileName+"_" + fileNameMap.get( keyword ) + "_zh.nt";
 	}
 }

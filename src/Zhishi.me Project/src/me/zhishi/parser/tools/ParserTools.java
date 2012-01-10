@@ -2,9 +2,9 @@ package me.zhishi.parser.tools;
 
 import java.io.IOException;
 
-import me.zhishi.tools.HDFSFileWriter;
 import me.zhishi.tools.Path;
 import me.zhishi.tools.URICenter;
+import me.zhishi.tools.file.HDFSFileWriter;
 
 public class ParserTools
 {

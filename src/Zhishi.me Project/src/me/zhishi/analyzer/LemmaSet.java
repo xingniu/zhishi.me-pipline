@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
-import me.zhishi.tools.NTriplesReader;
 import me.zhishi.tools.Path;
-import me.zhishi.tools.TripleReader;
 import me.zhishi.tools.URICenter;
+import me.zhishi.tools.file.NTriplesReader;
+import me.zhishi.tools.file.TripleReader;
 
 public class LemmaSet
 {
@@ -40,7 +40,7 @@ public class LemmaSet
 		NTriplesReader ntReader;
 		
 		p = new Path( releaseVersion, URICenter.source_name_baidu, fromHDFS );
-		ntReader = new NTriplesReader( p.getFileName( "label" ) );
+		ntReader = new NTriplesReader( p.getFilePath( "label" ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
@@ -49,7 +49,7 @@ public class LemmaSet
 		ntReader.close();
 		
 		p = new Path( releaseVersion, URICenter.source_name_hudong, fromHDFS );
-		ntReader = new NTriplesReader( p.getFileName( "label" ) );
+		ntReader = new NTriplesReader( p.getFilePath( "label" ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
@@ -77,7 +77,7 @@ public class LemmaSet
 		NTriplesReader ntReader;
 		
 		p = new Path( releaseVersion, URICenter.source_name_baidu, fromHDFS );
-		ntReader = new NTriplesReader( p.getFileName( "label" ) );
+		ntReader = new NTriplesReader( p.getFilePath( "label" ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
@@ -86,7 +86,7 @@ public class LemmaSet
 		ntReader.close();
 		
 		p = new Path( releaseVersion, URICenter.source_name_hudong, fromHDFS );
-		ntReader = new NTriplesReader( p.getFileName( "label" ) );
+		ntReader = new NTriplesReader( p.getFilePath( "label" ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();

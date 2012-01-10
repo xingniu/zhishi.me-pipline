@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.StringPair;
-import me.zhishi.tools.TripleWriter;
+import me.zhishi.tools.file.TripleWriter;
 
 public class ZhishiArticle implements Article
 {

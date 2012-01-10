@@ -5,10 +5,10 @@ import java.util.Scanner;
 
 import me.zhishi.parser.Article;
 import me.zhishi.parser.Parser;
-import me.zhishi.tools.FileHandler;
 import me.zhishi.tools.GlobalFactory;
 import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
+import me.zhishi.tools.file.BZ2FileHandler;
 
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
@@ -44,7 +44,7 @@ public class StreamingDriver
 			System.err.println( source + archiveName.substring( archiveName.lastIndexOf( "/" ) ) );
 			System.err.println( "reporter:status:" + source + archiveName.substring( archiveName.lastIndexOf( "/" ) ) );
 			
-			FileHandler fh = new FileHandler( "tmp.tar.bz2" );
+			BZ2FileHandler fh = new BZ2FileHandler( "tmp.tar.bz2" );
 			TarInputStream tin = (TarInputStream) fh.getInputStream();
 			
 			Parser parser = null;

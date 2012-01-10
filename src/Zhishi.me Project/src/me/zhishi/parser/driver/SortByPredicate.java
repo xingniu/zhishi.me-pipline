@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import me.zhishi.tools.SmallTools;
-import me.zhishi.tools.TripleReader;
 import me.zhishi.tools.URICenter;
+import me.zhishi.tools.file.TripleReader;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -118,7 +118,7 @@ public class SortByPredicate
 			for( String s : contents )
 			{
 				System.out.println( "Moving Files: " + s );
-				moveMergeFiles( fs, s, p.getFileName( s ), conf, outputPath );
+				moveMergeFiles( fs, s, p.getFilePath( s ), conf, outputPath );
 			}
 			fs.delete( new Path( outputPath ), true );
 		}

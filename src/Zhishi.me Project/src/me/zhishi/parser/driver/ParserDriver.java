@@ -8,11 +8,11 @@ import org.apache.tools.tar.TarInputStream;
 
 import me.zhishi.parser.Article;
 import me.zhishi.parser.Parser;
-import me.zhishi.tools.FileHandler;
 import me.zhishi.tools.GlobalFactory;
 import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.Path;
+import me.zhishi.tools.file.BZ2FileHandler;
 
 public class ParserDriver
 {
@@ -45,7 +45,7 @@ public class ParserDriver
 			System.out.println( "Parsing " + source + ": " + archiveName );
 			
 			Path path = new Path( releaseVersion, source );
-			FileHandler fh = new FileHandler( path.getMainPageFilePath( archiveName ) );
+			BZ2FileHandler fh = new BZ2FileHandler( path.getMainPageFilePath( archiveName ) );
 			TarInputStream tin = (TarInputStream) fh.getInputStream();
 //			ZipOutputStream zipout = new ZipOutputStream( new FileOutputStream( path.getRawStructuredDataFilePath( archiveName ) ) );
 //			zipout.putNextEntry( new ZipEntry( archiveName + ".txt" ) );

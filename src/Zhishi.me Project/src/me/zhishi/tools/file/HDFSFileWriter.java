@@ -1,4 +1,4 @@
-package me.zhishi.tools;
+package me.zhishi.tools.file;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;

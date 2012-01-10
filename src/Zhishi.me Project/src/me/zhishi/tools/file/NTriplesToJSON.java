@@ -1,7 +1,9 @@
-package me.zhishi.tools;
+package me.zhishi.tools.file;
 
 import java.io.IOException;
 import java.util.HashSet;
+
+import me.zhishi.tools.URICenter;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
