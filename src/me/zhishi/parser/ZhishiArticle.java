@@ -76,7 +76,7 @@ public class ZhishiArticle implements Article
 			return tripleList;
 		}
 		
-		if( label != null && !label.equals( "" ) )
+		if( label != null )
 		{
 			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
 		}

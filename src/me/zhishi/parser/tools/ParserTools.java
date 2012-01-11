@@ -13,7 +13,7 @@ public class ParserTools
 	public static void main( String[] args ) throws IOException
 	{
 //		generateBZ2List( URICenter.source_name_hudong );
-		superviseNTs( URICenter.source_name_hudong, 3.0, "label" );
+		superviseNTs( URICenter.source_name_baidu, 3.0, "category" );
 	}
 	
 	public static void superviseNTs( String source, double version, String content )
@@ -23,11 +23,12 @@ public class ParserTools
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
-			String str = tr.getObjectValue();
+			String str = tr.getObjectContent();
 //			if( str.length() >= 50 )
 			if( str.contains( "<" ) )
 //			if( str.contains( "[" ) && str.endsWith( "]" ) )
-				System.out.println( str );
+//			if( str.equals( "" ) )
+				System.out.println( tr.getSubjectContent() + "\t" + str );
 		}
 	}
 
