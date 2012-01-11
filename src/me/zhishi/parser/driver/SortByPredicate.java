@@ -23,8 +23,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class SortByPredicate
 {
-	public static String source = URICenter.source_name_hudong;
-//	public static String source = URICenter.source_name_baidu;
+//	public static String source = URICenter.source_name_hudong;
+	public static String source = URICenter.source_name_baidu;
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
 	

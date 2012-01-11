@@ -16,7 +16,7 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/%E4%B8%8A%E6%B5%B7";
+		String url = "http://www.hudong.com/wiki/<<公司理财>>";
 		HudongParser p = new HudongParser( url );
 		p.parse();
 	}
@@ -59,14 +59,18 @@ public class HudongParser implements ZhishiParser
 	public String getLabel()
 	{
 		String label = null;
-		if (!isDisambiguationPage()){
-			label = doc.select("div[class^=content-h1]").select("h1").html();
-		} else {
-			for (Element e :doc.select("div[class=prompt] > p > a"))
-				if (e.hasAttr("href") && e.attr("href").contains("/wiki/")) {
+		if( !isDisambiguationPage() )
+		{
+			label = doc.select( "div[class^=content-h1]" ).select( "h1" ).text();
+		}
+		else
+		{
+			for( Element e : doc.select( "div[class=prompt] > p > a" ) )
+				if( e.hasAttr( "href" ) && e.attr( "href" ).contains( "/wiki/" ) )
+				{
 					label = e.text();
-					if (label.contains("["))
-						label = label.substring(0, label.indexOf("["));
+					if( label.contains( "[" ) )
+						label = label.substring( 0, label.indexOf( "[" ) );
 					break;
 				}
 		}

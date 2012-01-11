@@ -16,7 +16,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/2160760.htm";
+		String url = "http://baike.baidu.com/view/109.htm";
 		BaiduParser p = new BaiduParser( url );
 		Article article = p.parse();
 		
@@ -70,10 +70,16 @@ public class BaiduParser implements ZhishiParser
 	@Override
 	public String getLabel()
 	{
-		String label = doc.select("h1[class=title]").html();
-		label = StringEscapeUtils.unescapeHtml4(label);
-		label = label.trim();
-		return label;
+		if( doc.select( "h1[class=title]" ).hasText() )
+		{
+			// .ownText(): see http://baike.baidu.com/view/4067040.htm
+			String label = doc.select( "h1[class=title]" ).first().ownText();
+			label = StringEscapeUtils.unescapeHtml4( label );
+			label = label.trim();
+			return label;
+		}
+		else
+			return null;
 	}
 
 	@Override

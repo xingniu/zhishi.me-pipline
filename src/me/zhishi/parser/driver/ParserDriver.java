@@ -16,8 +16,8 @@ import me.zhishi.tools.file.BZ2FileHandler;
 
 public class ParserDriver
 {
-	public static String source = URICenter.source_name_baidu;
-//	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
 	public static double releaseVersion = 3.0;
 	
 	public static void main( String[] args ) throws Exception
@@ -36,7 +36,7 @@ public class ParserDriver
 			constructor = (new GlobalFactory()).baiduParserConstructor;
 		}
 		
-		for( int i = 25; i <= maxDump; ++i )
+		for( int i = 0; i <= maxDump; ++i )
 		{
 			String archiveName = Integer.toString( i * 10000 + 1 );
 			archiveName += "-";
@@ -73,7 +73,7 @@ public class ParserDriver
 				for( String t : article.toTriples() )
 				{
 //					writer.write( t + "\n" );
-					System.out.println( t );
+//					System.out.println( t );
 				}
 			}
 
