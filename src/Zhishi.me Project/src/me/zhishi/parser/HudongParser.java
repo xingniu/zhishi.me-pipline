@@ -16,9 +16,14 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/agsdszfvgfdsz";
+		String url = "http://www.hudong.com/wiki/曲线订票";
 		HudongParser p = new HudongParser( url );
-		p.parse();
+		Article article = p.parse();
+		
+		for( String t : article.toTriples() )
+		{
+			System.out.println( t );
+		}
 	}
 	
 	private Document doc;
@@ -85,8 +90,11 @@ public class HudongParser implements ZhishiParser
 	@Override
 	public String getAbstract()
 	{
-		String abs = doc.select("div[class=summary]").select("p").text();
-		return abs.replaceAll(whitespace, "");
+		String abs = doc.select("div[class=summary] > p").text().replaceAll( whitespace, "" );
+		if( abs.startsWith( "请用一段简单的话描述该词条" ) || abs.equals( "" ) )
+			return null;
+		else
+			return abs;
 	}
 
 	@Override

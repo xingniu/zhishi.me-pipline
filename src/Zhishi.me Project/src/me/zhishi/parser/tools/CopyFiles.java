@@ -11,7 +11,8 @@ public class CopyFiles
 	public static String source = URICenter.source_name_hudong;
 	public static String[] contents = {
 //					"label",
-					"category",
+//					"category",
+					"abstract",
 					};
 	
 	public static void main( String[] args )
