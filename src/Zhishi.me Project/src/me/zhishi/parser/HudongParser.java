@@ -16,7 +16,7 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/<<公司理财>>";
+		String url = "http://www.hudong.com/wiki/agsdszfvgfdsz";
 		HudongParser p = new HudongParser( url );
 		p.parse();
 	}
@@ -76,7 +76,10 @@ public class HudongParser implements ZhishiParser
 		}
 		label = StringEscapeUtils.unescapeHtml4(label);
 		label = label.trim();
-		return label;
+		if( !label.equals( "" ) )
+			return label;
+		else
+			return null;
 	}
 
 	@Override

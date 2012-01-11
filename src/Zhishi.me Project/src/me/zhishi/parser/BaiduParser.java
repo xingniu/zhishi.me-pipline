@@ -76,10 +76,10 @@ public class BaiduParser implements ZhishiParser
 			String label = doc.select( "h1[class=title]" ).first().ownText();
 			label = StringEscapeUtils.unescapeHtml4( label );
 			label = label.trim();
-			return label;
+			if( !label.equals( "" ) )
+				return label;
 		}
-		else
-			return null;
+		return null;
 	}
 
 	@Override
@@ -157,7 +157,10 @@ public class BaiduParser implements ZhishiParser
 		ArrayList<String> categories = new ArrayList<String>();
 		
 		for( Element cat : doc.select( "dl#viewExtCati > dd > a" ) )
-			categories.add( cat.text() );
+		{
+			if( !cat.text().equals( "" ) )
+				categories.add( cat.text() );
+		}
 		
 		return categories;
 	}
