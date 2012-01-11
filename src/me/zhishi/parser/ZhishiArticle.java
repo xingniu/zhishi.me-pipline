@@ -83,7 +83,7 @@ public class ZhishiArticle implements Article
 		else
 			return tripleList;
 		
-		if( abs != null && !abs.equals( "" ) )
+		if( abs != null )
 		{
 			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_abstract, abs ) );
 		}

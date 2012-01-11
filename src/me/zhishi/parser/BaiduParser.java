@@ -16,13 +16,12 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/109.htm";
+		String url = "http://baike.baidu.com/view/10863.htm";
 		BaiduParser p = new BaiduParser( url );
 		Article article = p.parse();
 		
 		for( String t : article.toTriples() )
 		{
-//			writer.write( t + "\n" );
 			System.out.println( t );
 		}
 	}
@@ -85,7 +84,11 @@ public class BaiduParser implements ZhishiParser
 	@Override
 	public String getAbstract()
 	{
-		return (doc.select("div[class*=card-summary]").select("p").text()).replace(whitespace, "");
+		String abs = doc.select( "div[class*=card-summary] > p" ).text().replace( whitespace, "" );
+		if( abs.equals( "" ) )
+			return null;
+		else
+			return abs;
 	}
 	
 	@Override

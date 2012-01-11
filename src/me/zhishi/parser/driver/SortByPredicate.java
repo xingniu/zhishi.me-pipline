@@ -28,7 +28,12 @@ public class SortByPredicate
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
 	
-	private static String[] contents = { "label", "category", "exception" };
+	private static String[] contents = {
+//						"label",
+//						"category",
+						"abstract",
+						"exception",
+						};
 	
 	public static class SortByPredicateMapper extends Mapper<Object, Text, Text, Text>
 	{
@@ -57,9 +62,13 @@ public class SortByPredicate
 			{
 				TripleReader tr = new TripleReader( val.toString() );
 				if( tr.getPredicate().equals( URICenter.predicate_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
-					mos.write( "label", NullWritable.get(), val );
+//					mos.write( "label", NullWritable.get(), val );
+					;
 				else if( tr.getPredicate().equals( URICenter.predicate_article_category ) )
-					mos.write( "category", NullWritable.get(), val );
+//					mos.write( "category", NullWritable.get(), val );
+					;
+				else if( tr.getPredicate().equals( URICenter.predicate_abstract ) )
+					mos.write( "abstract", NullWritable.get(), val );
 				else if( tr.getPredicate().equals( "<exception>" ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}
