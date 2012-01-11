@@ -64,15 +64,16 @@ public class ZhishiArticle implements Article
 			}
 			else
 				return tripleList;
-			if (source.equals(URICenter.source_name_baidu)){
-				for (int i = 0; i < disambiguationArticles.size(); ++i){
-					ZhishiArticle article = new ZhishiArticle( URICenter.source_name_baidu );
-					article.toTriples();
+			
+			if( source.equals( URICenter.source_name_baidu ) )
+			{
+				for( Article article : disambiguationArticles )
+				{
+					tripleList.addAll( article.toTriples() );
 				}
 			}
 			
 			return tripleList;
-			
 		}
 		
 		if( label != null && !label.equals( "" ) )

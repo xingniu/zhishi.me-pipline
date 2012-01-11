@@ -6,9 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.zip.ZipInputStream;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.tools.bzip2.CBZip2InputStream;
 
 public class NTriplesReader
@@ -20,7 +24,12 @@ public class NTriplesReader
 	
 	public NTriplesReader( String path )
 	{
-		if( path.toLowerCase().endsWith( ".zip" ) )
+		if( path.toLowerCase().startsWith( "/users" ) )
+		{
+			if( !loadHDFSFile( path ) )
+				System.err.println( "Error found!" );
+		}
+		else if( path.toLowerCase().endsWith( ".zip" ) )
 		{
 			if( !loadZipFile( path ) )
 				System.err.println( "An error was found in loading " + path );
@@ -29,12 +38,29 @@ public class NTriplesReader
 		{
 			// TODO
 		}
-		else
+		else 
 		{
 			if( loadZipFile( path + ".zip" ) )
 				System.out.println( "Zipped file was found, using it instaed." );
 			else if( !loadTextFile( path ) )
 				System.err.println(  path + " was not found!");
+		}
+	}
+	
+	private boolean loadHDFSFile( String path )
+	{
+		Configuration conf = new Configuration();
+		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
+		try
+		{
+			FileSystem fs = FileSystem.get( URI.create( path ), conf );
+			stringReader = new BufferedReader( new InputStreamReader( fs.open( new Path( path ) ) ) );
+			System.out.println( "Loading " + path );
+			return true;
+		}
+		catch( IOException e )
+		{
+			return false;
 		}
 	}
 	

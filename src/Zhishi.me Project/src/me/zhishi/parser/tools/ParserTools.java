@@ -5,12 +5,30 @@ import java.io.IOException;
 import me.zhishi.tools.Path;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.file.HDFSFileWriter;
+import me.zhishi.tools.file.NTriplesReader;
+import me.zhishi.tools.file.TripleReader;
 
 public class ParserTools
 {
 	public static void main( String[] args ) throws IOException
 	{
-		generateBZ2List( URICenter.source_name_hudong );
+//		generateBZ2List( URICenter.source_name_hudong );
+		superviseNTs( URICenter.source_name_hudong, 3.0, "label" );
+	}
+	
+	public static void superviseNTs( String source, double version, String content )
+	{
+		Path p = new Path( version, source, true );
+		NTriplesReader ntReader = new NTriplesReader( p.getFilePath( content ) );
+		while( ntReader.readNextLine() != null )
+		{
+			TripleReader tr = ntReader.getTripleReader();
+			String str = tr.getObjectValue();
+//			if( str.length() >= 50 )
+			if( str.contains( "<" ) )
+//			if( str.contains( "[" ) && str.endsWith( "]" ) )
+				System.out.println( str );
+		}
 	}
 
 	public static void generateBZ2List( String source ) throws IOException
