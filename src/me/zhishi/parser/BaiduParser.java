@@ -17,7 +17,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/4421783.htm";
+		String url = "http://baike.baidu.com/view/169.htm";
 		BaiduParser p = new BaiduParser( url );
 		Article article = p.parse();
 		
@@ -93,7 +93,8 @@ public class BaiduParser implements ZhishiParser
 	}
 	
 	@Override
-	public boolean isRedirectPage(){
+	public boolean isRedirectPage()
+	{
 		return getRedirect() != null;
 	}
 	
@@ -101,17 +102,18 @@ public class BaiduParser implements ZhishiParser
 	public String getRedirect()
 	{
 		String redirect = null;
-		if (!doc.select("div[class^=view-tip-pannel]").select("a[href$=redirect]").isEmpty())
-			redirect = doc.select("div[class^=view-tip-pannel]").select("a[href$=redirect]").text();
-
-		if (!doc.select("div[class^=view-tip-pannel]").select("a[class$=synstd]").isEmpty()) 
-			redirect = doc.select("div[class^=view-tip-pannel]").select("a[href*=history]").text();
+		if( !doc.select( "div[class^=view-tip-pannel]" ).select( "a[href$=redirect]" ).isEmpty() )
+			redirect = doc.select( "div[class^=view-tip-pannel]" ).select( "a[href$=redirect]" ).text();
+		else if( !doc.select( "div[class^=view-tip-pannel]" ).select( "a[class$=synstd]" ).isEmpty() )
+			redirect = doc.select( "div[class^=view-tip-pannel]" ).select( "a[href*=history]" ).text();
 		
-		if (redirect!=null){
-			if (redirect.contains(getLabel()) && isDisambiguationPage()) 
+		if( redirect != null )
+		{
+			if( redirect.contains( getLabel() ) && isDisambiguationPage() )
 				return null;
-			redirect = StringEscapeUtils.unescapeHtml4(redirect);
-			if (redirect.length() > 80) return "";
+			redirect = StringEscapeUtils.unescapeHtml4( redirect );
+			if( redirect.equals( "" ) )
+				return null;
 		}
 		return redirect;
 	}

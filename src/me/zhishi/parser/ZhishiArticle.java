@@ -45,11 +45,12 @@ public class ZhishiArticle implements Article
 		
 		if ( isRedirect )
 		{
-			if (redirect != null && !redirect.equals("")) {
+			if( redirect != null )
+			{
 				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( redirect ), URICenter.predicate_redirect, ic.getResourceURI( label ) ) );
 				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( redirect ), URICenter.predicate_label, redirect ) );
 			}
-			if ( !isDisambiguationPage )
+			if( !isDisambiguationPage )
 				return tripleList;
 		}
 		
