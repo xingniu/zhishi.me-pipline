@@ -31,7 +31,10 @@ public class SortByPredicate
 	private static String[] contents = {
 //						"label",
 //						"category",
-						"abstract",
+//						"abstract",
+//						"relatedPage",
+						"internalLink",
+//						"externalLink",
 						"exception",
 						};
 	
@@ -64,11 +67,16 @@ public class SortByPredicate
 				if( tr.getPredicate().equals( URICenter.predicate_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
 //					mos.write( "label", NullWritable.get(), val );
 					;
-				else if( tr.getPredicate().equals( URICenter.predicate_article_category ) )
+//				else if( tr.getPredicate().equals( URICenter.predicate_article_category ) )
 //					mos.write( "category", NullWritable.get(), val );
-					;
-				else if( tr.getPredicate().equals( URICenter.predicate_abstract ) )
-					mos.write( "abstract", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_abstract ) )
+//					mos.write( "abstract", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_relatedPage ) )
+//					mos.write( "relatedPage", NullWritable.get(), val );
+				else if( tr.getPredicate().equals( URICenter.predicate_internalLink ) )
+					mos.write( "internalLink", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_externalLink ) )
+//					mos.write( "externalLink", NullWritable.get(), val );
 				else if( tr.getPredicate().equals( "<exception>" ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}
@@ -97,7 +105,7 @@ public class SortByPredicate
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
 		String inputPath = p.getRawStructuredDataPath();
-		String outputPath = p.getNTriplesPath() + "Temp/";
+		String outputPath = p.getNTriplesPath() + source + "/";
 		
 		Configuration conf = new Configuration();
 		

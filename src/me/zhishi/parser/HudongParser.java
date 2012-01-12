@@ -3,6 +3,7 @@ package me.zhishi.parser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
@@ -16,7 +17,7 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/曲线订票";
+		String url = "http://www.hudong.com/wiki/1月1日";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -52,7 +53,7 @@ public class HudongParser implements ZhishiParser
 		
 		article.abs = getAbstract();
 		article.categories = getCategories();
-		article.relatedPages = getRelatedLabels();
+		article.relatedPages = getRelatedPages();
 		article.pictures = getPictures();
 		article.properties = getProperties();
 		article.internalLinks = getInternalLinks();
@@ -185,13 +186,15 @@ public class HudongParser implements ZhishiParser
 	@Override
 	public ArrayList<String> getInternalLinks()
 	{
-		ArrayList<String> innerLinks = new ArrayList<String>();
+		HashSet<String> internalLinksSet = new HashSet<String>();
 		
-		for (Element e: doc.select("a[class=innerlink]")) 
-			if (!e.parents().hasClass("table")) 
-				innerLinks.add( e.text() );
+		for( Element e : doc.select( "a[class=innerlink]" ) )
+		{
+			if( !e.attr( "title" ).equals( "" ) && !e.text().equals( "" ) && !e.parents().hasClass( "table" ) )
+				internalLinksSet.add( e.text() );
+		}
 		
-		return innerLinks;
+		return new ArrayList<String>( internalLinksSet );
 	}
 
 	@Override
@@ -214,14 +217,14 @@ public class HudongParser implements ZhishiParser
 	}
 
 	@Override
-	public ArrayList<String> getRelatedLabels()
+	public ArrayList<String> getRelatedPages()
 	{
-		ArrayList<String> relatedLabels = new ArrayList<String>();
-		for (Element relat : doc.select( "div[class^=xgct] > ul" ).select("a") )
-			if ( relat.hasAttr( "href" ) && relat.attr( "href" ).startsWith("/wiki/") )
-				relatedLabels.add( relat.attr("title") );
+		ArrayList<String> relatedPages = new ArrayList<String>();
+		for( Element relat : doc.select( "div[class^=xgct] > ul" ).select( "a" ) )
+			if( relat.hasAttr( "href" ) && relat.attr( "href" ).startsWith( "/wiki/" ) && !relat.attr( "title" ).equals( "" ) )
+				relatedPages.add( relat.attr( "title" ) );
 		
-		return relatedLabels;
+		return relatedPages;
 	}
 
 	@Override

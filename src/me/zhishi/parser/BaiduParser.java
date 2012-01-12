@@ -3,6 +3,7 @@ package me.zhishi.parser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.Jsoup;
@@ -16,7 +17,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/10863.htm";
+		String url = "http://baike.baidu.com/view/4421783.htm";
 		BaiduParser p = new BaiduParser( url );
 		Article article = p.parse();
 		
@@ -57,7 +58,7 @@ public class BaiduParser implements ZhishiParser
 		
 		article.abs = getAbstract();
 		article.categories = getCategories();
-		article.relatedPages = getRelatedLabels();
+		article.relatedPages = getRelatedPages();
 		article.pictures = getPictures();
 		article.properties = getProperties();
 		article.internalLinks = getInternalLinks();
@@ -171,17 +172,20 @@ public class BaiduParser implements ZhishiParser
 	@Override
 	public ArrayList<String> getInternalLinks()
 	{
-		ArrayList<String> innerLinks = new ArrayList<String>();
+		HashSet<String> internalLinksSet = new HashSet<String>();
 		
-		for (Element link: doc.select("a[href^=/view/] , a[href^=http://baike.baidu.com/view/"))
-			if(link.hasAttr("href") && link.attr("href").endsWith("htm")) {
-				if (link.parent().hasAttr("class") && link.parent().attr("class").endsWith("cardSecondTd")) {
-				} else {
-					innerLinks.add( StringEscapeUtils.unescapeHtml4(link.text()));
-				}
-			}
+		for( Element link : doc.select( "div[class=lemma-main-content] > a[href^=/view/]" ) )
+		{
+			if( link.hasAttr( "href" ) && link.attr( "href" ).endsWith( "htm" ) && !link.text().equals( "" ) )
+				internalLinksSet.add( StringEscapeUtils.unescapeHtml4( link.text() ) );
+		}
+		for( Element link : doc.select( "div[class=card-summary-content] > p > a[href^=/view/]" ) )
+		{
+			if( link.hasAttr( "href" ) && link.attr( "href" ).endsWith( "htm" ) && !link.text().equals( "" ) )
+				internalLinksSet.add( StringEscapeUtils.unescapeHtml4( link.text() ) );
+		}
 		
-		return innerLinks;
+		return new ArrayList<String>( internalLinksSet );
 	}
 
 	@Override
@@ -200,14 +204,14 @@ public class BaiduParser implements ZhishiParser
 	}
 
 	@Override
-	public ArrayList<String> getRelatedLabels()
+	public ArrayList<String> getRelatedPages()
 	{
-		ArrayList<String> relatedLabels = new ArrayList<String>();
-		for ( Element relat: doc.select( "dl#relatedLemmaDown > dd" ).select("a") )
-			if ( relat.hasAttr("href") && relat.attr("href").startsWith("/view/") ) 
-				relatedLabels.add( StringEscapeUtils.unescapeHtml4(relat.text()) );
-		
-		return relatedLabels;	
+		ArrayList<String> relatedPages = new ArrayList<String>();
+		for( Element relat : doc.select( "dl#relatedLemmaDown > dd" ).select( "a" ) )
+			if( relat.hasAttr( "href" ) && relat.attr( "href" ).startsWith( "/view/" ) && !relat.text().equals( "" ) )
+				relatedPages.add( StringEscapeUtils.unescapeHtml4( relat.text() ) );
+
+		return relatedPages;
 	}
 
 	@Override
@@ -250,7 +254,7 @@ public class BaiduParser implements ZhishiParser
 				article.redirect = article.label;
 				article.label = article.label.substring(article.label.indexOf("[") + 1, article.label.indexOf("]"));
 			}
-			article.relatedPages = getRelatedLabels();
+			article.relatedPages = getRelatedPages();
 			article.pictures = getDisPictures(article.label);
 			article.properties = getProperties();
 			article.internalLinks = getInternalLinks();
