@@ -17,7 +17,7 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/1月1日";
+		String url = "http://www.hudong.com/wiki/上海";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -99,20 +99,22 @@ public class HudongParser implements ZhishiParser
 	}
 
 	@Override
-	public boolean isRedirectPage(){
-		String tmp = doc.select("div[id=unifyprompt] > p[id=unifypromptone]").text();
-		return tmp.contains("是") && tmp.substring(tmp.indexOf("是")).contains("的同义词");
+	public boolean isRedirectPage()
+	{
+		String tmp = doc.select( "div[id=unifyprompt] > p[id=unifypromptone]" ).text();
+		return tmp.contains( "是" ) && tmp.substring( tmp.indexOf( "是" ) ).contains( "的同义词" );
 	}
 	
 	@Override
 	public String getRedirect()
 	{
-		if (isRedirectPage()) {
-			for (Element re : doc.select("div[id=unifyprompt] > p[id=unifypromptone] > a")){
-				String s = re.attr("href");
-				if (!s.contains("wiki/"))
-					return null;
+		if( isRedirectPage() )
+		{
+			for( Element re : doc.select( "div[id=unifyprompt] > p[id=unifypromptone] > a" ) )
+			{
 				String redirect = re.text();
+				if( !re.attr( "href" ).contains( "wiki/" ) || redirect.equals( "" ) )
+					return null;
 				return redirect;
 			}
 		}
