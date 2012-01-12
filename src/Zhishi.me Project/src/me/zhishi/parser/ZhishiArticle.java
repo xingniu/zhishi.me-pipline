@@ -95,12 +95,12 @@ public class ZhishiArticle implements Article
 		
 		for( String relat : relatedPages )
 		{
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_relatedPages, ic.getResourceURI( relat ) ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_relatedPage, ic.getResourceURI( relat ) ) );
 		}
 		
 		for( int i = 0; i < pictures.size(); ++i)
 		{
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_pictures,  pictures.get(i).first ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_thumbnail,  pictures.get(i).first ) );
 			tripleList.add( TripleWriter.getStringValueTriple(  pictures.get(i).first, URICenter.predicate_pictureLabels, pictures.get(i).second ) );
 		}
 		
@@ -111,12 +111,12 @@ public class ZhishiArticle implements Article
 		
 		for ( String innerlink : internalLinks )
 		{
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_internalLinks, ic.getResourceURI( innerlink ) ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_internalLink, ic.getResourceURI( innerlink ) ) );
 		}
 		
 		for ( String outerLink : externalLinks)
 		{
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_externalLinks, outerLink ));
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_externalLink, outerLink ));
 		}
 
 		//TODO: other contents

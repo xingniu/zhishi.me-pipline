@@ -16,7 +16,7 @@ public interface ZhishiParser extends Parser
 	public ArrayList<String> getCategories();
 	public ArrayList<String> getInternalLinks();
 	public ArrayList<String> getExternalLinks();
-	public ArrayList<String> getRelatedLabels();
+	public ArrayList<String> getRelatedPages();
 	public ArrayList<String> getDisambiguations();
 
 	public boolean isDisambiguationPage();

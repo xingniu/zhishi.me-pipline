@@ -31,8 +31,11 @@ public class Path
 	static
 	{
 		fileNameMap.put( "label", "labels" );
-		fileNameMap.put( "abstract", "abstracts" );
 		fileNameMap.put( "category", "article_categories" );
+		fileNameMap.put( "abstract", "abstracts" );
+		fileNameMap.put( "relatedPage", "related_pages" );
+		fileNameMap.put( "internalLink", "internal_links" );
+		fileNameMap.put( "externalLink", "external_links" );
 		fileNameMap.put( "exception", "EXCEPTION" );
 	}
 	
