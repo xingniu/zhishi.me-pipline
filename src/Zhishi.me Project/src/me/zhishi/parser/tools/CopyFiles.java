@@ -9,6 +9,7 @@ public class CopyFiles
 {
 	public static String source = URICenter.source_name_baidu;
 //	public static String source = URICenter.source_name_hudong;
+	public static double releaseVersion = 3.0;
 	public static String[] contents = {
 //					"label",
 //					"category",
@@ -30,9 +31,9 @@ public class CopyFiles
 	{
 		for( String c : contents )
 		{
-			Path hp = new Path( 3.0, source, true );
+			Path hp = new Path( releaseVersion, source, true );
 			HDFSFileReader hReader = new HDFSFileReader( hp.getFilePath( c ) );
-			Path pp = new Path( 3.0, source, false );
+			Path pp = new Path( releaseVersion, source, false );
 			ZIPFileWriter zWriter = new ZIPFileWriter( pp.getNTriplesPath(), pp.getFileName( c ) );
 			
 			System.out.println( "Copying " + pp.getFileName( c ) );

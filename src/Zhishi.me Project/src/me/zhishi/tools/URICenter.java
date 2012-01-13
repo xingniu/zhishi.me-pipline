@@ -28,6 +28,12 @@ public class URICenter
 	
 	public static String predicate_foaf_primaryTopic = "<http://xmlns.com/foaf/0.1/primaryTopic>";
 	public static String predicate_dc_language = "<http://purl.org/dc/elements/1.1/language>";
+	public static String predicate_skos_broader = "<http://www.w3.org/2004/02/skos/core#broader>";
+	public static String predicate_skos_narrower = "<http://www.w3.org/2004/02/skos/core#narrower>";
+	public static String predicate_skos_prefLabel = "<http://www.w3.org/2004/02/skos/core#prefLabel>";
+	public static String predicate_rdf_type = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>";
+	
+	public static String class_skos_concept = "http://www.w3.org/2004/02/skos/core#Concept";
 	
 	private String namespace;
 	

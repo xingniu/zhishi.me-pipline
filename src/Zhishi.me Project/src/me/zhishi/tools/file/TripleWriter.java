@@ -9,18 +9,18 @@ public class TripleWriter
 		return subject + " " + predicate + " " + object + " .";
 	}
 	
-	public static String getResourceObjectTriple( String subjectIRI, String predicate, String objectIRI )
+	public static String getResourceObjectTriple( String subjectURI, String predicate, String objectURI )
 	{
-		return getTripleLine( "<"+subjectIRI+">", predicate, "<"+objectIRI+">" );
+		return getTripleLine( "<"+subjectURI+">", predicate, "<"+objectURI+">" );
 	}
 	
-	public static String getStringValueTriple( String subjectIRI, String predicate, String str )
+	public static String getStringValueTriple( String subjectURI, String predicate, String str )
 	{
-		return getTripleLine( "<"+subjectIRI+">", predicate, "\""+TextTools.getUnicode(str)+"\"@zh" );
+		return getTripleLine( "<"+subjectURI+">", predicate, "\""+TextTools.getUnicode(str)+"\"@zh" );
 	}
 	
-	public static String getValueTriple( String subjectIRI, String predicate, String value, String type )
+	public static String getValueTriple( String subjectURI, String predicate, String value, String type )
 	{
-		return getTripleLine( "<"+subjectIRI+">", predicate, "\""+value+"\"^^<"+type+">" );
+		return getTripleLine( "<"+subjectURI+">", predicate, "\""+value+"\"^^<"+type+">" );
 	}
 }
