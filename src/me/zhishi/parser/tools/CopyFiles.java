@@ -18,7 +18,7 @@ public class CopyFiles
 //					"internalLink",
 //					"redirect",
 //					"disambiguation",
-					"articleLink",
+//					"articleLink",
 					};
 	
 	public static void main( String[] args )
