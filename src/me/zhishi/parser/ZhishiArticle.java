@@ -56,11 +56,12 @@ public class ZhishiArticle implements Article
 		
 		if ( isDisambiguationPage )
 		{
-			if( label != null && !label.equals( "" ) )
+			if( label != null )
 			{
 				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
-				for (String disam : disambiguationLabels) {
-					tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_pageDisambiguates, ic.getResourceURI( disam ) ) );
+				for( String disam : disambiguationLabels )
+				{
+					tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_disambiguation, ic.getResourceURI( disam ) ) );
 				}
 			}
 			else

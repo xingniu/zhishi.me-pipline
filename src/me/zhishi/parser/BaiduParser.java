@@ -48,13 +48,13 @@ public class BaiduParser implements ZhishiParser
 		article.redirect = getRedirect();
 		article.isDisambiguationPage = isDisambiguationPage();
 		article.disambiguationLabels = getDisambiguations();
-		if (article.isDisambiguationPage)
+		if( article.isDisambiguationPage )
 		{
 			article.disambiguationArticles = BaiduDisParse();
-		}
-		if (article.isRedirect || article.isDisambiguationPage) {
 			return article;
 		}
+		else if( article.isRedirect )
+			return article;
 		
 		article.abs = getAbstract();
 		article.categories = getCategories();
@@ -219,7 +219,7 @@ public class BaiduParser implements ZhishiParser
 	@Override
 	public boolean isDisambiguationPage()
 	{
-		return !doc.select("div[class*=nslog:517]").isEmpty();
+		return !doc.select( "dfn[class=sprite]" ).isEmpty();
 	}
 	
 	@Override
@@ -227,9 +227,10 @@ public class BaiduParser implements ZhishiParser
 	{
 		ArrayList<String> disambiguations = new ArrayList<String>();
 		
-		for (Element link :doc.select("ol[data-nslog-type=503] > li > a")) {
+		for( Element link : doc.select( "ol[data-nslog-type=503] > li > a" ) )
+		{
 			String tmp = getLabel() + "[" + link.text() + "]";
-			disambiguations.add(tmp);	
+			disambiguations.add( tmp );
 		}
 
 		return disambiguations;
@@ -240,29 +241,31 @@ public class BaiduParser implements ZhishiParser
 		ArrayList<Article> disArticles = new ArrayList<Article>();
 
 		ArrayList<String> disList = getDisambiguations();
-		ArrayList <String> list = new ArrayList<String>();
-		for (Element e: doc.select("div[class*=polysemy-item-cnt]"))
-			list.add(e.outerHtml());
+		ArrayList<String> list = new ArrayList<String>();
+		for( Element e : doc.select( "div[class*=polysemy-item-cnt]" ) )
+			list.add( e.outerHtml() );
 		
-		for (int i = 0; i < disList.size(); ++i) {
+		for( int i = 0; i < disList.size(); ++i )
+		{
 			ZhishiArticle article = new ZhishiArticle( URICenter.source_name_baidu );
-			doc = Jsoup.parse(list.get(i));
-			
-			article.label = disList.get(i);
+			doc = Jsoup.parse( list.get( i ) );
+
+			article.label = disList.get( i );
 			article.categories = getCategories();
 			article.abs = getAbstract();
 			article.isRedirect = isDisRedirectPage();
-			if (article.isRedirect) {
+			if( article.isRedirect )
+			{
 				article.redirect = article.label;
-				article.label = article.label.substring(article.label.indexOf("[") + 1, article.label.indexOf("]"));
+				article.label = article.label.substring( article.label.indexOf( "[" ) + 1, article.label.indexOf( "]" ) );
 			}
 			article.relatedPages = getRelatedPages();
-			article.pictures = getDisPictures(article.label);
+			article.pictures = getDisPictures( article.label );
 			article.properties = getProperties();
 			article.internalLinks = getInternalLinks();
 			article.externalLinks = getDisExternalLinks();
 			article.isDisambiguationPage = false;
-			disArticles.add(article);
+			disArticles.add( article );
 		}
 		
 		return disArticles;
@@ -270,9 +273,9 @@ public class BaiduParser implements ZhishiParser
 	
 	public boolean isDisRedirectPage() {
 		
-		if (!doc.select("div[class^=view-tip-pannel]").select("a[href$=redirect]").isEmpty())
+		if( !doc.select( "div[class^=view-tip-pannel]" ).select( "a[href$=redirect]" ).isEmpty() )
 			return true;
-		if (!doc.select("div[class^=view-tip-pannel]").select("a[class$=synstd]").isEmpty()) 
+		if( !doc.select( "div[class^=view-tip-pannel]" ).select( "a[class$=synstd]" ).isEmpty() )
 			return true;
 
 		return false;

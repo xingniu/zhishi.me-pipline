@@ -7,8 +7,8 @@ import me.zhishi.tools.file.ZIPFileWriter;
 
 public class CopyFiles
 {
-	public static String source = URICenter.source_name_baidu;
-//	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
 	public static String[] contents = {
 //					"label",
 //					"category",
@@ -16,7 +16,8 @@ public class CopyFiles
 //					"externalLink",
 //					"relatedPage",
 //					"internalLink",
-					"redirect",
+//					"redirect",
+					"disambiguation",
 					};
 	
 	public static void main( String[] args )

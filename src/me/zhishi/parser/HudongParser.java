@@ -232,7 +232,7 @@ public class HudongParser implements ZhishiParser
 	@Override
 	public boolean isDisambiguationPage()
 	{
-		return !doc.select("dl[class=polysemy]").isEmpty();
+		return !doc.select( "dl[class=polysemy]" ).isEmpty();
 	}
 	
 	@Override
@@ -240,9 +240,9 @@ public class HudongParser implements ZhishiParser
 	{
 		ArrayList<String> disambiguations = new ArrayList<String>();
 		
-		for (Element e :doc.select("div[class=prompt] > p > a"))
-			if (e.hasAttr("href") && e.attr("href").contains("/wiki/"))
-				disambiguations.add( e.text());
+		for( Element e : doc.select( "div[class=prompt] > p > a" ) )
+			if( e.hasAttr( "href" ) && e.attr( "href" ).contains( "/wiki/" ) && !e.text().equals( "" ) )
+				disambiguations.add( e.text() );
 
 		return disambiguations;
 	}
