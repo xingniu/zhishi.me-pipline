@@ -28,7 +28,7 @@ public class BaiduParser implements ZhishiParser
 		}
 	}
 	
-	private Document doc;
+	protected Document doc;
 	private String fileName;
 	
 	public BaiduParser( InputStream is, String fileName ) throws IOException
