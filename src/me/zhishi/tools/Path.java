@@ -40,6 +40,7 @@ public class Path
 		fileNameMap.put( "disambiguation", "disambiguations" );
 		fileNameMap.put( "articleLink", "article_links" );
 		fileNameMap.put( "categoryLabel", "category_labels" );
+		fileNameMap.put( "skosCat", "skos_categories" );
 		fileNameMap.put( "exception", "EXCEPTION" );
 	}
 	
