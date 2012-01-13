@@ -38,7 +38,7 @@ public class SortByPredicate
 //						"externalLink",
 //						"redirect",
 //						"disambiguation",
-						"articleLink",
+//						"articleLink",
 						"exception",
 						};
 	
@@ -85,16 +85,16 @@ public class SortByPredicate
 //					mos.write( "redirect", NullWritable.get(), val );
 //				else if( tr.getPredicate().equals( URICenter.predicate_disambiguation ) )
 //					mos.write( "disambiguation", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_articleLink ) )
-				{
-					String resource = tr.getSubject();
-					String articleLink = tr.getObject();
-					Text pt = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_foaf_primaryTopic, resource ) );
-					Text lang = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_dc_language, "\"zh\"@en" ) );
-					mos.write( "articleLink", NullWritable.get(), pt );
-					mos.write( "articleLink", NullWritable.get(), lang );
-					mos.write( "articleLink", NullWritable.get(), val );
-				}
+//				else if( tr.getPredicate().equals( URICenter.predicate_articleLink ) )
+//				{
+//					String resource = tr.getSubject();
+//					String articleLink = tr.getObject();
+//					Text pt = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_foaf_primaryTopic, resource ) );
+//					Text lang = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_dc_language, "\"zh\"@en" ) );
+//					mos.write( "articleLink", NullWritable.get(), pt );
+//					mos.write( "articleLink", NullWritable.get(), lang );
+//					mos.write( "articleLink", NullWritable.get(), val );
+//				}
 				else if( tr.getPredicate().equals( "<exception>" ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}
