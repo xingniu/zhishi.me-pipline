@@ -28,7 +28,7 @@ public class HudongParser implements ZhishiParser
 		}
 	}
 	
-	private Document doc;
+	protected Document doc;
 	
 	public HudongParser( InputStream is, String fileName ) throws IOException
 	{
