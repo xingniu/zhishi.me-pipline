@@ -38,6 +38,7 @@ public class Path
 		fileNameMap.put( "externalLink", "external_links" );
 		fileNameMap.put( "redirect", "redirects" );
 		fileNameMap.put( "disambiguation", "disambiguations" );
+		fileNameMap.put( "articleLink", "article_links" );
 		fileNameMap.put( "exception", "EXCEPTION" );
 	}
 	

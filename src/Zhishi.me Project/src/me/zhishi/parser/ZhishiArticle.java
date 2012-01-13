@@ -11,6 +11,7 @@ public class ZhishiArticle implements Article
 	public String source;
 	
 	public String label;
+	public String articleLink;
 	public String abs;
 	public String redirect;
 	public ArrayList<StringPair> pictures;
@@ -30,6 +31,7 @@ public class ZhishiArticle implements Article
 		this.source = source;
 		
 		label = null;
+		articleLink = null;
 		abs = null;
 		redirect = null;
 		
@@ -47,8 +49,9 @@ public class ZhishiArticle implements Article
 		{
 			if( redirect != null )
 			{
-				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( redirect ), URICenter.predicate_redirect, ic.getResourceURI( label ) ) );
-				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( redirect ), URICenter.predicate_label, redirect ) );
+				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
+				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_articleLink, articleLink ) );
+				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_redirect, ic.getResourceURI( redirect ) ) );
 			}
 			if( !isDisambiguationPage )
 				return tripleList;
@@ -59,6 +62,7 @@ public class ZhishiArticle implements Article
 			if( label != null )
 			{
 				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
+				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_articleLink, articleLink ) );
 				for( String disam : disambiguationLabels )
 				{
 					tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_disambiguation, ic.getResourceURI( disam ) ) );
@@ -81,6 +85,7 @@ public class ZhishiArticle implements Article
 		if( label != null )
 		{
 			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_articleLink, articleLink ) );
 		}
 		else
 			return tripleList;

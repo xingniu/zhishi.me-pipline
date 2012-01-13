@@ -51,7 +51,7 @@ public class StreamingDriver
 			TarEntry entry;
 			while( (entry = tin.getNextEntry()) != null )
 			{
-				parser = constructor.newInstance( tin );
+				parser = constructor.newInstance( tin, entry.getName().replaceAll( ".*/", "" ) );
 
 				Article article;
 				try

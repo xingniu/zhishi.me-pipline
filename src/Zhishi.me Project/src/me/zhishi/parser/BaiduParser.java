@@ -17,8 +17,9 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String url = "http://baike.baidu.com/view/169.htm";
-		BaiduParser p = new BaiduParser( url );
+		String fileName = "169.htm";
+		String url = "http://baike.baidu.com/view/" + fileName;
+		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
 		
 		for( String t : article.toTriples() )
@@ -28,24 +29,39 @@ public class BaiduParser implements ZhishiParser
 	}
 	
 	private Document doc;
+	private String fileName;
 	
-	public BaiduParser( InputStream is ) throws IOException
+	public BaiduParser( InputStream is, String fileName ) throws IOException
 	{
 		doc = Jsoup.parse( is, "GB18030", "http://baike.baidu.com" );
+		this.fileName = fileName;
 	}
 
-	public BaiduParser( String url ) throws IOException
+	public BaiduParser( String url, String fileName ) throws IOException
 	{
 		doc = Jsoup.connect( url ).get();
+		this.fileName = fileName;
 	}
 
 	@Override
 	public Article parse()
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_baidu );
-		article.label = getLabel();
-		article.isRedirect = isRedirectPage(); 
-		article.redirect = getRedirect();
+		
+		article.articleLink = "http://baike.baidu.com/view/" + fileName;
+		article.isRedirect = isRedirectPage();
+		if( article.isRedirect )
+		{
+			article.label = getRedirect();
+			article.redirect = getLabel();
+			return article;
+		}
+		else
+		{
+			article.label = getLabel();
+			article.redirect = getRedirect();
+		}
+
 		article.isDisambiguationPage = isDisambiguationPage();
 		article.disambiguationLabels = getDisambiguations();
 		if( article.isDisambiguationPage )
@@ -53,8 +69,6 @@ public class BaiduParser implements ZhishiParser
 			article.disambiguationArticles = BaiduDisParse();
 			return article;
 		}
-		else if( article.isRedirect )
-			return article;
 		
 		article.abs = getAbstract();
 		article.categories = getCategories();
@@ -236,11 +250,24 @@ public class BaiduParser implements ZhishiParser
 		return disambiguations;
 	}
 	
+	public ArrayList<String> getDisambiguationAnchors()
+	{
+		ArrayList<String> disambiguationAnchors = new ArrayList<String>();
+		
+		for( Element link : doc.select( "ol[data-nslog-type=503] > li > a" ) )
+		{
+			disambiguationAnchors.add( link.attr( "href" ) );
+		}
+
+		return disambiguationAnchors;
+	}
+	
 	public ArrayList<Article> BaiduDisParse() 
 	{
 		ArrayList<Article> disArticles = new ArrayList<Article>();
 
 		ArrayList<String> disList = getDisambiguations();
+		ArrayList<String> anchorList = getDisambiguationAnchors();
 		ArrayList<String> list = new ArrayList<String>();
 		for( Element e : doc.select( "div[class*=polysemy-item-cnt]" ) )
 			list.add( e.outerHtml() );
@@ -251,20 +278,21 @@ public class BaiduParser implements ZhishiParser
 			doc = Jsoup.parse( list.get( i ) );
 
 			article.label = disList.get( i );
-			article.categories = getCategories();
-			article.abs = getAbstract();
+			article.articleLink = "http://baike.baidu.com/view/" + fileName + anchorList.get( i );
 			article.isRedirect = isDisRedirectPage();
 			if( article.isRedirect )
 			{
-				article.redirect = article.label;
-				article.label = article.label.substring( article.label.indexOf( "[" ) + 1, article.label.indexOf( "]" ) );
+				article.redirect = article.label.substring( article.label.indexOf( "[" ) + 1, article.label.indexOf( "]" ) );
+				disArticles.add( article );
+				continue;
 			}
+			article.categories = getCategories();
+			article.abs = getAbstract();
 			article.relatedPages = getRelatedPages();
 			article.pictures = getDisPictures( article.label );
 			article.properties = getProperties();
 			article.internalLinks = getInternalLinks();
 			article.externalLinks = getDisExternalLinks();
-			article.isDisambiguationPage = false;
 			disArticles.add( article );
 		}
 		

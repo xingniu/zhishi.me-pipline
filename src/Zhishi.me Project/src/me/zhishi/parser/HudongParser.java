@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.StringPair;
 
@@ -29,7 +30,7 @@ public class HudongParser implements ZhishiParser
 	
 	private Document doc;
 	
-	public HudongParser( InputStream is ) throws IOException
+	public HudongParser( InputStream is, String fileName ) throws IOException
 	{
 		doc = Jsoup.parse( is, "UTF-8", "http://www.hudong.com/" );
 	}
@@ -43,12 +44,27 @@ public class HudongParser implements ZhishiParser
 	public Article parse()
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_hudong );
-		article.label = getLabel();
+		
 		article.isRedirect = isRedirectPage();
-		article.redirect = getRedirect();
+		if( article.isRedirect )
+		{
+			article.label = getRedirect();
+			if( article.label != null )
+				article.articleLink = "http://www.hudong.com/wiki/" + TextTools.encoder( article.label );
+			article.redirect = getLabel();
+			return article;
+		}
+		else
+		{
+			article.label = getLabel();
+			if( article.label != null )
+				article.articleLink = "http://www.hudong.com/wiki/" + TextTools.encoder( article.label );
+			article.redirect = getRedirect();
+		}
+		
 		article.isDisambiguationPage = isDisambiguationPage();
 		article.disambiguationLabels = getDisambiguations();
-		if (article.isRedirect || article.isDisambiguationPage)
+		if( article.isDisambiguationPage )
 			return article;
 		
 		article.abs = getAbstract();
@@ -246,5 +262,4 @@ public class HudongParser implements ZhishiParser
 
 		return disambiguations;
 	}
-
 }
