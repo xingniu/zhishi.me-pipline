@@ -22,10 +22,10 @@ public class GlobalFactory
 			parsers.load( ParserDriver.class.getResourceAsStream( "/config.ini") );
 			baiduParserConstructor = Class
 					.forName( (String) parsers.get( URICenter.source_name_baidu ) )
-					.asSubclass( Parser.class ).getConstructor( InputStream.class );
+					.asSubclass( Parser.class ).getConstructor( InputStream.class, String.class );
 			hudongParserConstructor = Class
 					.forName( (String) parsers.get( URICenter.source_name_hudong ) )
-					.asSubclass( Parser.class ).getConstructor( InputStream.class );
+					.asSubclass( Parser.class ).getConstructor( InputStream.class, String.class  );
 		}
 		catch( Exception e )
 		{

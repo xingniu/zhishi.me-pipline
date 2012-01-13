@@ -13,6 +13,7 @@ public class URICenter
 	public static String namespace_zhwiki = "http://zhishi.me/zhwiki/";
 	
 	public static String predicate_label = "<http://www.w3.org/2000/01/rdf-schema#label>";
+	public static String predicate_articleLink = "<http://xmlns.com/foaf/0.1/page>";
 	public static String predicate_abstract = "<http://zhishi.me/ontology/abstract>";
 	public static String predicate_relatedPage = "<http://zhishi.me/ontology/relatedPage>";
 	public static String predicate_redirect = "<http://zhishi.me/ontology/pageRedirects>";
@@ -25,6 +26,8 @@ public class URICenter
 	public static String predicate_article_category_old = "<http://purl.org/dc/terms/subject>";
 	public static String predicate_article_category = "<http://zhishi.me/ontology/category>";
 	
+	public static String predicate_foaf_primaryTopic = "<http://xmlns.com/foaf/0.1/primaryTopic>";
+	public static String predicate_dc_language = "<http://purl.org/dc/elements/1.1/language>";
 	
 	private String namespace;
 	
