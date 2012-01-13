@@ -10,22 +10,52 @@ import org.jsoup.nodes.Element;
 import me.zhishi.tools.Path;
 import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
+import me.zhishi.tools.file.NTriplesReader;
+import me.zhishi.tools.file.TripleReader;
 import me.zhishi.tools.file.TripleWriter;
 import me.zhishi.tools.file.ZIPFileWriter;
 
 public class CategoryStorer
 {
 	public static double releaseVersion = 3.0;
+//	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
+	
+	private static ZIPFileWriter writer;
 	
 	public static void main(String[] args)
 	{
-		storeHudongSKOS();
+//		storeHudongSKOS();
+		storeCategoryLabels();
+	}
+	
+	public static void storeCategoryLabels()
+	{
+		Path p = new Path( releaseVersion, source );
+		writer = new ZIPFileWriter( p.getNTriplesPath(), p.getFileName( "categoryLabel" ) );
+		NTriplesReader reader = new NTriplesReader( p.getFilePath( "category" ) );
+		
+		HashSet<String> categoriesSet = new HashSet<String>();
+		while( reader.readNextLine() != null )
+		{
+			TripleReader tr = reader.getTripleReader();
+			String category = tr.getObjectContent();
+			categoriesSet.add( category );
+		}
+		
+		URICenter uc = new URICenter( source );
+		for( String c : categoriesSet )
+		{
+			writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( c ), URICenter.predicate_label, c ) );
+		}
+		
+		reader.close();
+		writer.close();
 	}
 	
 	private static HashSet<String> categorySet;
 	private static int counter;
-	private static ZIPFileWriter writer;
-	
+
 	public static void storeHudongSKOS()
 	{
 		categorySet = new HashSet<String>();
