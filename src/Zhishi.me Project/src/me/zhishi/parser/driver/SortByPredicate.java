@@ -35,7 +35,8 @@ public class SortByPredicate
 //						"relatedPage",
 //						"internalLink",
 //						"externalLink",
-						"redirect",
+//						"redirect",
+						"disambiguation",
 						"exception",
 						};
 	
@@ -78,8 +79,10 @@ public class SortByPredicate
 //					mos.write( "internalLink", NullWritable.get(), val );
 //				else if( tr.getPredicate().equals( URICenter.predicate_externalLink ) )
 //					mos.write( "externalLink", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_redirect ) )
-					mos.write( "redirect", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_redirect ) )
+//					mos.write( "redirect", NullWritable.get(), val );
+				else if( tr.getPredicate().equals( URICenter.predicate_disambiguation ) )
+					mos.write( "disambiguation", NullWritable.get(), val );
 				else if( tr.getPredicate().equals( "<exception>" ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}
