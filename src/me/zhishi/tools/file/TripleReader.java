@@ -1,6 +1,7 @@
 package me.zhishi.tools.file;
 
 import me.zhishi.tools.TextTools;
+import me.zhishi.tools.URICenter;
 
 public class TripleReader
 {
@@ -26,7 +27,7 @@ public class TripleReader
 	public String getSubjectContent()
 	{
 		String str = getSubject();
-		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
+		return URICenter.zhishiDecode( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
 	public String getPredicate()
@@ -37,15 +38,8 @@ public class TripleReader
 	public String getPredicateContent()
 	{
 		String str = getPredicate();
-		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
+		return URICenter.zhishiDecode( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
-	
-//	public String getBarePredicate( String start )
-//	{
-//		String s = getPredicate();
-//		int length = start.length();
-//		return s.substring( s.indexOf( start )+ length, s.lastIndexOf( ">" ) );
-//	}
 	
 	public String getObject()
 	{
@@ -55,7 +49,7 @@ public class TripleReader
 	public String getObjectContent()
 	{
 		String str = getObject();
-		return TextTools.decoder( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
+		return URICenter.zhishiDecode( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
 	public String getObjectValue()

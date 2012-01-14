@@ -49,16 +49,26 @@ public class URICenter
 	
 	public String getResourceURI( String label )
 	{
-		return namespace + "resource/" + TextTools.encoder( label );
+		return namespace + "resource/" + zhishiEncode( label );
 	}
 	
 	public String getCategoryURI( String label )
 	{
-		return namespace + "category/" + TextTools.encoder( label );
+		return namespace + "category/" + zhishiEncode( label );
 	}
 	
 	public String getPropertyPredicate( String label )
 	{
-		return "<" + namespace + "property/" + TextTools.encoder( label ) + ">";
+		return "<" + namespace + "property/" + zhishiEncode( label ) + ">";
+	}
+	
+	public static String zhishiEncode( String str )
+	{
+		return TextTools.encoder( str ).replaceAll( "\\+", "_" );
+	}
+	
+	public static String zhishiDecode( String str )
+	{
+		return TextTools.decoder( str.replaceAll( "_", "+" ) );
 	}
 }
