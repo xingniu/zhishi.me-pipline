@@ -1,8 +1,6 @@
 package me.zhishi.parser.tools;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashSet;
 
 import org.json.JSONArray;
@@ -22,15 +20,15 @@ import me.zhishi.tools.file.ZIPFileWriter;
 public class CategoryStorer
 {
 	public static double releaseVersion = 3.0;
-//	public static String source = URICenter.source_name_baidu;
-	public static String source = URICenter.source_name_hudong;
+	public static String source = URICenter.source_name_baidu;
+//	public static String source = URICenter.source_name_hudong;
 	
 	private static ZIPFileWriter writer;
 	
 	public static void main(String[] args)
 	{
-		storeHudongSKOS();
-//		storeCategoryLabels();
+//		storeHudongSKOS();
+		storeCategoryLabels();
 	}
 	
 	public static void storeCategoryLabels()
