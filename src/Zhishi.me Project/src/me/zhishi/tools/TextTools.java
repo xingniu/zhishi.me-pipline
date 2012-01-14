@@ -107,14 +107,6 @@ public class TextTools
 		return str;
 	}
 	
-	public static String safeEncoder( String str )
-	{
-		str = TextTools.encoder( str );
-		str = str.replaceAll( "%3A", ":" );
-		str = str.replaceAll( "%2F", "/" );
-		return str;
-	}
-	
 	/**
 	 * Encode URL
 	 * @param str

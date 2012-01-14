@@ -29,9 +29,8 @@ public class CategoryStorer
 	
 	public static void main(String[] args)
 	{
-//		storeHudongSKOS();
+		storeHudongSKOS();
 //		storeCategoryLabels();
-		System.out.println( TextTools.encoder( "C++ Builder" ).replaceAll( "\\+", "_" ) );
 	}
 	
 	public static void storeCategoryLabels()
