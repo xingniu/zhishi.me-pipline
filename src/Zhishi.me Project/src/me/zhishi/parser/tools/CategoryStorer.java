@@ -1,11 +1,15 @@
 package me.zhishi.parser.tools;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import me.zhishi.tools.Path;
 import me.zhishi.tools.TextTools;
@@ -26,7 +30,8 @@ public class CategoryStorer
 	public static void main(String[] args)
 	{
 //		storeHudongSKOS();
-		storeCategoryLabels();
+//		storeCategoryLabels();
+		System.out.println( TextTools.encoder( "C++ Builder" ).replaceAll( "\\+", "_" ) );
 	}
 	
 	public static void storeCategoryLabels()
@@ -63,7 +68,7 @@ public class CategoryStorer
 		Path p = new Path( releaseVersion, URICenter.source_name_hudong );
 		writer = new ZIPFileWriter( p.getNTriplesPath(), p.getFileName( "skosCat" ) );
 		
-		String root = TextTools.encoder( "页面总分类" );
+		String root = "页面总分类";
 		try
 		{
 			getSubCategory( root, "1", 0 );
@@ -72,58 +77,63 @@ public class CategoryStorer
 		{
 			e.printStackTrace();
 		}
+		catch( JSONException e )
+		{
+			e.printStackTrace();
+		}
 		
 		writer.close();
 	}
 	
-	public static void getSubCategory( String node, String info, int depth ) throws InterruptedException
+	public static void getSubCategory( String node, String info, int depth ) throws InterruptedException, JSONException
 	{
 		Document doc = null;
-		String url = "http://www.hudong.com/categorypage/show/" + node + "/";
-		String deNode = TextTools.decoder( node );
+		String UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.3 (KHTML, like Gecko) Maxthon/3.3.3.1000 Chrome/16.0.883.0 Safari/535.3";
+		String url = "http://www.hudong.com/category/Ajax_cate.jsp?catename=" + TextTools.encoder( node );
 		
 		for( int i = 0; i <= 100; ++i )
 		{
 			try
 			{
-				doc = Jsoup.connect( url ).get();
+				doc = Jsoup.connect( url ).userAgent( UserAgent ).get();
 				break;
 			}
 			catch( IOException e )
 			{
-				System.err.println( "IOException, try again. " + deNode );
-				Thread.sleep( 10000 );
+				System.err.println( "IOException, try again. " + node );
+				Thread.sleep( 10000 * i );
 			}
 		}
 		
 		URICenter uc = new URICenter( URICenter.source_name_hudong );
 		
-		writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( deNode ), URICenter.predicate_skos_prefLabel, deNode ) );
-		writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( deNode ), URICenter.predicate_rdf_type, URICenter.class_skos_concept ) );
+		writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( node ), URICenter.predicate_skos_prefLabel, node ) );
+		writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( node ), URICenter.predicate_rdf_type, URICenter.class_skos_concept ) );
 		
-		for( Element fe : doc.select( "div[class=left_c]" ) )
+		JSONArray array = null;
+		try
 		{
-			if( fe.select( "h2" ).text().equals( "子分类" ) )
-			{
-				int i = 1;
-				for( Element ce : fe.select( "ul > li > a" ) )
-				{
-					String cNode = ce.attr( "href" ).replaceAll( "http.*show/", "" ).replaceAll( "/\\?prd.*", "" );
-					String deCNode = TextTools.decoder( cNode );
-					System.out.println( depth + " " + info + " " + deNode + " >>> " + deCNode );
-					
-					writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( deNode ), URICenter.predicate_skos_broader, uc.getCategoryURI( deCNode ) ) );
-					writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( deCNode ), URICenter.predicate_skos_narrower, uc.getCategoryURI( deNode ) ) );
-					
-					counter++;
-					if( categorySet.contains( cNode ) )
-						continue;
-					categorySet.add( cNode );
-					System.err.println( categorySet.size() + "/" + counter );
-					getSubCategory( cNode, info + '-' + i, depth + 1 );
-					i++;
-				}
-			}
+			array = new JSONArray( doc.text() );
+		}
+		catch( JSONException e )
+		{
+			return;
+		}
+		
+		for( int i = 0; i < array.length(); ++i )
+		{
+			String cNode = ((JSONObject) array.get( i )).getString( "name" );
+			System.out.println( depth + " " + info + " " +node + " >>> " + cNode );
+			
+			writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( node ), URICenter.predicate_skos_broader, uc.getCategoryURI( cNode ) ) );
+			writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( cNode ), URICenter.predicate_skos_narrower, uc.getCategoryURI( node ) ) );
+			
+			counter++;
+			if( categorySet.contains( cNode ) )
+				continue;
+			categorySet.add( cNode );
+			System.err.println( categorySet.size() + "/" + counter );
+			getSubCategory( cNode, info + '-' + (i+1), depth + 1 );
 		}
 	}
 }
