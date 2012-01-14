@@ -44,7 +44,7 @@ public class LemmaSet
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
-			union.add( tr.getSubjectContent() );
+			union.add( tr.getObjectValue() );
 		}
 		ntReader.close();
 		
@@ -53,7 +53,7 @@ public class LemmaSet
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
-			union.add( tr.getSubjectContent() );
+			union.add( tr.getObjectValue() );
 		}
 		ntReader.close();
 		
@@ -81,7 +81,7 @@ public class LemmaSet
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
-			lemmaCounter.put( tr.getSubjectContent(), 1 );
+			lemmaCounter.put( tr.getObjectValue(), 1 );
 		}
 		ntReader.close();
 		
@@ -90,7 +90,7 @@ public class LemmaSet
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
-			String label = tr.getSubjectContent();
+			String label = tr.getObjectValue();
 			if( lemmaCounter.containsKey( label ) )
 				lemmaCounter.put( label, 2 );
 			else

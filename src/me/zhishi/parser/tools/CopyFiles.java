@@ -11,15 +11,15 @@ public class CopyFiles
 //	public static String source = URICenter.source_name_hudong;
 	public static double releaseVersion = 3.0;
 	public static String[] contents = {
-//					"label",
-//					"category",
-//					"abstract",
-//					"externalLink",
-//					"relatedPage",
-//					"internalLink",
-//					"redirect",
-//					"disambiguation",
-//					"articleLink",
+					"label",
+					"category",
+					"abstract",
+					"externalLink",
+					"relatedPage",
+					"internalLink",
+					"redirect",
+					"disambiguation",
+					"articleLink",
 					};
 	
 	public static void main( String[] args )
