@@ -19,13 +19,13 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/台州市兰天橡塑制业有限公司";
+		String url = "http://www.hudong.com/wiki/三岔湖";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
 		for( String t : article.toTriples() )
 		{
-			System.out.println( t );
+//			System.out.println( t );
 		}
 	}
 	
@@ -143,8 +143,13 @@ public class HudongParser implements ZhishiParser
 		return img.replaceAll( "_.*?\\.", "." );
 	}
 	
-	private String getCleanImgTitle( String title )
+	private String getCleanImgTitle( Element img )
 	{
+		String title = img.attr( "title" );
+		if( title.equals( "null" ) )
+			title = img.attr( "alt" );
+		if( title.equals( "null" ) )
+			return "";
 		if( title.startsWith( "（图）" ) )
 			title = title.replaceAll( "（图）", "" );
 		title = title.replaceAll( whitespace, "" );
@@ -160,6 +165,8 @@ public class HudongParser implements ZhishiParser
 		{
 			if( !pic.children().toString().equals( "" ) )
 			{
+				if( !pic.child( 0 ).attr( "src" ).contains( ".att.hudong.com" ) )
+					continue;
 				imageInfo.depictionThumbnail = pic.child( 0 ).attr( "src" );
 				imageInfo.depiction = getCompleteImg( imageInfo.depictionThumbnail );
 				imageInfo.labels.add( new StringPair( imageInfo.depiction, getLabel() ) );
@@ -174,6 +181,8 @@ public class HudongParser implements ZhishiParser
 			{
 				Element img = pic.child( 0 );
 				String imgURI = getCompleteImg( img.attr( "src" ) );
+				if( !imgURI.contains( ".att.hudong.com" ) )
+					continue;
 				if( imageInfo.depiction == null )
 				{
 					imageInfo.depictionThumbnail = img.attr( "src" );
@@ -183,7 +192,7 @@ public class HudongParser implements ZhishiParser
 				{
 					imageInfo.relatedImages.add( imgURI );
 				}
-				imageInfo.labels.add( new StringPair( imgURI, getCleanImgTitle( img.attr( "title" ) ) ) );
+				imageInfo.labels.add( new StringPair( imgURI, getCleanImgTitle( img ) ) );
 				imageInfo.rights.add( new StringPair( imgURI, pic.attr( "href" ) ) );
 				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
 			}
@@ -196,8 +205,9 @@ public class HudongParser implements ZhishiParser
 				Element img = pic.child( 0 );
 				String imgURI = getCompleteImg( img.attr( "src" ) );
 				imageInfo.relatedImages.add( imgURI );
-				imageInfo.labels.add( new StringPair( imgURI,
-						getCleanImgTitle( img.attr( "title" ) ) ) );
+				if( !imgURI.contains( ".att.hudong.com" ) )
+					continue;
+				imageInfo.labels.add( new StringPair( imgURI, getCleanImgTitle( img ) ) );
 				imageInfo.rights.add( new StringPair( imgURI, pic.attr( "href" ) ) );
 				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
 			}

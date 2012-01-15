@@ -41,8 +41,6 @@ public class ZhishiArticle implements Article
 	public ArrayList<String> externalLinks;
 	public ArrayList<String> relatedPages;
 	public ArrayList<String> disambiguationLabels;
-	// TODO to be deleted
-	public ArrayList<StringPair> pictures;
 	
 	public boolean isDisambiguationPage;
 	public boolean isRedirect;
@@ -126,12 +124,6 @@ public class ZhishiArticle implements Article
 		{
 			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_relatedPage, ic.getResourceURI( relat ) ) );
 		}
-		
-//		for( int i = 0; i < pictures.size(); ++i)
-//		{
-//			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_thumbnail,  pictures.get(i).first ) );
-//			tripleList.add( TripleWriter.getStringValueTriple(  pictures.get(i).first, URICenter.predicate_pictureLabels, pictures.get(i).second ) );
-//		}
 		
 		for ( int i = 0; i < properties.size(); ++i )
 		{
