@@ -7,19 +7,21 @@ import me.zhishi.tools.file.ZIPFileWriter;
 
 public class CopyFiles
 {
-	public static String source = URICenter.source_name_baidu;
-//	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
 	public static double releaseVersion = 3.0;
 	public static String[] contents = {
-					"label",
-					"category",
-					"abstract",
-					"externalLink",
-					"relatedPage",
-					"internalLink",
-					"redirect",
-					"disambiguation",
-					"articleLink",
+//					"label",
+//					"category",
+//					"abstract",
+//					"externalLink",
+//					"relatedPage",
+//					"internalLink",
+//					"redirect",
+//					"disambiguation",
+//					"articleLink",
+					"image",
+					"imageInfo",
 					};
 	
 	public static void main( String[] args )

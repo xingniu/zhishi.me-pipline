@@ -48,7 +48,7 @@ public class CategoryStorer
 		URICenter uc = new URICenter( source );
 		for( String c : categoriesSet )
 		{
-			writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( c ), URICenter.predicate_label, c ) );
+			writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( c ), URICenter.predicate_rdfs_label, c ) );
 		}
 		
 		reader.close();

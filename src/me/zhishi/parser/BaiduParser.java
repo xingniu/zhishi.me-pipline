@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import me.zhishi.parser.ZhishiArticle.ImageInfo;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.StringPair;
 
@@ -17,7 +18,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String fileName = "169.htm";
+		String fileName = "10670.htm";
 		String url = "http://baike.baidu.com/view/" + fileName;
 		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
@@ -73,7 +74,7 @@ public class BaiduParser implements ZhishiParser
 		article.abs = getAbstract();
 		article.categories = getCategories();
 		article.relatedPages = getRelatedPages();
-		article.pictures = getPictures();
+		article.imageInfo = getImageInfo();
 		article.properties = getProperties();
 		article.internalLinks = getInternalLinks();
 		article.externalLinks = getExternalLinks();
@@ -131,23 +132,46 @@ public class BaiduParser implements ZhishiParser
 		}
 		return redirect;
 	}
-
-	@Override
-	public ArrayList<StringPair> getPictures()
+	
+	private String getCompleteImg( String img )
 	{
-		ArrayList <StringPair> pics = new ArrayList<StringPair>();
+		return img.replaceAll( "/abpic/", "/pic/" );
+	}
+	
+	@Override
+	public ImageInfo getImageInfo()
+	{
+		String prefix = "http://baike.baidu.com";
+		ImageInfo imageInfo = new ImageInfo();
 		
-		for(Element img:doc.select("div[class*=main-body]").select("img"))
-			if(img.hasAttr("title")) {
-				String picTitle = img.attr("title");
-				if (picTitle.length() == 0)
-					picTitle = getLabel();
-				picTitle = picTitle.replaceAll(whitespace, "");
-				picTitle = picTitle.trim();
-				pics.add(new StringPair(img.attr("src"), picTitle));
+		for( Element pic : doc.select( "div[class^=card-summary] > div[class=pic] > a" ) )
+		{
+			if( pic.attr( "class" ).equals( "card-pic-handle" ) )
+				break;
+			for( Element img : pic.getElementsByAttributeValue( "class", "card-image editorImg" ) )
+			{
+				imageInfo.depictionThumbnail = img.attr( "src" );
+				imageInfo.depiction = getCompleteImg( imageInfo.depictionThumbnail );
+				imageInfo.labels.add( new StringPair( imageInfo.depiction, img.attr( "title" ) ) );
+				imageInfo.rights.add( new StringPair( imageInfo.depiction, prefix + pic.attr( "href" ) ) );
+				imageInfo.thumbnails.add( new StringPair( imageInfo.depiction, imageInfo.depictionThumbnail ) );
 			}
+		}
 		
-		return pics;
+		for( Element pic : doc.select( "div[class=lemma-main-content] a[href^=/albums]" ) )
+		{
+			String album = pic.attr( "href" );
+			for( Element img : pic.getElementsByAttributeValue( "class", "editorImg log-set-param" ) )
+			{
+				String imgURI = getCompleteImg( img.attr( "src" ) );
+				imageInfo.relatedImages.add( imgURI );
+				imageInfo.labels.add( new StringPair( imgURI, img.attr( "title" ) ) );
+				imageInfo.rights.add( new StringPair( imgURI, prefix + album ) );
+				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
+			}
+		}
+		
+		return imageInfo;
 	}
 
 	@Override
@@ -289,7 +313,7 @@ public class BaiduParser implements ZhishiParser
 			article.categories = getCategories();
 			article.abs = getAbstract();
 			article.relatedPages = getRelatedPages();
-			article.pictures = getDisPictures( article.label );
+			article.imageInfo = getImageInfo();
 			article.properties = getProperties();
 			article.internalLinks = getInternalLinks();
 			article.externalLinks = getDisExternalLinks();
@@ -309,28 +333,33 @@ public class BaiduParser implements ZhishiParser
 		return false;
 	}
 	
-	public ArrayList<StringPair> getDisPictures(String DisLabel) {
-		ArrayList <StringPair> pics = new ArrayList<StringPair>();
-		for(Element img :doc.select("img"))
-			if(img.hasAttr("title")) {
-				String picTitle = img.attr("title");
-				if (picTitle.length() == 0)
+	public ArrayList<StringPair> getDisPictures( String DisLabel )
+	{
+		ArrayList<StringPair> pics = new ArrayList<StringPair>();
+		for( Element img : doc.select( "img" ) )
+			if( img.hasAttr( "title" ) )
+			{
+				String picTitle = img.attr( "title" );
+				if( picTitle.length() == 0 )
 					picTitle = DisLabel;
-				picTitle = picTitle.replaceAll(whitespace, "");
+				picTitle = picTitle.replaceAll( whitespace, "" );
 				picTitle = picTitle.trim();
-				pics.add(new StringPair(img.attr("src"), picTitle));
+				pics.add( new StringPair( img.attr( "src" ), picTitle ) );
 			}
 		return pics;
 	}
 	
 	
-	public ArrayList<String> getDisExternalLinks() {
+	public ArrayList<String> getDisExternalLinks()
+	{
 		ArrayList<String> outerLinks = new ArrayList<String>();
-		for (Element link: doc.select("a")){
-			if (link.hasAttr("href")){
-				String tmp = link.attr("href");
-				if (tmp.startsWith("http://") && !tmp.startsWith("http://baike.baidu.com/view/"))
-					outerLinks.add(tmp);
+		for( Element link : doc.select( "a" ) )
+		{
+			if( link.hasAttr( "href" ) )
+			{
+				String tmp = link.attr( "href" );
+				if( tmp.startsWith( "http://" ) && !tmp.startsWith( "http://baike.baidu.com/view/" ) )
+					outerLinks.add( tmp );
 			}
 		}
 		return outerLinks;
