@@ -16,8 +16,8 @@ import me.zhishi.tools.file.BZ2FileHandler;
 
 public class ParserDriver
 {
-	public static String source = URICenter.source_name_baidu;
-//	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
 	public static double releaseVersion = 3.0;
 	
 	public static void main( String[] args ) throws Exception
@@ -55,7 +55,7 @@ public class ParserDriver
 			TarEntry entry;
 			while( (entry = tin.getNextEntry()) != null )
 			{
-				System.out.println( entry.getName().replaceAll( ".*/", "" ) );
+//				System.out.println( entry.getName().replaceAll( ".*/", "" ) );
 
 				parser = constructor.newInstance( tin, entry.getName().replaceAll( ".*/", "" ) );
 				

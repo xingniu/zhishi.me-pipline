@@ -39,7 +39,7 @@ public class SortByPredicate
 //						"redirect",
 //						"disambiguation",
 //						"articleLink",
-						"image",
+//						"image",
 						"imageInfo",
 						"exception",
 						};
@@ -97,12 +97,12 @@ public class SortByPredicate
 //					mos.write( "articleLink", NullWritable.get(), lang );
 //					mos.write( "articleLink", NullWritable.get(), val );
 //				}
-				else if( tr.getPredicate().equals( URICenter.predicate_foaf_depiction ) )
-					mos.write( "image", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_depictionThumbnail ) )
-					mos.write( "image", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_relatedImage ) )
-					mos.write( "image", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_foaf_depiction ) )
+//					mos.write( "image", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_depictionThumbnail ) )
+//					mos.write( "image", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_relatedImage ) )
+//					mos.write( "image", NullWritable.get(), val );
 				else if( tr.getPredicate().equals( URICenter.predicate_rdfs_label ) )
 					mos.write( "imageInfo", NullWritable.get(), val );
 				else if( tr.getPredicate().equals( URICenter.predicate_dc_rights ) )
@@ -166,7 +166,7 @@ public class SortByPredicate
 		{
 			for( String s : contents )
 			{
-				System.out.println( "Start moving Files: " + s );
+				System.out.println( "Start moving files: " + s );
 				moveMergeFiles( fs, s, p.getFilePath( s ), conf, outputPath );
 			}
 			fs.delete( new Path( outputPath ), true );

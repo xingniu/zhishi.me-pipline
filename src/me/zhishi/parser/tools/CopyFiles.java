@@ -20,7 +20,7 @@ public class CopyFiles
 //					"redirect",
 //					"disambiguation",
 //					"articleLink",
-					"image",
+//					"image",
 					"imageInfo",
 					};
 	
