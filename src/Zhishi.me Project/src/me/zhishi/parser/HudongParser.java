@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import me.zhishi.parser.ZhishiArticle.ImageInfo;
 import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.StringPair;
@@ -18,7 +19,7 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/上海";
+		String url = "http://www.hudong.com/wiki/台州市兰天橡塑制业有限公司";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -70,7 +71,7 @@ public class HudongParser implements ZhishiParser
 		article.abs = getAbstract();
 		article.categories = getCategories();
 		article.relatedPages = getRelatedPages();
-		article.pictures = getPictures();
+		article.imageInfo = getImageInfo();
 		article.properties = getProperties();
 		article.internalLinks = getInternalLinks();
 		article.externalLinks = getExternalLinks();
@@ -136,27 +137,73 @@ public class HudongParser implements ZhishiParser
 		}
 		return null;
 	}
-
-	@Override
-	public ArrayList<StringPair> getPictures()
+	
+	private String getCompleteImg( String img )
 	{
-		ArrayList <StringPair> pics = new ArrayList<StringPair>();
+		return img.replaceAll( "_.*?\\.", "." );
+	}
+	
+	private String getCleanImgTitle( String title )
+	{
+		if( title.startsWith( "（图）" ) )
+			title = title.replaceAll( "（图）", "" );
+		title = title.replaceAll( whitespace, "" );
+		return title;
+	}
+	
+	@Override
+	public ImageInfo getImageInfo()
+	{
+		ImageInfo imageInfo = new ImageInfo();
 		
-		for(Element img:doc.select("div[class*=img_r]").select("img"))
-			if(img.hasAttr("title")){
-				String picTitle = img.attr("title");			
-				if (picTitle.startsWith("（图）"))
-					picTitle = picTitle.substring(3, picTitle.length());
-				if (picTitle.length() == 0)
-					picTitle = getLabel();
-				picTitle = picTitle.replaceAll(whitespace, "");
-				picTitle = picTitle.trim();
-				pics.add(new StringPair(img.attr("src"), picTitle));
+		for( Element pic : doc.select( "div[id=docinfotemplettable] td[class=a-c p-tb10] > a" ) )
+		{
+			if( !pic.children().toString().equals( "" ) )
+			{
+				imageInfo.depictionThumbnail = pic.child( 0 ).attr( "src" );
+				imageInfo.depiction = getCompleteImg( imageInfo.depictionThumbnail );
+				imageInfo.labels.add( new StringPair( imageInfo.depiction, getLabel() ) );
+				imageInfo.rights.add( new StringPair( imageInfo.depiction, pic.attr( "href" ) ) );
+				imageInfo.thumbnails.add( new StringPair( imageInfo.depiction, imageInfo.depictionThumbnail ) );
 			}
-		for(Element img:doc.select("div[id=docinfotemplettable]").select("img"))
-			pics.add(new StringPair(img.attr("src"), getLabel()));
+		}
+
+		for( Element pic : doc.select( "div[class=summary] > div[class=img img_r] > a" ) )
+		{
+			if( !pic.children().toString().equals( "" ) )
+			{
+				Element img = pic.child( 0 );
+				String imgURI = getCompleteImg( img.attr( "src" ) );
+				if( imageInfo.depiction == null )
+				{
+					imageInfo.depictionThumbnail = img.attr( "src" );
+					imageInfo.depiction = imgURI;
+				}
+				else
+				{
+					imageInfo.relatedImages.add( imgURI );
+				}
+				imageInfo.labels.add( new StringPair( imgURI, getCleanImgTitle( img.attr( "title" ) ) ) );
+				imageInfo.rights.add( new StringPair( imgURI, pic.attr( "href" ) ) );
+				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
+			}
+		}
 		
-		return pics;
+		for( Element pic : doc.select( "div[id=content] > div[class=img img_r] > a" ) )
+		{
+			if( !pic.children().toString().equals( "" ) )
+			{
+				Element img = pic.child( 0 );
+				String imgURI = getCompleteImg( img.attr( "src" ) );
+				imageInfo.relatedImages.add( imgURI );
+				imageInfo.labels.add( new StringPair( imgURI,
+						getCleanImgTitle( img.attr( "title" ) ) ) );
+				imageInfo.rights.add( new StringPair( imgURI, pic.attr( "href" ) ) );
+				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
+			}
+		}
+		
+		return imageInfo;
 	}
 
 	@Override

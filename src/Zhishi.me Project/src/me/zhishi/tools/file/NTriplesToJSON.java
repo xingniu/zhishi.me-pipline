@@ -48,7 +48,7 @@ public class NTriplesToJSON
 					source = URICenter.source_name_zhwiki;
 				}
 				
-				if( predicateSet.contains( "label" ) && tr.getPredicate().equals( URICenter.predicate_label ) )
+				if( predicateSet.contains( "label" ) && tr.getPredicate().equals( URICenter.predicate_rdfs_label ) )
 				{
 					JSONObject main = new JSONObject();
 					main.put( "uri", tr.getSubject() );
@@ -57,7 +57,7 @@ public class NTriplesToJSON
 					main.put( "value", tr.getObjectValue() );
 					context.write( new Text( tr.getSubject() ), new Text( main.toString() ) );
 				}
-				else if( predicateSet.contains( "category" ) && tr.getPredicate().equals( URICenter.predicate_article_category_old ) )
+				else if( predicateSet.contains( "category" ) && tr.getPredicate().equals( URICenter.predicate_category_old ) )
 				{
 					JSONObject main = new JSONObject();
 					main.put( "uri", tr.getSubject() );

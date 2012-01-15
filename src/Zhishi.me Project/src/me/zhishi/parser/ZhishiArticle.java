@@ -8,19 +8,41 @@ import me.zhishi.tools.file.TripleWriter;
 
 public class ZhishiArticle implements Article
 {
+	public static class ImageInfo
+	{
+		public String depiction;
+		public String depictionThumbnail;
+		public ArrayList<String> relatedImages;
+		public ArrayList<StringPair> thumbnails;
+		public ArrayList<StringPair> rights;
+		public ArrayList<StringPair> labels;
+		
+		public ImageInfo()
+		{
+			depiction = null;
+			depictionThumbnail = null;
+			relatedImages = new ArrayList<String>();
+			thumbnails = new ArrayList<StringPair>();
+			rights = new ArrayList<StringPair>();
+			labels = new ArrayList<StringPair>();
+		}
+	}
+	
 	public String source;
 	
 	public String label;
 	public String articleLink;
 	public String abs;
 	public String redirect;
-	public ArrayList<StringPair> pictures;
+	public ImageInfo imageInfo;
 	public ArrayList<StringPair> properties;
 	public ArrayList<String> categories;
 	public ArrayList<String> internalLinks;
 	public ArrayList<String> externalLinks;
 	public ArrayList<String> relatedPages;
 	public ArrayList<String> disambiguationLabels;
+	// TODO to be deleted
+	public ArrayList<StringPair> pictures;
 	
 	public boolean isDisambiguationPage;
 	public boolean isRedirect;
@@ -49,8 +71,8 @@ public class ZhishiArticle implements Article
 		{
 			if( redirect != null )
 			{
-				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
-				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_articleLink, articleLink ) );
+				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_rdfs_label, label ) );
+				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_page, articleLink ) );
 				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_redirect, ic.getResourceURI( redirect ) ) );
 			}
 			if( !isDisambiguationPage )
@@ -61,8 +83,8 @@ public class ZhishiArticle implements Article
 		{
 			if( label != null )
 			{
-				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
-				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_articleLink, articleLink ) );
+				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_rdfs_label, label ) );
+				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_page, articleLink ) );
 				for( String disam : disambiguationLabels )
 				{
 					tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_disambiguation, ic.getResourceURI( disam ) ) );
@@ -84,8 +106,8 @@ public class ZhishiArticle implements Article
 		
 		if( label != null )
 		{
-			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_label, label ) );
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_articleLink, articleLink ) );
+			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_rdfs_label, label ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_page, articleLink ) );
 		}
 		else
 			return tripleList;
@@ -97,7 +119,7 @@ public class ZhishiArticle implements Article
 		
 		for( String cat : categories )
 		{
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_article_category, ic.getCategoryURI( cat ) ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_category, ic.getCategoryURI( cat ) ) );
 		}
 		
 		for( String relat : relatedPages )
@@ -105,11 +127,11 @@ public class ZhishiArticle implements Article
 			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_relatedPage, ic.getResourceURI( relat ) ) );
 		}
 		
-		for( int i = 0; i < pictures.size(); ++i)
-		{
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_thumbnail,  pictures.get(i).first ) );
-			tripleList.add( TripleWriter.getStringValueTriple(  pictures.get(i).first, URICenter.predicate_pictureLabels, pictures.get(i).second ) );
-		}
+//		for( int i = 0; i < pictures.size(); ++i)
+//		{
+//			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_thumbnail,  pictures.get(i).first ) );
+//			tripleList.add( TripleWriter.getStringValueTriple(  pictures.get(i).first, URICenter.predicate_pictureLabels, pictures.get(i).second ) );
+//		}
 		
 		for ( int i = 0; i < properties.size(); ++i )
 		{
@@ -124,6 +146,23 @@ public class ZhishiArticle implements Article
 		for ( String outerLink : externalLinks)
 		{
 			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_externalLink, outerLink ));
+		}
+		
+		if( imageInfo.depiction != null )
+		{
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_depiction, imageInfo.depiction ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_depictionThumbnail, imageInfo.depictionThumbnail ) );
+		}
+		for( String relatedImage : imageInfo.relatedImages )
+		{
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_relatedImage, relatedImage ) );
+		}
+		for( int i = 0; i < imageInfo.labels.size(); ++i )
+		{
+			if( !imageInfo.labels.get(i).second.equals( "" ) )
+				tripleList.add( TripleWriter.getStringValueTriple( imageInfo.labels.get(i).first, URICenter.predicate_rdfs_label, imageInfo.labels.get(i).second ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( imageInfo.rights.get(i).first, URICenter.predicate_dc_rights, imageInfo.rights.get(i).second ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( imageInfo.thumbnails.get(i).first, URICenter.predicate_foaf_thumbnail, imageInfo.thumbnails.get(i).second ) );
 		}
 
 		//TODO: other contents

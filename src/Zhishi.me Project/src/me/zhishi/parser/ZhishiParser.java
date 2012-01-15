@@ -2,6 +2,7 @@ package me.zhishi.parser;
 
 import java.util.ArrayList;
 
+import me.zhishi.parser.ZhishiArticle.ImageInfo;
 import me.zhishi.tools.StringPair;
 
 public interface ZhishiParser extends Parser
@@ -10,8 +11,9 @@ public interface ZhishiParser extends Parser
 	public String getAbstract();
 	public String getRedirect();
 
-	public ArrayList<StringPair> getPictures();
 	public ArrayList<StringPair> getProperties();
+	
+	public ImageInfo getImageInfo();
 	
 	public ArrayList<String> getCategories();
 	public ArrayList<String> getInternalLinks();

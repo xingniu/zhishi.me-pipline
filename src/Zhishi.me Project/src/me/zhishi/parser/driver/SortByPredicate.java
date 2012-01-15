@@ -24,21 +24,23 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class SortByPredicate
 {
-//	public static String source = URICenter.source_name_hudong;
-	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
 	
 	private static String[] contents = {
-						"label",
-						"category",
-						"abstract",
-						"relatedPage",
-						"internalLink",
-						"externalLink",
-						"redirect",
-						"disambiguation",
-						"articleLink",
+//						"label",
+//						"category",
+//						"abstract",
+//						"relatedPage",
+//						"internalLink",
+//						"externalLink",
+//						"redirect",
+//						"disambiguation",
+//						"articleLink",
+						"image",
+						"imageInfo",
 						"exception",
 						};
 	
@@ -68,32 +70,45 @@ public class SortByPredicate
 			for( Text val : values )
 			{
 				TripleReader tr = new TripleReader( val.toString() );
-				if( tr.getPredicate().equals( URICenter.predicate_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
-					mos.write( "label", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_article_category ) )
-					mos.write( "category", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_abstract ) )
-					mos.write( "abstract", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_relatedPage ) )
-					mos.write( "relatedPage", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_internalLink ) )
-					mos.write( "internalLink", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_externalLink ) )
-					mos.write( "externalLink", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_redirect ) )
-					mos.write( "redirect", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_disambiguation ) )
-					mos.write( "disambiguation", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_articleLink ) )
-				{
-					String resource = tr.getSubject();
-					String articleLink = tr.getObject();
-					Text pt = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_foaf_primaryTopic, resource ) );
-					Text lang = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_dc_language, "\"zh\"@en" ) );
-					mos.write( "articleLink", NullWritable.get(), pt );
-					mos.write( "articleLink", NullWritable.get(), lang );
-					mos.write( "articleLink", NullWritable.get(), val );
-				}
+				if( tr.getPredicate().equals( URICenter.predicate_rdfs_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
+					;
+//					mos.write( "label", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_category ) )
+//					mos.write( "category", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_abstract ) )
+//					mos.write( "abstract", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_relatedPage ) )
+//					mos.write( "relatedPage", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_internalLink ) )
+//					mos.write( "internalLink", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_externalLink ) )
+//					mos.write( "externalLink", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_redirect ) )
+//					mos.write( "redirect", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_disambiguation ) )
+//					mos.write( "disambiguation", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_foaf_page ) )
+//				{
+//					String resource = tr.getSubject();
+//					String articleLink = tr.getObject();
+//					Text pt = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_foaf_primaryTopic, resource ) );
+//					Text lang = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_dc_language, "\"zh\"@en" ) );
+//					mos.write( "articleLink", NullWritable.get(), pt );
+//					mos.write( "articleLink", NullWritable.get(), lang );
+//					mos.write( "articleLink", NullWritable.get(), val );
+//				}
+				else if( tr.getPredicate().equals( URICenter.predicate_foaf_depiction ) )
+					mos.write( "image", NullWritable.get(), val );
+				else if( tr.getPredicate().equals( URICenter.predicate_depictionThumbnail ) )
+					mos.write( "image", NullWritable.get(), val );
+				else if( tr.getPredicate().equals( URICenter.predicate_relatedImage ) )
+					mos.write( "image", NullWritable.get(), val );
+				else if( tr.getPredicate().equals( URICenter.predicate_rdfs_label ) )
+					mos.write( "imageInfo", NullWritable.get(), val );
+				else if( tr.getPredicate().equals( URICenter.predicate_dc_rights ) )
+					mos.write( "imageInfo", NullWritable.get(), val );
+				else if( tr.getPredicate().equals( URICenter.predicate_foaf_thumbnail ) )
+					mos.write( "imageInfo", NullWritable.get(), val );
 				else if( tr.getPredicate().equals( "<exception>" ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}
