@@ -18,7 +18,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String fileName = "10670.htm";
+		String fileName = "1735.htm";
 		String url = "http://baike.baidu.com/view/" + fileName;
 		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
@@ -186,17 +186,20 @@ public class BaiduParser implements ZhishiParser
 	{
 		ArrayList <StringPair> properties = new ArrayList<StringPair>();
 		
-		for(Element e:doc.select("div[class*=card-info] td[class=cardFirstTd")){
-			StringPair p = new StringPair();
-			p.first = e.text();
-			if (p.first.contains("："))
-				p.first = p.first.substring(0, p.first.indexOf("："));
-			properties.add(p);
-		}
-		int i = 0;
-		for(Element e:doc.select("div[class*=card-info] td[class=cardSecondTd")){
-			properties.get(i).second = e.text();
-			++i;
+		for( Element e : doc.select( "div[class=card-info-inner]" ) )
+		{
+			for( Element info : e.select( "td[class=cardFirstTd]" ) )
+			{
+				String property = info.text();
+				property = property.replaceAll( "[：:].*", "" );
+				properties.add( new StringPair( property, null ) );
+			}
+			int i = 0;
+			for( Element info : e.select( "td[class=cardSecondTd]" ) )
+			{
+				properties.get( i ).second = info.text();
+				++i;
+			}
 		}
 		
 		return properties;

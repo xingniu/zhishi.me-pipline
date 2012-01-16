@@ -24,8 +24,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class SortByPredicate
 {
-	public static String source = URICenter.source_name_hudong;
-//	public static String source = URICenter.source_name_baidu;
+//	public static String source = URICenter.source_name_hudong;
+	public static String source = URICenter.source_name_baidu;
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
 	
@@ -40,7 +40,8 @@ public class SortByPredicate
 //						"disambiguation",
 //						"articleLink",
 //						"image",
-						"imageInfo",
+//						"imageInfo",
+						"infobox",
 						"exception",
 						};
 	
@@ -103,12 +104,14 @@ public class SortByPredicate
 //					mos.write( "image", NullWritable.get(), val );
 //				else if( tr.getPredicate().equals( URICenter.predicate_relatedImage ) )
 //					mos.write( "image", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_rdfs_label ) )
-					mos.write( "imageInfo", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_dc_rights ) )
-					mos.write( "imageInfo", NullWritable.get(), val );
-				else if( tr.getPredicate().equals( URICenter.predicate_foaf_thumbnail ) )
-					mos.write( "imageInfo", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_rdfs_label ) )
+//					mos.write( "imageInfo", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_dc_rights ) )
+//					mos.write( "imageInfo", NullWritable.get(), val );
+//				else if( tr.getPredicate().equals( URICenter.predicate_foaf_thumbnail ) )
+//					mos.write( "imageInfo", NullWritable.get(), val );
+				else if( tr.getPredicate().matches( "<http://zhishi.me/.*/property/.*" ) )
+					mos.write( "infobox", NullWritable.get(), val );
 				else if( tr.getPredicate().equals( "<exception>" ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}

@@ -21,7 +21,7 @@ public class CopyFiles
 //					"disambiguation",
 //					"articleLink",
 //					"image",
-					"imageInfo",
+					"infobox",
 					};
 	
 	public static void main( String[] args )
@@ -43,7 +43,6 @@ public class CopyFiles
 			String line = null;
 			while( (line = hReader.readLine()) != null )
 			{
-//				System.out.println( line );
 				zWriter.writeLine( line );
 			}
 			hReader.close();

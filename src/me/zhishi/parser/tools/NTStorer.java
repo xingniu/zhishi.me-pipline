@@ -17,38 +17,46 @@ import me.zhishi.tools.file.TripleReader;
 import me.zhishi.tools.file.TripleWriter;
 import me.zhishi.tools.file.ZIPFileWriter;
 
-public class CategoryStorer
+public class NTStorer
 {
 	public static double releaseVersion = 3.0;
-	public static String source = URICenter.source_name_baidu;
-//	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
 	
 	private static ZIPFileWriter writer;
 	
 	public static void main(String[] args)
 	{
 //		storeHudongSKOS();
-		storeCategoryLabels();
+//		storeLabels( "category", "categoryLabel" );
+		storeLabels( "infobox", "propertyLabel" );
 	}
 	
-	public static void storeCategoryLabels()
+	public static void storeLabels( String inKey, String outKey )
 	{
 		Path p = new Path( releaseVersion, source );
-		writer = new ZIPFileWriter( p.getNTriplesPath(), p.getFileName( "categoryLabel" ) );
-		NTriplesReader reader = new NTriplesReader( p.getFilePath( "category" ) );
+		writer = new ZIPFileWriter( p.getNTriplesPath(), p.getFileName( outKey ) );
+		NTriplesReader reader = new NTriplesReader( p.getFilePath( inKey ) );
 		
-		HashSet<String> categoriesSet = new HashSet<String>();
+		HashSet<String> labelSet = new HashSet<String>();
 		while( reader.readNextLine() != null )
 		{
 			TripleReader tr = reader.getTripleReader();
-			String category = tr.getObjectContent();
-			categoriesSet.add( category );
+			String label = null;
+			if( inKey.equals( "category" ) )
+				label = tr.getObjectContent();
+			else if( inKey.equals( "infobox" ) )
+				label = tr.getPredicateContent();
+			labelSet.add( label );
 		}
 		
 		URICenter uc = new URICenter( source );
-		for( String c : categoriesSet )
+		for( String c : labelSet )
 		{
-			writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( c ), URICenter.predicate_rdfs_label, c ) );
+			if( inKey.equals( "category" ) )
+				writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( c ), URICenter.predicate_rdfs_label, c ) );
+			else if( inKey.equals( "infobox" ) )
+				writer.writeLine( TripleWriter.getStringValueTriple( uc.getURIByKey( "property", c ), URICenter.predicate_rdfs_label, c ) );
 		}
 		
 		reader.close();

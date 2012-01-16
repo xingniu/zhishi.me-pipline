@@ -127,7 +127,8 @@ public class ZhishiArticle implements Article
 		
 		for ( int i = 0; i < properties.size(); ++i )
 		{
-			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), ic.getPropertyPredicate( properties.get(i).first ), properties.get(i).second ) );
+			if( !properties.get(i).first.equals( "" ) )
+				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), ic.getPropertyPredicate( properties.get(i).first ), properties.get(i).second ) );
 		}
 		
 		for ( String innerlink : internalLinks )

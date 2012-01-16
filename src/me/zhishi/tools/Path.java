@@ -43,6 +43,8 @@ public class Path
 		fileNameMap.put( "skosCat", "skos_categories" );
 		fileNameMap.put( "image", "images" );
 		fileNameMap.put( "imageInfo", "image_information" );
+		fileNameMap.put( "infobox", "infobox_properties" );
+		fileNameMap.put( "propertyLabel", "infobox_property_definitions" );
 		fileNameMap.put( "exception", "EXCEPTION" );
 	}
 	
