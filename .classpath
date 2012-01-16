@@ -9,5 +9,7 @@
 	<classpathentry kind="lib" path="lib/commons-lang3-3.1.jar" sourcepath="lib/commons-lang3-3.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/json.org.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop/hadoop-core-0.20.2-cdh3u2.jar"/>
+	<classpathentry kind="lib" path="lib/fudannlp-1.05.jar"/>
+	<classpathentry kind="lib" path="lib/trove-2.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

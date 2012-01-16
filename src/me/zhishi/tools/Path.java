@@ -45,6 +45,7 @@ public class Path
 		fileNameMap.put( "imageInfo", "image_information" );
 		fileNameMap.put( "infobox", "infobox_properties" );
 		fileNameMap.put( "propertyLabel", "infobox_property_definitions" );
+		fileNameMap.put( "featureTags", "FEATURE_TAGS" );
 		fileNameMap.put( "exception", "EXCEPTION" );
 	}
 	
@@ -75,6 +76,12 @@ public class Path
 	public Path( double releaseVersion )
 	{
 		init( releaseVersion );
+	}
+	
+	public Path( double releaseVersion, boolean isHDFS )
+	{
+		this( releaseVersion );
+		this.isHDFS = isHDFS;
 	}
 	
 	public Path( double releaseVersion, String source )
@@ -151,6 +158,16 @@ public class Path
 	public String getRawStructuredDataPath()
 	{
 		return hdfs_projectDataPath + "RawStructuredData/" + source + "/";
+	}
+	
+	public String getMatchingPath()
+	{
+		return hdfs_projectDataPath + "Matching/";
+	}
+	
+	public String getJSONPath()
+	{
+		return getMatchingPath() + "JSON";
 	}
 	
 	public String getNTriplesPath()

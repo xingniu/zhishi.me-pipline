@@ -24,6 +24,8 @@ public class URICenter
 	// TODO : Pay attention here
 	public static String predicate_category_old = "<http://purl.org/dc/terms/subject>";
 	
+	public static String predicate_temp_featureTags = "<featureTags>";
+	
 	public static String predicate_foaf_primaryTopic = "<http://xmlns.com/foaf/0.1/primaryTopic>";
 	public static String predicate_foaf_depiction = "<http://xmlns.com/foaf/0.1/depiction>";
 	public static String predicate_foaf_page = "<http://xmlns.com/foaf/0.1/page>";
