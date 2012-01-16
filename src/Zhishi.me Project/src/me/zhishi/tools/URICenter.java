@@ -65,6 +65,11 @@ public class URICenter
 		return "<" + namespace + "property/" + zhishiEncode( label ) + ">";
 	}
 	
+	public String getURIByKey( String key, String label )
+	{
+		return namespace + key + "/" + zhishiEncode( label );
+	}
+	
 	public static String zhishiEncode( String str )
 	{
 		return TextTools.encoder( str ).replaceAll( "\\+", "_" );

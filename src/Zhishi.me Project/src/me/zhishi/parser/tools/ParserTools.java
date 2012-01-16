@@ -13,7 +13,7 @@ public class ParserTools
 	public static void main( String[] args ) throws IOException
 	{
 //		generateBZ2List( URICenter.source_name_hudong );
-		superviseNTs( URICenter.source_name_hudong, 3.0, "imageInfo" );
+		superviseNTs( URICenter.source_name_baidu, 3.0, "infobox" );
 	}
 	
 	public static void superviseNTs( String source, double version, String content )
@@ -23,23 +23,16 @@ public class ParserTools
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
-			if( tr.getPredicate().equals( URICenter.predicate_rdfs_label ) )
-			{
-				String str = tr.getObjectValue();
-				if( str.equals( "" ) || str.equals( "null" ) )
-				{
-					System.out.println( tr.getSubject() + "\t" + str );
-					ntReader.readNextLine();
-					System.out.println( ntReader.getTripleReader().getObject() );
-				}
-			}
-//			String str = tr.getObject();
+			String sub = tr.getSubjectContent();
+			String pre = tr.getPredicateContent();
+			String obj = tr.getObjectValue();
 //			if( str.length() >= 16 )
 //			if( str.contains( "<" ) )
 //			if( str.contains( "[" ) && str.endsWith( "]" ) )
 //			if( str.equals( "" ) || str.contains( "null" ) )
-//			if( str.contains( "<>" ) )
-//				System.out.println( tr.getSubjectContent() + "\t" + str );
+			pre = pre.replaceAll( "[：:].*", "" );
+			if( obj.equals( "" ) )
+				System.out.println( sub + "\t" + pre + "\t" + obj );
 		}
 	}
 

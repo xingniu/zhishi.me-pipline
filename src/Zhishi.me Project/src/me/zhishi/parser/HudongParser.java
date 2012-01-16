@@ -19,13 +19,13 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws IOException
 	{
-		String url = "http://www.hudong.com/wiki/三岔湖";
+		String url = "http://www.hudong.com/wiki/上海市";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
 		for( String t : article.toTriples() )
 		{
-//			System.out.println( t );
+			System.out.println( t );
 		}
 	}
 	
@@ -221,27 +221,33 @@ public class HudongParser implements ZhishiParser
 	{
 		ArrayList <StringPair> properties = new ArrayList<StringPair>();
 		
-		for (Element infoBox : doc.select("div[id=docinfotemplettable]"))
-			for (Element tr : infoBox.select("tr")){
-				StringPair p = new StringPair();
-				boolean flag1 = false;
-				boolean flag2 = false;
-				for (Element e : tr.select("td")){
-					if (e.hasAttr("align")){
-						flag1 = true;
-						p.first = e.text();
-						if (p.first.contains("："))
-							p.first = p.first.substring(0, p.first.indexOf("："));
+		for( Element infoBox : doc.select( "div[id=docinfotemplettable]" ) )
+		{
+			for( Element tr : infoBox.select( "tr" ) )
+			{
+				StringPair pv = new StringPair();
+				boolean hasProperty = false;
+				boolean hasValue = false;
+				for( Element e : tr.select( "td" ) )
+				{
+					if( e.hasAttr( "align" ) )
+					{
+						hasProperty = true;
+						pv.first = e.text();
+						pv.first = pv.first.replaceAll( "[：:].*", "" );
 					}
-					if (e.hasAttr("style")){
-						flag2 = true;
-						p.second = e.text();						
+					if( e.hasAttr( "style" ) )
+					{
+						hasValue = true;
+						pv.second = e.text();
 					}
 				}
-				if (flag1 && flag2) {
-					properties.add(p);
+				if( hasProperty && hasValue )
+				{
+					properties.add( pv );
 				}
 			}
+		}
 		
 		return properties;
 	}
