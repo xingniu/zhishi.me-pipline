@@ -35,7 +35,7 @@ public class Segment
 		}
 		
 		Path pp = new Path( releaseVersion, true );
-		HDFSFileWriter writer = new HDFSFileWriter( pp.getFilePath( "featureTags" ) );
+		HDFSFileWriter writer = new HDFSFileWriter( pp.getNTriplesFile( "featureTags" ) );
 		
 		String[] source = { URICenter.source_name_baidu, URICenter.source_name_hudong, URICenter.source_name_zhwiki };
 		for( int i = 0; i <= 2; ++i )
@@ -46,7 +46,7 @@ public class Segment
 			if( source[i].equals( URICenter.source_name_zhwiki ) )
 				p = new Path( 2.0, source[i] );
 			
-			NTriplesReader reader = new NTriplesReader( p.getFilePath( "disambiguation" ) );
+			NTriplesReader reader = new NTriplesReader( p.getNTriplesFile( "disambiguation" ) );
 			while( reader.readNextLine() != null )
 			{
 				TripleReader tr = reader.getTripleReader();

@@ -293,8 +293,8 @@ public class NTriplesToJSON
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, true );
 		
-		String inputPath = p.getNTriplesPath();
-		String outputPath = p.getJSONPath();
+		String inputPath = p.getNTriplesFolder();
+		String outputPath = p.getJSONFolder();
 		
 		Configuration conf = new Configuration();
 		

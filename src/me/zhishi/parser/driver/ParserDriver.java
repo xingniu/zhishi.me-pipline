@@ -45,7 +45,7 @@ public class ParserDriver
 			System.out.println( "Parsing " + source + ": " + archiveName );
 			
 			Path path = new Path( releaseVersion, source );
-			BZ2FileHandler fh = new BZ2FileHandler( path.getMainPageFilePath( archiveName ) );
+			BZ2FileHandler fh = new BZ2FileHandler( path.getMainPageFile( archiveName ) );
 			TarInputStream tin = (TarInputStream) fh.getInputStream();
 //			ZipOutputStream zipout = new ZipOutputStream( new FileOutputStream( path.getRawStructuredDataFilePath( archiveName ) ) );
 //			zipout.putNextEntry( new ZipEntry( archiveName + ".txt" ) );

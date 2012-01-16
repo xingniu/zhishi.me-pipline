@@ -40,7 +40,7 @@ public class FileExtractor
 		System.out.println( archiveName );
 		
 		Path path = new Path( releaseVersion, source );
-		BZ2FileHandler fh = new BZ2FileHandler( path.getMainPageFilePath( archiveName ) );
+		BZ2FileHandler fh = new BZ2FileHandler( path.getMainPageFile( archiveName ) );
 		TarInputStream tin = (TarInputStream) fh.getInputStream();
 		
 		TarEntry entry;
@@ -52,7 +52,7 @@ public class FileExtractor
 				
 				BufferedReader stringReader = new BufferedReader( new InputStreamReader( tin, charset ) );
 //				FileWriter fileWriter = new FileWriter( path.getMainPagePath() + Integer.toString( ID ) + ".htm", false );
-				PrintWriter fileWriter = new PrintWriter( path.getMainPagePath() + Integer.toString( ID ) + ".htm", charset.displayName());
+				PrintWriter fileWriter = new PrintWriter( path.getMainPageFolder() + Integer.toString( ID ) + ".htm", charset.displayName());
 				while( true )
 				{
 					String line = stringReader.readLine();

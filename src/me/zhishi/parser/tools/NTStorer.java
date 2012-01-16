@@ -50,8 +50,8 @@ public class NTStorer
 	public static void storeLabels( String inKey, String outKey )
 	{
 		Path p = new Path( releaseVersion, source );
-		writer = new ZIPFileWriter( p.getNTriplesPath(), p.getFileName( outKey ) );
-		NTriplesReader reader = new NTriplesReader( p.getFilePath( inKey ) );
+		writer = new ZIPFileWriter( p.getNTriplesFolder(), p.getNTriplesFileName( outKey ) );
+		NTriplesReader reader = new NTriplesReader( p.getNTriplesFile( inKey ) );
 		
 		HashSet<String> labelSet = new HashSet<String>();
 		while( reader.readNextLine() != null )
@@ -86,7 +86,7 @@ public class NTStorer
 		categorySet = new HashSet<String>();
 		counter = 0;
 		Path p = new Path( releaseVersion, URICenter.source_name_hudong );
-		writer = new ZIPFileWriter( p.getNTriplesPath(), p.getFileName( "skosCat" ) );
+		writer = new ZIPFileWriter( p.getNTriplesFolder(), p.getNTriplesFileName( "skosCat" ) );
 		
 		String root = "页面总分类";
 		try
@@ -162,11 +162,11 @@ public class NTStorer
 		for( String c : contents )
 		{
 			Path hp = new Path( releaseVersion, source, true );
-			HDFSFileReader hReader = new HDFSFileReader( hp.getFilePath( c ) );
+			HDFSFileReader hReader = new HDFSFileReader( hp.getNTriplesFile( c ) );
 			Path pp = new Path( releaseVersion, source, false );
-			ZIPFileWriter zWriter = new ZIPFileWriter( pp.getNTriplesPath(), pp.getFileName( c ) );
+			ZIPFileWriter zWriter = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( c ) );
 			
-			System.out.println( "Copying " + pp.getFileName( c ) );
+			System.out.println( "Copying " + pp.getNTriplesFileName( c ) );
 			
 			String line = null;
 			while( (line = hReader.readLine()) != null )
