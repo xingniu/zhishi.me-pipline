@@ -142,7 +142,7 @@ public class Path
 		return source;
 	}
 	
-	public String getMainPagePath()
+	public String getMainPageFolder()
 	{
 		if( isHDFS )
 			return hdfs_projectDataPath + "BaikePages/" + source + "/";
@@ -150,32 +150,32 @@ public class Path
 			return dumpPath + source + "/MainPages/";
 	}
 	
-	public String getMainPageFilePath( String file )
+	public String getMainPageFile( String file )
 	{
-		return getMainPagePath() + file + ".tar.bz2";
+		return getMainPageFolder() + file + ".tar.bz2";
 	}
 	
-	public String getRawStructuredDataPath()
+	public String getRawStructuredDataFolder()
 	{
 		return hdfs_projectDataPath + "RawStructuredData/" + source + "/";
 	}
 	
-	public String getMatchingPath()
+	public String getMatchingFolder()
 	{
 		return hdfs_projectDataPath + "Matching/";
 	}
 	
 	public String getMatchingFile()
 	{
-		return getMatchingPath() + "all_matches.txt";
+		return getMatchingFolder() + "all_matches.txt";
 	}
 	
-	public String getJSONPath()
+	public String getJSONFolder()
 	{
-		return getMatchingPath() + "JSON";
+		return getMatchingFolder() + "JSON/";
 	}
 	
-	public String getNTriplesPath()
+	public String getNTriplesFolder()
 	{
 		if( isHDFS )
 			return hdfs_projectDataPath + "NTriples/";
@@ -183,12 +183,12 @@ public class Path
 			return dumpPath + source + "/NTriples/";
 	}
 	
-	public String getFilePath( String keyword )
+	public String getNTriplesFile( String keyword )
 	{
-		return getNTriplesPath() + getFileName( keyword );
+		return getNTriplesFolder() + getNTriplesFileName( keyword );
 	}
 	
-	public String getFileName( String keyword )
+	public String getNTriplesFileName( String keyword )
 	{
 		return releaseVersion+"_"+sourcefileName+"_" + fileNameMap.get( keyword ) + "_zh.nt";
 	}

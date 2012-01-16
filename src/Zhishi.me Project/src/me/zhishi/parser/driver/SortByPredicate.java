@@ -139,8 +139,8 @@ public class SortByPredicate
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
-		String inputPath = p.getRawStructuredDataPath();
-		String outputPath = p.getNTriplesPath() + source + "/";
+		String inputPath = p.getRawStructuredDataFolder();
+		String outputPath = p.getNTriplesFolder() + source + "/";
 		
 		Configuration conf = new Configuration();
 		
@@ -170,7 +170,7 @@ public class SortByPredicate
 			for( String s : contents )
 			{
 				System.out.println( "Start moving files: " + s );
-				moveMergeFiles( fs, s, p.getFilePath( s ), conf, outputPath );
+				moveMergeFiles( fs, s, p.getNTriplesFile( s ), conf, outputPath );
 			}
 			fs.delete( new Path( outputPath ), true );
 		}

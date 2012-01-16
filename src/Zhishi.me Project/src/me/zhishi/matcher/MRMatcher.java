@@ -38,7 +38,7 @@ public class MRMatcher
 	static
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, true );
-		String MatchingFolder = p.getMatchingPath();
+		String MatchingFolder = p.getMatchingFolder();
 		initialMatchesFolder = MatchingFolder + "InitialMatch/";
 		removeDuplicatePairsFolder = MatchingFolder + "RemovedDuplicatePairs/";
 		removeDuplicateLeftFolder = MatchingFolder + "RemovedDuplicateLeft/";
@@ -293,7 +293,7 @@ public class MRMatcher
 	public static void match( String sourceA, String sourceB ) throws Exception
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, true );
-		String inputPath = p.getJSONPath();
+		String inputPath = p.getJSONFolder();
 		
 		Configuration conf = new Configuration();
 		

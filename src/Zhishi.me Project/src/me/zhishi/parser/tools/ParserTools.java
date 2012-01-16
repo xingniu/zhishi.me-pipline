@@ -19,7 +19,7 @@ public class ParserTools
 	public static void superviseNTs( String source, double version, String content )
 	{
 		Path p = new Path( version, source, true );
-		NTriplesReader ntReader = new NTriplesReader( p.getFilePath( content ) );
+		NTriplesReader ntReader = new NTriplesReader( p.getNTriplesFile( content ) );
 		while( ntReader.readNextLine() != null )
 		{
 			TripleReader tr = ntReader.getTripleReader();
@@ -45,15 +45,15 @@ public class ParserTools
 			maxDump = Path.baiduMax;
 		
 		Path p = new Path( 3.0, source, true );
-		HDFSFileWriter fileWriter = new HDFSFileWriter( p.getMainPagePath() + "FileList.txt", false );
+		HDFSFileWriter fileWriter = new HDFSFileWriter( p.getMainPageFolder() + "FileList.txt", false );
 		
 		for( int i = 0; i <= maxDump; ++i )
 		{
 			String archiveName = Integer.toString( i * 10000 + 1 );
 			archiveName += "-";
 			archiveName += Integer.toString( (i+1) * 10000 );
-			System.out.println( p.getMainPagePath() + archiveName + ".tar.bz2" );
-			fileWriter.writeLine( p.getMainPagePath() + archiveName + ".tar.bz2" );
+			System.out.println( p.getMainPageFolder() + archiveName + ".tar.bz2" );
+			fileWriter.writeLine( p.getMainPageFolder() + archiveName + ".tar.bz2" );
 		}
 		
 		fileWriter.close();
