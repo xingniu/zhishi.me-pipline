@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 public class TextTools
 {
+	public static String ignorablePunctuations = "[《》·\\-—“”]";
+	
 	/**
 	 * Reverse the given string.
 	 * @param str

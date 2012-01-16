@@ -10,13 +10,18 @@
 	<property name="target" value="1.6"/>
 	<property name="source" value="1.6"/>
 	<path id="Zhishi.me.classpath">
-		<pathelement location="bin"/>
-		<pathelement location="lib/ant.jar"/>
-		<pathelement location="lib/hadoop/commons-cli-1.2.jar"/>
-		<pathelement location="lib/hadoop/commons-logging-1.0.4.jar"/>
-		<pathelement location="lib/hadoop/hadoop-core-0.20.2-CDH3B4.jar"/>
+		<pathelement location="bin" />
+		<pathelement location="lib/ant.jar" />
+		<pathelement location="lib/hadoop/commons-cli-1.2.jar" />
+		<pathelement location="lib/hadoop/commons-logging-1.0.4.jar" />
+		<pathelement location="lib/hadoop/hadoop-core-0.20.2-cdh3u2.jar" />
+		<pathelement location="lib/jsoup-1.6.1.jar" />
+		<pathelement location="lib/commons-lang3-3.1.jar" />
+		<pathelement location="lib/json.org.jar" />
+		<pathelement location="lib/fudannlp-1.05.jar" />
+		<pathelement location="lib/trove-2.1.0.jar" />
 	</path>
-	
+
 	<target name="clean">
 		<delete dir="build" />
 	</target>
@@ -34,8 +39,9 @@
 	<target name="build" depends="build-project">
 		<jar destfile="build/NTriplesToJSON.jar">
 			<fileset dir="build" />
+			<zipgroupfileset dir="lib" includes="*.jar" />
 			<manifest>
-				<attribute name="Main-class" value="me.zhishi.tools.NTriplesToJSON" />
+				<attribute name="Main-class" value="me.zhishi.matcher.NTriplesToJSON" />
 			</manifest>
 		</jar>
 		<scp file="build/NTriplesToJSON.jar" todir="apexlab-xingniu:422871@172.16.7.11:programs/NTriplesToJSON.jar" trust="true" />
