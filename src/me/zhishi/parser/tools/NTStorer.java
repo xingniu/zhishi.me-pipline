@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 import me.zhishi.tools.Path;
 import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
+import me.zhishi.tools.file.HDFSFileReader;
 import me.zhishi.tools.file.NTriplesReader;
 import me.zhishi.tools.file.TripleReader;
 import me.zhishi.tools.file.TripleWriter;
@@ -22,14 +23,28 @@ public class NTStorer
 	public static double releaseVersion = 3.0;
 //	public static String source = URICenter.source_name_baidu;
 	public static String source = URICenter.source_name_hudong;
+	public static String[] contents = {
+//		"label",
+//		"category",
+//		"abstract",
+//		"externalLink",
+//		"relatedPage",
+//		"internalLink",
+//		"redirect",
+//		"disambiguation",
+//		"articleLink",
+//		"image",
+		"infobox",
+		};
 	
 	private static ZIPFileWriter writer;
 	
 	public static void main(String[] args)
 	{
-//		storeHudongSKOS();
+//		storeHDFSFile();
 //		storeLabels( "category", "categoryLabel" );
-		storeLabels( "infobox", "propertyLabel" );
+//		storeLabels( "infobox", "propertyLabel" );
+//		storeHudongSKOS();
 	}
 	
 	public static void storeLabels( String inKey, String outKey )
@@ -139,6 +154,27 @@ public class NTStorer
 			categorySet.add( cNode );
 			System.err.println( categorySet.size() + "/" + counter );
 			getSubCategory( cNode, info + '-' + (i+1), depth + 1 );
+		}
+	}
+	
+	public static void storeHDFSFile()
+	{
+		for( String c : contents )
+		{
+			Path hp = new Path( releaseVersion, source, true );
+			HDFSFileReader hReader = new HDFSFileReader( hp.getFilePath( c ) );
+			Path pp = new Path( releaseVersion, source, false );
+			ZIPFileWriter zWriter = new ZIPFileWriter( pp.getNTriplesPath(), pp.getFileName( c ) );
+			
+			System.out.println( "Copying " + pp.getFileName( c ) );
+			
+			String line = null;
+			while( (line = hReader.readLine()) != null )
+			{
+				zWriter.writeLine( line );
+			}
+			hReader.close();
+			zWriter.close();
 		}
 	}
 }

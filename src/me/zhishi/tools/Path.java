@@ -165,6 +165,11 @@ public class Path
 		return hdfs_projectDataPath + "Matching/";
 	}
 	
+	public String getMatchingFile()
+	{
+		return getMatchingPath() + "all_matches.txt";
+	}
+	
 	public String getJSONPath()
 	{
 		return getMatchingPath() + "JSON";
