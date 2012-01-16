@@ -17,9 +17,11 @@
 		<pathelement location="lib/hadoop/hadoop-core-0.20.2-cdh3u2.jar"/>
 		<pathelement location="lib/jsoup-1.6.1.jar"/>
 		<pathelement location="lib/commons-lang3-3.1.jar"/>
-		<pathelement location="lib/json.org.jar"/>
+		<pathelement location="lib/json.org.jar" />
+		<pathelement location="lib/fudannlp-1.05.jar" />
+		<pathelement location="lib/trove-2.1.0.jar" />
 	</path>
-	
+
 	<target name="clean">
 		<delete dir="build" />
 	</target>
