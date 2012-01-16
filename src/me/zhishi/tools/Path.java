@@ -45,6 +45,11 @@ public class Path
 		fileNameMap.put( "imageInfo", "image_information" );
 		fileNameMap.put( "infobox", "infobox_properties" );
 		fileNameMap.put( "propertyLabel", "infobox_property_definitions" );
+		
+		fileNameMap.put( "baiduLink", "baidubaike_links" );
+		fileNameMap.put( "hudongLink", "hudongbaike_links" );
+		fileNameMap.put( "zhwikiLink", "zhwiki_links" );
+		
 		fileNameMap.put( "featureTags", "FEATURE_TAGS" );
 		fileNameMap.put( "exception", "EXCEPTION" );
 	}
@@ -64,9 +69,9 @@ public class Path
 		this.releaseVersion = releaseVersion;
 		
 		String dumpVersion = null;
-		if( releaseVersion >= 2.0 && releaseVersion < 3.0 )
+		if( releaseVersion >= 2.0 && releaseVersion < 2.9 )
 			dumpVersion = "2011";
-		else if( releaseVersion >= 3.0 && releaseVersion < 4.0 )
+		else if( releaseVersion >= 2.9 && releaseVersion < 4.0 )
 			dumpVersion = "2011.12";
 		this.dumpVersion = dumpVersion;
 		
