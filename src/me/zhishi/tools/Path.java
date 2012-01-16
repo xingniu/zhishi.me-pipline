@@ -16,6 +16,7 @@ public class Path
 	public static String baiduFileName = "baidubaike";
 	public static String hudongFileName = "hudongbaike";
 	public static String zhwikiFileName = "zhwiki";
+	public static String zhishiFileName = "zhishi";
 	
 	private String source;
 	private String sourcefileName;
@@ -50,6 +51,9 @@ public class Path
 		fileNameMap.put( "hudongLink", "hudongbaike_links" );
 		fileNameMap.put( "zhwikiLink", "zhwiki_links" );
 		
+		fileNameMap.put( "ontology", "ontology" );
+		fileNameMap.put( "lookup", "lookup" );
+		
 		fileNameMap.put( "featureTags", "FEATURE_TAGS" );
 		fileNameMap.put( "exception", "EXCEPTION" );
 	}
@@ -62,6 +66,8 @@ public class Path
 			sourcefileName = hudongFileName;
 		else if( source.equals( URICenter.source_name_zhwiki ) )
 			sourcefileName = zhwikiFileName;
+		else if( source.equals( URICenter.source_name_zhishi ) )
+			sourcefileName = zhishiFileName;
 	}
 	
 	public void init( double releaseVersion )
@@ -81,11 +87,16 @@ public class Path
 	public Path( double releaseVersion )
 	{
 		init( releaseVersion );
+		source = URICenter.source_name_zhishi;
+		setSourcefileName( source );
+		isHDFS = false;
 	}
 	
 	public Path( double releaseVersion, boolean isHDFS )
 	{
 		this( releaseVersion );
+		source = URICenter.source_name_zhishi;
+		setSourcefileName( source );
 		this.isHDFS = isHDFS;
 	}
 	
@@ -94,6 +105,7 @@ public class Path
 		this( releaseVersion );
 		this.source = source;
 		setSourcefileName( source );
+		isHDFS = false;
 	}
 	
 	public Path( double releaseVersion, String source, boolean isHDFS )

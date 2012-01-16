@@ -19,6 +19,11 @@ public class TripleWriter
 		return getTripleLine( "<"+subjectURI+">", predicate, "\""+TextTools.getUnicode(str)+"\"@zh" );
 	}
 	
+	public static String getStringValueTripleAT( String subjectURI, String predicate, String str, String language )
+	{
+		return getTripleLine( subjectURI, predicate, "\""+TextTools.getUnicode(str)+"\"@" + language );
+	}
+	
 	public static String getValueTriple( String subjectURI, String predicate, String value, String type )
 	{
 		return getTripleLine( "<"+subjectURI+">", predicate, "\""+value+"\"^^<"+type+">" );

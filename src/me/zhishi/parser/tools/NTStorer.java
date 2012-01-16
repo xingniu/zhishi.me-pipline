@@ -45,6 +45,7 @@ public class NTStorer
 //		storeMatches();
 //		storeLabels( "category", "categoryLabel" );
 //		storeLabels( "infobox", "propertyLabel" );
+//		storeOntologyDefinition();
 //		storeHudongSKOS();
 	}
 	
@@ -199,6 +200,7 @@ public class NTStorer
 		HDFSFileReader reader = new HDFSFileReader( hp.getMatchingFile() );
 		
 		String[] ns = { URICenter.namespace_baidu, URICenter.namespace_hudong, URICenter.namespace_zhwiki };
+//		HashSet<String> instanceSet = new HashSet<String>();
 		int count[] = new int[3];
 		String line = null;
 		while( (line = reader.readLine()) != null )
@@ -215,12 +217,20 @@ public class NTStorer
 				count[1]++;
 				writer3.writeLine( TripleWriter.getTripleLine( segs[1], URICenter.predicate_owl_sameAs, segs[2] ) );
 				writer6.writeLine( TripleWriter.getTripleLine( segs[2], URICenter.predicate_owl_sameAs, segs[1] ) );
+//				if( instanceSet.contains( segs[2] ) )
+//					count++;
+//				else
+//					instanceSet.add( segs[2] );
 			}
 			else if( segs[1].contains( ns[2] ) )
 			{
 				count[2]++;
 				writer5.writeLine( TripleWriter.getTripleLine( segs[1], URICenter.predicate_owl_sameAs, segs[2] ) );
 				writer2.writeLine( TripleWriter.getTripleLine( segs[2], URICenter.predicate_owl_sameAs, segs[1] ) );
+//				if( instanceSet.contains( segs[1] ) )
+//				count++;
+//			else
+//				instanceSet.add( segs[1] );
 			}
 		}
 		reader.close();
@@ -235,5 +245,75 @@ public class NTStorer
 		writer4.close();
 		writer5.close();
 		writer6.close();
+	}
+	
+	public static void storeOntologyDefinition()
+	{
+		Path p = new Path( releaseVersion );
+		ZIPFileWriter writer = new ZIPFileWriter( p.getNTriplesFolder(), p.getNTriplesFileName( "ontology" ) );
+		
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdf_type, URICenter.object_owl_DatatypeProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_abstract, URICenter.predicate_rdfs_label, "has abstract", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_abstract, URICenter.predicate_rdfs_label, "摘要", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdfs_range, URICenter.object_xmls_string ) );
+		
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_disambiguation, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_disambiguation, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_disambiguation, URICenter.predicate_rdfs_label, "encyclopedia page disambiguates", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_disambiguation, URICenter.predicate_rdfs_label, "消歧义", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_disambiguation, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_disambiguation, URICenter.predicate_rdfs_range, URICenter.object_owl_Thing ) );
+
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_externalLink, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_externalLink, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_externalLink, URICenter.predicate_rdfs_label, "link from an encyclopedia page to an external page", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_externalLink, URICenter.predicate_rdfs_label, "外部链接", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_externalLink, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_externalLink, URICenter.predicate_rdfs_range, URICenter.object_foaf_Document ) );
+		
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_depictionThumbnail, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_depictionThumbnail, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_depictionThumbnail, URICenter.predicate_rdfs_label, "thumbnail of the resource' depiction", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_depictionThumbnail, URICenter.predicate_rdfs_label, "缩略描述图片", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_depictionThumbnail, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_depictionThumbnail, URICenter.predicate_rdfs_range, URICenter.object_foaf_Image ) );
+
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_internalLink, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_internalLink, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_internalLink, URICenter.predicate_rdfs_label, "link from an encyclopedia page to another encyclopedia page", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_internalLink, URICenter.predicate_rdfs_label, "百科内链", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_internalLink, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_internalLink, URICenter.predicate_rdfs_range, URICenter.object_owl_Thing ) );
+
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_redirect, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_redirect, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_redirect, URICenter.predicate_rdfs_label, "encyclopedia page redirect", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_redirect, URICenter.predicate_rdfs_label, "重定向", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_redirect, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_redirect, URICenter.predicate_rdfs_range, URICenter.object_owl_Thing ) );
+		
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_relatedPage, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_relatedPage, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_relatedPage, URICenter.predicate_rdfs_label, "related encyclopedia page", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_relatedPage, URICenter.predicate_rdfs_label, "相关词条", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_relatedPage, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_relatedPage, URICenter.predicate_rdfs_range, URICenter.object_owl_Thing ) );
+
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_relatedImage, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_relatedImage, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_relatedImage, URICenter.predicate_rdfs_label, "related image", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_relatedImage, URICenter.predicate_rdfs_label, "相关图片", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_relatedImage, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_relatedImage, URICenter.predicate_rdfs_range, URICenter.object_foaf_Image ) );
+
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_category, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_category, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_category, URICenter.predicate_rdfs_label, "category", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_category, URICenter.predicate_rdfs_label, "开放分类", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_category, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		
+		writer.close();
 	}
 }

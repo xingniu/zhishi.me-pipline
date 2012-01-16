@@ -4,10 +4,12 @@ public class URICenter
 {
 	public static String domainName = "http://zhishi.me/";
 	
+	public static String source_name_zhishi = "Zhishi";
 	public static String source_name_baidu = "Baidu";
 	public static String source_name_hudong = "Hudong";
 	public static String source_name_zhwiki = "zhWiki";
 	
+	public static String namespace_zhishi = domainName;
 	public static String namespace_baidu = "http://zhishi.me/baidubaike/";
 	public static String namespace_hudong = "http://zhishi.me/hudongbaike/";
 	public static String namespace_zhwiki = "http://zhishi.me/zhwiki/";
@@ -37,7 +39,18 @@ public class URICenter
 	public static String predicate_skos_prefLabel = "<http://www.w3.org/2004/02/skos/core#prefLabel>";
 	public static String predicate_rdf_type = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>";
 	public static String predicate_rdfs_label = "<http://www.w3.org/2000/01/rdf-schema#label>";
+	public static String predicate_rdfs_isDefinedBy = "<http://www.w3.org/2000/01/rdf-schema#isDefinedBy>";
+	public static String predicate_rdfs_domain = "<http://www.w3.org/2000/01/rdf-schema#domain>";
+	public static String predicate_rdfs_range = "<http://www.w3.org/2000/01/rdf-schema#range>";
 	public static String predicate_owl_sameAs = "<http://www.w3.org/2002/07/owl#sameAs>";
+	
+	public static String object_xmls_string = "<http://www.w3.org/2001/XMLSchema#string>";
+	public static String object_owl_Thing = "<http://www.w3.org/2002/07/owl#Thing>";
+	public static String object_owl_DatatypeProperty = "<http://www.w3.org/2002/07/owl#DatatypeProperty>";
+	public static String object_owl_ObjectProperty = "<http://www.w3.org/2002/07/owl#ObjectProperty>";
+	public static String object_foaf_Image = "<http://xmlns.com/foaf/0.1/Image>";
+	public static String object_foaf_Document = "<http://xmlns.com/foaf/0.1/Document>";
+	public static String object_zhishi = "<http://zhishi.me/ontology/>";
 	
 	public static String class_skos_concept = "http://www.w3.org/2004/02/skos/core#Concept";
 	
