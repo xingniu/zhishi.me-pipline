@@ -42,6 +42,7 @@ public class NTStorer
 	public static void main(String[] args)
 	{
 //		storeHDFSFile();
+//		storeMatches();
 //		storeLabels( "category", "categoryLabel" );
 //		storeLabels( "infobox", "propertyLabel" );
 //		storeHudongSKOS();
@@ -176,5 +177,63 @@ public class NTStorer
 			hReader.close();
 			zWriter.close();
 		}
+	}
+	
+	public static void storeMatches()
+	{
+		// TODO: version 2.9
+		Path pp = new Path( 2.9 );
+		pp.setSource( URICenter.source_name_baidu );
+		ZIPFileWriter writer1 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "hudongLink" ) );
+		ZIPFileWriter writer2 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "zhwikiLink" ) );
+		pp.setSource( URICenter.source_name_hudong );
+		ZIPFileWriter writer3 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "zhwikiLink" ) );
+		ZIPFileWriter writer4 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "baiduLink" ) );
+		pp.setSource( URICenter.source_name_zhwiki );
+		// TODO: dump version 
+		pp.setDumpVersion( "2011" );
+		ZIPFileWriter writer5 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "baiduLink" ) );
+		ZIPFileWriter writer6 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "hudongLink" ) );
+		
+		Path hp = new Path( releaseVersion, true );
+		HDFSFileReader reader = new HDFSFileReader( hp.getMatchingFile() );
+		
+		String[] ns = { URICenter.namespace_baidu, URICenter.namespace_hudong, URICenter.namespace_zhwiki };
+		int count[] = new int[3];
+		String line = null;
+		while( (line = reader.readLine()) != null )
+		{
+			String segs[] = line.split( "\t" );
+			if( segs[1].contains( ns[0] ) )
+			{
+				count[0]++;
+				writer1.writeLine( TripleWriter.getTripleLine( segs[1], URICenter.predicate_owl_sameAs, segs[2] ) );
+				writer4.writeLine( TripleWriter.getTripleLine( segs[2], URICenter.predicate_owl_sameAs, segs[1] ) );
+			}
+			else if( segs[1].contains( ns[1] ) )
+			{
+				count[1]++;
+				writer3.writeLine( TripleWriter.getTripleLine( segs[1], URICenter.predicate_owl_sameAs, segs[2] ) );
+				writer6.writeLine( TripleWriter.getTripleLine( segs[2], URICenter.predicate_owl_sameAs, segs[1] ) );
+			}
+			else if( segs[1].contains( ns[2] ) )
+			{
+				count[2]++;
+				writer5.writeLine( TripleWriter.getTripleLine( segs[1], URICenter.predicate_owl_sameAs, segs[2] ) );
+				writer2.writeLine( TripleWriter.getTripleLine( segs[2], URICenter.predicate_owl_sameAs, segs[1] ) );
+			}
+		}
+		reader.close();
+
+		System.out.println( count[0] );
+		System.out.println( count[1] );
+		System.out.println( count[2] );
+		
+		writer1.close();
+		writer2.close();
+		writer3.close();
+		writer4.close();
+		writer5.close();
+		writer6.close();
 	}
 }

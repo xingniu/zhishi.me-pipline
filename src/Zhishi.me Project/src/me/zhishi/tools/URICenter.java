@@ -37,6 +37,7 @@ public class URICenter
 	public static String predicate_skos_prefLabel = "<http://www.w3.org/2004/02/skos/core#prefLabel>";
 	public static String predicate_rdf_type = "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>";
 	public static String predicate_rdfs_label = "<http://www.w3.org/2000/01/rdf-schema#label>";
+	public static String predicate_owl_sameAs = "<http://www.w3.org/2002/07/owl#sameAs>";
 	
 	public static String class_skos_concept = "http://www.w3.org/2004/02/skos/core#Concept";
 	
