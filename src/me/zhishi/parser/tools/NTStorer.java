@@ -34,7 +34,7 @@ public class NTStorer
 //		"disambiguation",
 //		"articleLink",
 //		"image",
-		"infobox",
+//		"infobox",
 		};
 	
 	private static ZIPFileWriter writer;
@@ -42,6 +42,8 @@ public class NTStorer
 	public static void main(String[] args)
 	{
 //		storeHDFSFile();
+		// TODO: version 2.9
+		store( 2.9, URICenter.source_name_zhishi, "lookup" );
 //		storeMatches();
 //		storeLabels( "category", "categoryLabel" );
 //		storeLabels( "infobox", "propertyLabel" );
@@ -163,20 +165,7 @@ public class NTStorer
 	{
 		for( String c : contents )
 		{
-			Path hp = new Path( releaseVersion, source, true );
-			HDFSFileReader hReader = new HDFSFileReader( hp.getNTriplesFile( c ) );
-			Path pp = new Path( releaseVersion, source, false );
-			ZIPFileWriter zWriter = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( c ) );
-			
-			System.out.println( "Copying " + pp.getNTriplesFileName( c ) );
-			
-			String line = null;
-			while( (line = hReader.readLine()) != null )
-			{
-				zWriter.writeLine( line );
-			}
-			hReader.close();
-			zWriter.close();
+			store( releaseVersion, source, c );
 		}
 	}
 	
@@ -315,5 +304,23 @@ public class NTStorer
 		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_category, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
 		
 		writer.close();
+	}
+	
+	private static void store( double releaseVer, String src, String content )
+	{
+		Path hp = new Path( releaseVer, src, true );
+		HDFSFileReader hReader = new HDFSFileReader( hp.getNTriplesFile( content ) );
+		Path pp = new Path( releaseVer, src, false );
+		ZIPFileWriter zWriter = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( content ) );
+
+		System.out.println( "Copying " + pp.getNTriplesFileName( content ) );
+
+		String line = null;
+		while( (line = hReader.readLine()) != null )
+		{
+			zWriter.writeLine( line );
+		}
+		hReader.close();
+		zWriter.close();
 	}
 }
