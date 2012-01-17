@@ -141,6 +141,7 @@ public class Path
 	public void setReleaseVersion( double newVersion )
 	{
 		releaseVersion = newVersion;
+		init( releaseVersion );
 	}
 	
 	public double getReleaseVersion()
