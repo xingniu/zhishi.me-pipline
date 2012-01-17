@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
 
 import org.apache.hadoop.conf.Configuration;
@@ -29,6 +30,11 @@ public class NTriplesReader
 			if( !loadHDFSFile( path ) )
 				System.err.println( "Error found!" );
 		}
+		else if( path.toLowerCase().endsWith( ".gz" ) )
+		{
+			if( !loadGZipFile( path ) )
+				System.err.println( "An error was found in loading " + path );
+		}
 		else if( path.toLowerCase().endsWith( ".zip" ) )
 		{
 			if( !loadZipFile( path ) )
@@ -40,7 +46,9 @@ public class NTriplesReader
 		}
 		else 
 		{
-			if( loadZipFile( path + ".zip" ) )
+			if( loadGZipFile( path + ".gz" ) )
+				System.out.println( "GZipped file was found, using it instaed." );
+			else if( loadZipFile( path + ".zip" ) )
 				System.out.println( "Zipped file was found, using it instaed." );
 			else if( !loadTextFile( path ) )
 				System.err.println(  path + " was not found!");
@@ -55,6 +63,21 @@ public class NTriplesReader
 		{
 			FileSystem fs = FileSystem.get( URI.create( path ), conf );
 			stringReader = new BufferedReader( new InputStreamReader( fs.open( new Path( path ) ) ) );
+			System.out.println( "Loading " + path );
+			return true;
+		}
+		catch( IOException e )
+		{
+			return false;
+		}
+	}
+	
+	private boolean loadGZipFile( String path )
+	{
+		try
+		{
+			fin = new GZIPInputStream( new FileInputStream( path ) );
+			stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName( "UTF-8" ) ) );
 			System.out.println( "Loading " + path );
 			return true;
 		}
@@ -159,8 +182,8 @@ public class NTriplesReader
 	{
 		try
 		{
-			fin.close();
 			stringReader.close();
+			fin.close();
 		}
 		catch( IOException e )
 		{
