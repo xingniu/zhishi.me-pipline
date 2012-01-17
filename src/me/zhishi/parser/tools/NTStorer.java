@@ -12,11 +12,11 @@ import org.jsoup.nodes.Document;
 import me.zhishi.tools.Path;
 import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
+import me.zhishi.tools.file.GZIPFileWriter;
 import me.zhishi.tools.file.HDFSFileReader;
 import me.zhishi.tools.file.NTriplesReader;
 import me.zhishi.tools.file.TripleReader;
 import me.zhishi.tools.file.TripleWriter;
-import me.zhishi.tools.file.ZIPFileWriter;
 
 public class NTStorer
 {
@@ -34,16 +34,17 @@ public class NTStorer
 //		"disambiguation",
 //		"articleLink",
 //		"image",
+//		"imageInfo",
 //		"infobox",
 		};
 	
-	private static ZIPFileWriter writer;
+	private static GZIPFileWriter writer;
 	
 	public static void main(String[] args)
 	{
 //		storeHDFSFile();
 		// TODO: version 2.9
-		store( 2.9, URICenter.source_name_zhishi, "lookup" );
+//		store( 2.9, URICenter.source_name_zhishi, "lookup" );
 //		storeMatches();
 //		storeLabels( "category", "categoryLabel" );
 //		storeLabels( "infobox", "propertyLabel" );
@@ -54,7 +55,7 @@ public class NTStorer
 	public static void storeLabels( String inKey, String outKey )
 	{
 		Path p = new Path( releaseVersion, source );
-		writer = new ZIPFileWriter( p.getNTriplesFolder(), p.getNTriplesFileName( outKey ) );
+		writer = new GZIPFileWriter( p.getNTriplesFile( outKey ) );
 		NTriplesReader reader = new NTriplesReader( p.getNTriplesFile( inKey ) );
 		
 		HashSet<String> labelSet = new HashSet<String>();
@@ -90,7 +91,7 @@ public class NTStorer
 		categorySet = new HashSet<String>();
 		counter = 0;
 		Path p = new Path( releaseVersion, URICenter.source_name_hudong );
-		writer = new ZIPFileWriter( p.getNTriplesFolder(), p.getNTriplesFileName( "skosCat" ) );
+		writer = new GZIPFileWriter( p.getNTriplesFile( "skosCat" ) );
 		
 		String root = "页面总分类";
 		try
@@ -174,16 +175,16 @@ public class NTStorer
 		// TODO: version 2.9
 		Path pp = new Path( 2.9 );
 		pp.setSource( URICenter.source_name_baidu );
-		ZIPFileWriter writer1 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "hudongLink" ) );
-		ZIPFileWriter writer2 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "zhwikiLink" ) );
+		GZIPFileWriter writer1 = new GZIPFileWriter( pp.getNTriplesFile( "hudongLink" ) );
+		GZIPFileWriter writer2 = new GZIPFileWriter( pp.getNTriplesFile( "zhwikiLink" ) );
 		pp.setSource( URICenter.source_name_hudong );
-		ZIPFileWriter writer3 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "zhwikiLink" ) );
-		ZIPFileWriter writer4 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "baiduLink" ) );
+		GZIPFileWriter writer3 = new GZIPFileWriter( pp.getNTriplesFile( "zhwikiLink" ) );
+		GZIPFileWriter writer4 = new GZIPFileWriter( pp.getNTriplesFile( "baiduLink" ) );
 		pp.setSource( URICenter.source_name_zhwiki );
 		// TODO: dump version 
 		pp.setDumpVersion( "2011" );
-		ZIPFileWriter writer5 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "baiduLink" ) );
-		ZIPFileWriter writer6 = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( "hudongLink" ) );
+		GZIPFileWriter writer5 = new GZIPFileWriter( pp.getNTriplesFile( "baiduLink" ) );
+		GZIPFileWriter writer6 = new GZIPFileWriter( pp.getNTriplesFile( "hudongLink" ) );
 		
 		Path hp = new Path( releaseVersion, true );
 		HDFSFileReader reader = new HDFSFileReader( hp.getMatchingFile() );
@@ -239,7 +240,7 @@ public class NTStorer
 	public static void storeOntologyDefinition()
 	{
 		Path p = new Path( releaseVersion );
-		ZIPFileWriter writer = new ZIPFileWriter( p.getNTriplesFolder(), p.getNTriplesFileName( "ontology" ) );
+		GZIPFileWriter writer = new GZIPFileWriter( p.getNTriplesFolder(), p.getNTriplesFileName( "ontology" ) );
 		
 		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdf_type, URICenter.object_owl_DatatypeProperty ) );
 		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
@@ -311,7 +312,7 @@ public class NTStorer
 		Path hp = new Path( releaseVer, src, true );
 		HDFSFileReader hReader = new HDFSFileReader( hp.getNTriplesFile( content ) );
 		Path pp = new Path( releaseVer, src, false );
-		ZIPFileWriter zWriter = new ZIPFileWriter( pp.getNTriplesFolder(), pp.getNTriplesFileName( content ) );
+		GZIPFileWriter zWriter = new GZIPFileWriter( pp.getNTriplesFile( content ) );
 
 		System.out.println( "Copying " + pp.getNTriplesFileName( content ) );
 
