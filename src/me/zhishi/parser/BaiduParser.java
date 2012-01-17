@@ -2,6 +2,8 @@ package me.zhishi.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -157,10 +159,13 @@ public class BaiduParser implements ZhishiParser
 				break;
 			for( Element img : pic.getElementsByAttributeValue( "class", "card-image editorImg" ) )
 			{
-				imageInfo.depictionThumbnail = img.attr( "src" );
+				String imgURI = getValidURL( img.attr( "src" ) );
+				if( imgURI == null )
+					continue;
+				imageInfo.depictionThumbnail = imgURI;
 				imageInfo.depiction = getCompleteImg( imageInfo.depictionThumbnail );
 				imageInfo.labels.add( new StringPair( imageInfo.depiction, getCleanImgTitle( img.attr( "title" ) ) ) );
-				imageInfo.rights.add( new StringPair( imageInfo.depiction, prefix + pic.attr( "href" ) ) );
+				imageInfo.rights.add( new StringPair( imageInfo.depiction, getValidURL( prefix + pic.attr( "href" ) ) ) );
 				imageInfo.thumbnails.add( new StringPair( imageInfo.depiction, imageInfo.depictionThumbnail ) );
 			}
 		}
@@ -170,10 +175,12 @@ public class BaiduParser implements ZhishiParser
 			String album = pic.attr( "href" );
 			for( Element img : pic.getElementsByAttributeValue( "class", "editorImg log-set-param" ) )
 			{
-				String imgURI = getCompleteImg( img.attr( "src" ) );
+				String imgURI = getValidURL( getCompleteImg( img.attr( "src" ) ) );
+				if( imgURI == null )
+					continue;
 				imageInfo.relatedImages.add( imgURI );
 				imageInfo.labels.add( new StringPair( imgURI, getCleanImgTitle( img.attr( "title" ) ) ) );
-				imageInfo.rights.add( new StringPair( imgURI, prefix + album ) );
+				imageInfo.rights.add( new StringPair( imgURI, getValidURL( prefix + album ) ) );
 				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
 			}
 		}
@@ -237,6 +244,19 @@ public class BaiduParser implements ZhishiParser
 		
 		return new ArrayList<String>( internalLinksSet );
 	}
+	
+	private String getValidURL( String url )
+	{
+		try
+		{
+			URI uri = new URI( url );
+			return uri.toString();
+		}
+		catch( URISyntaxException e )
+		{
+			return null;
+		}
+	}
 
 	@Override
 	public ArrayList<String> getExternalLinks()
@@ -246,9 +266,13 @@ public class BaiduParser implements ZhishiParser
 		for( Element link : doc.select( "div[class*=main-body]" ).select( "a" ) )
 			if( link.hasAttr( "href" ) )
 			{
-				String tmp = link.attr( "href" );
-				if( tmp.startsWith( "http://" ) && !tmp.startsWith( "http://baike.baidu.com/view/" ) )
-					outerLinks.add( tmp.replaceAll( "[\\s]", "" ) );
+				String tmp = link.attr( "href" ).toLowerCase();
+				if( !tmp.startsWith( "http://baike.baidu.com/view/" ) && tmp.startsWith( "http" ) )
+				{
+					String url = getValidURL( tmp );
+					if( url != null )
+						outerLinks.add( url );
+				}
 			}
 
 		return outerLinks;
@@ -352,8 +376,12 @@ public class BaiduParser implements ZhishiParser
 			if( link.hasAttr( "href" ) )
 			{
 				String tmp = link.attr( "href" );
-				if( tmp.startsWith( "http://" ) && !tmp.startsWith( "http://baike.baidu.com/view/" ) )
-					outerLinks.add( tmp );
+				if( !tmp.startsWith( "http://baike.baidu.com/view/" ) && tmp.startsWith( "http" ) )
+				{
+					String url = getValidURL( tmp );
+					if( url != null )
+						outerLinks.add( url );
+				}
 			}
 		}
 		return outerLinks;

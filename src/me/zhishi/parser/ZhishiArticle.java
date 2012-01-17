@@ -154,7 +154,8 @@ public class ZhishiArticle implements Article
 		{
 			if( !imageInfo.labels.get(i).second.equals( "" ) )
 				tripleList.add( TripleWriter.getStringValueTriple( imageInfo.labels.get(i).first, URICenter.predicate_rdfs_label, imageInfo.labels.get(i).second ) );
-			tripleList.add( TripleWriter.getResourceObjectTriple( imageInfo.rights.get(i).first, URICenter.predicate_dc_rights, imageInfo.rights.get(i).second ) );
+			if( imageInfo.rights.get(i).second != null )
+				tripleList.add( TripleWriter.getResourceObjectTriple( imageInfo.rights.get(i).first, URICenter.predicate_dc_rights, imageInfo.rights.get(i).second ) );
 			tripleList.add( TripleWriter.getResourceObjectTriple( imageInfo.thumbnails.get(i).first, URICenter.predicate_foaf_thumbnail, imageInfo.thumbnails.get(i).second ) );
 		}
 

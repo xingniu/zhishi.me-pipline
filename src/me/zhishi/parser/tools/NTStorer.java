@@ -21,20 +21,20 @@ import me.zhishi.tools.file.TripleWriter;
 public class NTStorer
 {
 	public static double releaseVersion = 3.0;
-//	public static String source = URICenter.source_name_baidu;
-	public static String source = URICenter.source_name_hudong;
+	public static String source = URICenter.source_name_baidu;
+//	public static String source = URICenter.source_name_hudong;
 	public static String[] contents = {
 //		"label",
 //		"category",
 //		"abstract",
-//		"externalLink",
+		"externalLink",
 //		"relatedPage",
 //		"internalLink",
 //		"redirect",
 //		"disambiguation",
 //		"articleLink",
 //		"image",
-//		"imageInfo",
+		"imageInfo",
 //		"infobox",
 		};
 	
@@ -42,7 +42,7 @@ public class NTStorer
 	
 	public static void main(String[] args)
 	{
-//		storeHDFSFile();
+		storeHDFSFile();
 		// TODO: version 2.9
 //		store( 2.9, URICenter.source_name_zhishi, "lookup" );
 //		storeMatches();

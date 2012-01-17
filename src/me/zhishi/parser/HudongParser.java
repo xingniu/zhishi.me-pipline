@@ -2,6 +2,8 @@ package me.zhishi.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -167,10 +169,13 @@ public class HudongParser implements ZhishiParser
 			{
 				if( !pic.child( 0 ).attr( "src" ).contains( ".att.hudong.com" ) )
 					continue;
-				imageInfo.depictionThumbnail = pic.child( 0 ).attr( "src" );
+				String imgURI = getValidURL( pic.child( 0 ).attr( "src" ) );
+				if( imgURI == null )
+					continue;
+				imageInfo.depictionThumbnail = imgURI;
 				imageInfo.depiction = getCompleteImg( imageInfo.depictionThumbnail );
 				imageInfo.labels.add( new StringPair( imageInfo.depiction, getLabel() ) );
-				imageInfo.rights.add( new StringPair( imageInfo.depiction, pic.attr( "href" ) ) );
+				imageInfo.rights.add( new StringPair( imageInfo.depiction, getValidURL( pic.attr( "href" ) ) ) );
 				imageInfo.thumbnails.add( new StringPair( imageInfo.depiction, imageInfo.depictionThumbnail ) );
 			}
 		}
@@ -180,8 +185,8 @@ public class HudongParser implements ZhishiParser
 			if( !pic.children().toString().equals( "" ) )
 			{
 				Element img = pic.child( 0 );
-				String imgURI = getCompleteImg( img.attr( "src" ) );
-				if( !imgURI.contains( ".att.hudong.com" ) )
+				String imgURI = getValidURL( getCompleteImg( img.attr( "src" ) ) );
+				if( imgURI == null || !imgURI.contains( ".att.hudong.com" )  )
 					continue;
 				if( imageInfo.depiction == null )
 				{
@@ -193,7 +198,7 @@ public class HudongParser implements ZhishiParser
 					imageInfo.relatedImages.add( imgURI );
 				}
 				imageInfo.labels.add( new StringPair( imgURI, getCleanImgTitle( img ) ) );
-				imageInfo.rights.add( new StringPair( imgURI, pic.attr( "href" ) ) );
+				imageInfo.rights.add( new StringPair( imgURI, getValidURL( pic.attr( "href" ) ) ) );
 				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
 			}
 		}
@@ -203,12 +208,15 @@ public class HudongParser implements ZhishiParser
 			if( !pic.children().toString().equals( "" ) )
 			{
 				Element img = pic.child( 0 );
-				String imgURI = getCompleteImg( img.attr( "src" ) );
+				
+				String imgURI = getValidURL( getCompleteImg( img.attr( "src" ) ) );
+				if( imgURI == null )
+					continue;
 				imageInfo.relatedImages.add( imgURI );
 				if( !imgURI.contains( ".att.hudong.com" ) )
 					continue;
 				imageInfo.labels.add( new StringPair( imgURI, getCleanImgTitle( img ) ) );
-				imageInfo.rights.add( new StringPair( imgURI, pic.attr( "href" ) ) );
+				imageInfo.rights.add( new StringPair( imgURI, getValidURL( pic.attr( "href" ) ) ) );
 				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
 			}
 		}
@@ -277,6 +285,19 @@ public class HudongParser implements ZhishiParser
 		
 		return new ArrayList<String>( internalLinksSet );
 	}
+	
+	private String getValidURL( String url )
+	{
+		try
+		{
+			URI uri = new URI( url );
+			return uri.toString();
+		}
+		catch( URISyntaxException e )
+		{
+			return null;
+		}
+	}
 
 	@Override
 	public ArrayList<String> getExternalLinks()
@@ -285,13 +306,17 @@ public class HudongParser implements ZhishiParser
 
 		for( Element link : doc.select( "div[class=relevantinfo] > dl[class^=reference]" ).select( "input" ) )
 			if( link.hasAttr( "value" ) )
-				outerLinks.add( link.attr( "value" ).replaceAll( "[\\s]", "" ) );
+			{
+				String url = getValidURL( link.attr( "value" ) );
+				if( url != null && url.startsWith( "http" ) )
+					outerLinks.add( url );
+			}
 		for( Element link : doc.select( "div[class=relevantinfo] > dl[id=show_quote]" ).select( "a" ) )
 			if( link.hasAttr( "href" ) )
 			{
-				String tmp = link.attr( "href" );
-				if( tmp.startsWith( "http://" ) )
-					outerLinks.add( tmp.replaceAll( "[\\s]", "" ) );
+				String url = getValidURL( link.attr( "href" ) );
+				if( url != null && url.startsWith( "http" ) )
+					outerLinks.add( url );
 			}
 
 		return outerLinks;
