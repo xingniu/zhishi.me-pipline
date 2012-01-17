@@ -10,16 +10,18 @@
 	<property name="target" value="1.6"/>
 	<property name="source" value="1.6"/>
 	<path id="Zhishi.me.classpath">
-		<pathelement location="bin"/>
-		<pathelement location="lib/ant.jar"/>
-		<pathelement location="lib/hadoop/commons-cli-1.2.jar"/>
-		<pathelement location="lib/hadoop/commons-logging-1.0.4.jar"/>
-		<pathelement location="lib/hadoop/hadoop-core-0.20.2-cdh3u2.jar"/>
-		<pathelement location="lib/jsoup-1.6.1.jar"/>
-		<pathelement location="lib/commons-lang3-3.1.jar"/>
-		<pathelement location="lib/json.org.jar"/>
+		<pathelement location="bin" />
+		<pathelement location="lib/ant.jar" />
+		<pathelement location="lib/hadoop/commons-cli-1.2.jar" />
+		<pathelement location="lib/hadoop/commons-logging-1.0.4.jar" />
+		<pathelement location="lib/hadoop/hadoop-core-0.20.2-cdh3u2.jar" />
+		<pathelement location="lib/jsoup-1.6.1.jar" />
+		<pathelement location="lib/commons-lang3-3.1.jar" />
+		<pathelement location="lib/json.org.jar" />
+		<pathelement location="lib/fudannlp-1.05.jar" />
+		<pathelement location="lib/trove-2.1.0.jar" />
 	</path>
-	
+
 	<target name="clean">
 		<delete dir="build" />
 	</target>
@@ -32,7 +34,8 @@
 		<javac debug="true" srcdir="src" destdir="build" encoding="UTF-8">
 			<classpath refid="Zhishi.me.classpath" />
 		</javac>
-		<copy file="src/config.ini" todir="build"></copy>
+		<copy file="src/config.ini" todir="build">
+		</copy>
 	</target>
 
 	<target name="build" depends="build-project">
@@ -54,7 +57,7 @@
 					-reducer org.apache.hadoop.mapred.lib.IdentityReducer
 					-numReduceTasks 0
 					-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat
-					-jobconf mapred.line.input.format.linespermap=2
+					-jobconf mapred.line.input.format.linespermap=1
 					-jobconf mapred.job.name='Parse Baidu Baike HTML'"/>
 	</target>
 </project>

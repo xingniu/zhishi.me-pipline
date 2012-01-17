@@ -33,17 +33,17 @@ public class SortByPredicate
 	private static HashSet<String> contents = new HashSet<String>();
 	static
 	{
-		contents.add( "label" );
+//		contents.add( "label" );
 //		contents.add( "category" );
 //		contents.add( "abstract" );
 //		contents.add( "relatedPage" );
 //		contents.add( "internalLink" );
-//		contents.add( "externalLink" );
-		contents.add( "redirect" );
-		contents.add( "disambiguation" );
+		contents.add( "externalLink" );
+//		contents.add( "redirect" );
+//		contents.add( "disambiguation" );
 //		contents.add( "articleLink" );
 //		contents.add( "image" );
-//		contents.add( "imageInfo" );
+		contents.add( "imageInfo" );
 //		contents.add( "infobox" );
 		contents.add( "exception" );
 	}
@@ -106,7 +106,7 @@ public class SortByPredicate
 					mos.write( "image", NullWritable.get(), val );
 				else if( contents.contains( "image" ) && tr.getPredicate().equals( URICenter.predicate_relatedImage ) )
 					mos.write( "image", NullWritable.get(), val );
-				else if( contents.contains( "imageInfo" ) && tr.getPredicate().equals( URICenter.predicate_rdfs_label ) )
+				else if( contents.contains( "imageInfo" ) && tr.getPredicate().equals( URICenter.predicate_rdfs_label ) && !tr.getSubject().startsWith( "<" + URICenter.domainName ) )
 					mos.write( "imageInfo", NullWritable.get(), val );
 				else if( contents.contains( "imageInfo" ) && tr.getPredicate().equals( URICenter.predicate_dc_rights ) )
 					mos.write( "imageInfo", NullWritable.get(), val );
@@ -190,7 +190,7 @@ public class SortByPredicate
 			try
 			{
 				System.out.println( "Copying " + fileName );
-				FileUtil.copy( fs, new Path(folder+fileName), fs, new Path(tempFolder+fileName), false, conf );
+				FileUtil.copy( fs, new Path(folder+fileName), fs, new Path(tempFolder+fileName), true, conf );
 			}
 			catch( FileNotFoundException e )
 			{

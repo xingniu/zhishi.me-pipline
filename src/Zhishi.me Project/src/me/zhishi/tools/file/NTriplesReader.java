@@ -33,12 +33,12 @@ public class NTriplesReader
 		else if( path.toLowerCase().endsWith( ".gz" ) )
 		{
 			if( !loadGZipFile( path ) )
-				System.err.println( "An error was found in loading " + path );
+				System.err.println( "An error is found in loading " + path );
 		}
 		else if( path.toLowerCase().endsWith( ".zip" ) )
 		{
 			if( !loadZipFile( path ) )
-				System.err.println( "An error was found in loading " + path );
+				System.err.println( "An error is found in loading " + path );
 		}
 		else if( path.toLowerCase().endsWith( ".bz2" ) )
 		{
@@ -47,9 +47,9 @@ public class NTriplesReader
 		else 
 		{
 			if( loadGZipFile( path + ".gz" ) )
-				System.out.println( "GZipped file was found, using it instaed." );
+				System.out.println( "GZipped file is found, using it instaed." );
 			else if( loadZipFile( path + ".zip" ) )
-				System.out.println( "Zipped file was found, using it instaed." );
+				System.out.println( "Zipped file is found, using it instaed." );
 			else if( !loadTextFile( path ) )
 				System.err.println(  path + " was not found!");
 		}
