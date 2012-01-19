@@ -288,6 +288,8 @@ public class HudongParser implements ZhishiParser
 	
 	private String getValidURL( String url )
 	{
+		if( url.equals( "" ) )
+			return null;
 		try
 		{
 			URI uri = new URI( url );

@@ -25,8 +25,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class SortByPredicate
 {
-//	public static String source = URICenter.source_name_hudong;
-	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
 	
@@ -38,12 +38,12 @@ public class SortByPredicate
 //		contents.add( "abstract" );
 //		contents.add( "relatedPage" );
 //		contents.add( "internalLink" );
-		contents.add( "externalLink" );
+//		contents.add( "externalLink" );
 //		contents.add( "redirect" );
 //		contents.add( "disambiguation" );
 //		contents.add( "articleLink" );
-//		contents.add( "image" );
-		contents.add( "imageInfo" );
+		contents.add( "image" );
+//		contents.add( "imageInfo" );
 //		contents.add( "infobox" );
 		contents.add( "exception" );
 	}
