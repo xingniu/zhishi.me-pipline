@@ -14,12 +14,12 @@ public class ParserTools
 	public static void main( String[] args ) throws Exception
 	{
 //		generateBZ2List( URICenter.source_name_hudong );
-//		superviseNTs( URICenter.source_name_hudong, 3.0, "imageInfo" );
+		superviseNTs( URICenter.source_name_hudong, 3.0, "image" );
 	}
 	
 	public static void superviseNTs( String source, double version, String content )
 	{
-		Path p = new Path( version, source, false );
+		Path p = new Path( version, source, true );
 		NTriplesReader ntReader = new NTriplesReader( p.getNTriplesFile( content ) );
 		int counter = 0;
 		while( ntReader.readNextLine() != null )
@@ -28,29 +28,16 @@ public class ParserTools
 			String sub = tr.getSubject();
 			String pre = tr.getPredicate();
 			String obj = tr.getObject();
-			if( pre.equals( URICenter.predicate_dc_rights ) )
-			{
-				sub = sub.substring( 1, sub.length() - 1 );
-				obj = obj.substring( 1, obj.length() - 1 );
-				try
-				{
-					URI uri1 = new URI( sub );
-					URI uri2 = new URI( obj );
-				}
-				catch( URISyntaxException e )
-				{
-//					System.out.println( sub + "\t" + pre + "\t" + obj );
-//					e.printStackTrace();
-					counter++;
-				}
-			}
 //			if( str.length() >= 16 )
 //			if( str.contains( "<" ) )
 //			if( str.contains( "[" ) && str.endsWith( "]" ) )
 //			if( str.equals( "" ) || str.contains( "null" ) )
 //			if( !obj.startsWith( "http://" ) )
-//			if( sub.equals( "四川北方硝化棉股份有限公司" ) )
-//				System.out.println( sub + "\t" + pre + "\t" + obj );
+			if( obj.equals( "<>" ) )
+			{
+				counter++;
+				System.out.println( sub + "\t" + pre + "\t" + obj );
+			}
 		}
 		System.out.println( counter );
 	}
