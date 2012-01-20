@@ -24,18 +24,18 @@ public class NTStorer
 //	public static String source = URICenter.source_name_baidu;
 	public static String source = URICenter.source_name_hudong;
 	public static String[] contents = {
-//		"label",
-//		"category",
-//		"abstract",
-//		"externalLink",
-//		"relatedPage",
-//		"internalLink",
-//		"redirect",
-//		"disambiguation",
-//		"articleLink",
+		"label",
+		"category",
+		"abstract",
+		"externalLink",
+		"relatedPage",
+		"internalLink",
+		"redirect",
+		"disambiguation",
+		"articleLink",
 		"image",
-//		"imageInfo",
-//		"infobox",
+		"imageInfo",
+		"infobox",
 		};
 	
 	private static GZIPFileWriter writer;

@@ -19,9 +19,9 @@ import me.zhishi.tools.StringPair;
 
 public class HudongParser implements ZhishiParser
 {
-	public static void main(String args[]) throws IOException
+	public static void main(String args[]) throws Exception
 	{
-		String url = "http://www.hudong.com/wiki/上海市";
+		String url = "http://www.hudong.com/wiki/美国";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -32,10 +32,12 @@ public class HudongParser implements ZhishiParser
 	}
 	
 	protected Document doc;
+//	private String fileName;
 	
 	public HudongParser( InputStream is, String fileName ) throws IOException
 	{
 		doc = Jsoup.parse( is, "UTF-8", "http://www.hudong.com/" );
+//		this.fileName = fileName;
 	}
 	
 	public HudongParser( String url ) throws IOException
@@ -44,7 +46,7 @@ public class HudongParser implements ZhishiParser
 	}
 	
 	@Override
-	public Article parse()
+	public Article parse() throws Exception
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_hudong );
 		
@@ -64,6 +66,9 @@ public class HudongParser implements ZhishiParser
 				article.articleLink = "http://www.hudong.com/wiki/" + TextTools.encoder( article.label );
 			article.redirect = getRedirect();
 		}
+		
+//		if( article.label != null && article.label.equals( "美国" ) )
+//			throw new Exception( fileName );
 		
 		article.isDisambiguationPage = isDisambiguationPage();
 		article.disambiguationLabels = getDisambiguations();
@@ -172,8 +177,15 @@ public class HudongParser implements ZhishiParser
 				String imgURI = getValidURL( pic.child( 0 ).attr( "src" ) );
 				if( imgURI == null )
 					continue;
-				imageInfo.depictionThumbnail = imgURI;
-				imageInfo.depiction = getCompleteImg( imageInfo.depictionThumbnail );
+				if( imageInfo.depiction == null )
+				{
+					imageInfo.depictionThumbnail = imgURI;
+					imageInfo.depiction = getCompleteImg( imageInfo.depictionThumbnail );
+				}
+				else
+				{
+					imageInfo.relatedImages.add( imgURI );
+				}
 				imageInfo.labels.add( new StringPair( imageInfo.depiction, getLabel() ) );
 				imageInfo.rights.add( new StringPair( imageInfo.depiction, getValidURL( pic.attr( "href" ) ) ) );
 				imageInfo.thumbnails.add( new StringPair( imageInfo.depiction, imageInfo.depictionThumbnail ) );
