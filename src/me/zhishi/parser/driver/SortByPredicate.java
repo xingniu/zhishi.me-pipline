@@ -33,18 +33,18 @@ public class SortByPredicate
 	private static HashSet<String> contents = new HashSet<String>();
 	static
 	{
-//		contents.add( "label" );
-//		contents.add( "category" );
-//		contents.add( "abstract" );
-//		contents.add( "relatedPage" );
-//		contents.add( "internalLink" );
-//		contents.add( "externalLink" );
-//		contents.add( "redirect" );
-//		contents.add( "disambiguation" );
-//		contents.add( "articleLink" );
+		contents.add( "label" );
+		contents.add( "category" );
+		contents.add( "abstract" );
+		contents.add( "relatedPage" );
+		contents.add( "internalLink" );
+		contents.add( "externalLink" );
+		contents.add( "redirect" );
+		contents.add( "disambiguation" );
+		contents.add( "articleLink" );
 		contents.add( "image" );
-//		contents.add( "imageInfo" );
-//		contents.add( "infobox" );
+		contents.add( "imageInfo" );
+		contents.add( "infobox" );
 		contents.add( "exception" );
 	}
 	
@@ -71,9 +71,15 @@ public class SortByPredicate
 		@Override
 		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
 		{
+			HashSet<String> tripleSet = new HashSet<String>();
 			for( Text val : values )
 			{
-				TripleReader tr = new TripleReader( val.toString() );
+				String triple = val.toString();
+				if( tripleSet.contains( triple ) )
+					continue;
+				else
+					tripleSet.add( triple );
+				TripleReader tr = new TripleReader( triple );
 				if( contents.contains( "label" ) && tr.getPredicate().equals( URICenter.predicate_rdfs_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
 					mos.write( "label", NullWritable.get(), val );
 				else if( contents.contains( "category" ) && tr.getPredicate().equals( URICenter.predicate_category ) )

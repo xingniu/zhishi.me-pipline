@@ -2,5 +2,5 @@ package me.zhishi.parser;
 
 public interface Parser
 {
-	public Article parse();
+	public Article parse() throws Exception;
 }

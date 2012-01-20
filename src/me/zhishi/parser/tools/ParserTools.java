@@ -14,7 +14,7 @@ public class ParserTools
 	public static void main( String[] args ) throws Exception
 	{
 //		generateBZ2List( URICenter.source_name_hudong );
-		superviseNTs( URICenter.source_name_hudong, 3.0, "image" );
+		superviseNTs( URICenter.source_name_hudong, 3.0, "infobox" );
 	}
 	
 	public static void superviseNTs( String source, double version, String content )
@@ -27,13 +27,13 @@ public class ParserTools
 			TripleReader tr = ntReader.getTripleReader();
 			String sub = tr.getSubject();
 			String pre = tr.getPredicate();
-			String obj = tr.getObject();
+			String obj = tr.getObjectValue();
 //			if( str.length() >= 16 )
 //			if( str.contains( "<" ) )
 //			if( str.contains( "[" ) && str.endsWith( "]" ) )
 //			if( str.equals( "" ) || str.contains( "null" ) )
 //			if( !obj.startsWith( "http://" ) )
-			if( obj.equals( "<>" ) )
+			if( sub.equals( "<http://zhishi.me/hudongbaike/resource/%E7%BE%8E%E5%9B%BD>" ) )
 			{
 				counter++;
 				System.out.println( sub + "\t" + pre + "\t" + obj );
