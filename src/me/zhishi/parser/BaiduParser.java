@@ -20,7 +20,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws IOException
 	{
-		String fileName = "1735.htm";
+		String fileName = "1587783.htm";
 		String url = "http://baike.baidu.com/view/" + fileName;
 		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
@@ -57,6 +57,14 @@ public class BaiduParser implements ZhishiParser
 		{
 			article.label = getRedirect();
 			article.redirect = getLabel();
+			if( isDisambiguationPage() )
+			{
+				// see http://baike.baidu.com/view/1587783.htm
+				for( Element link : doc.select( "ol[data-nslog-type=503] > li[class=expand] > a" ) )
+				{
+					article.redirect = article.redirect + "[" + link.text() + "]";
+				}
+			}
 			return article;
 		}
 		else
@@ -64,7 +72,7 @@ public class BaiduParser implements ZhishiParser
 			article.label = getLabel();
 			article.redirect = getRedirect();
 		}
-
+		
 		article.isDisambiguationPage = isDisambiguationPage();
 		article.disambiguationLabels = getDisambiguations();
 		if( article.isDisambiguationPage )
@@ -126,8 +134,6 @@ public class BaiduParser implements ZhishiParser
 		
 		if( redirect != null )
 		{
-			if( redirect.contains( getLabel() ) && isDisambiguationPage() )
-				return null;
 			redirect = StringEscapeUtils.unescapeHtml4( redirect );
 			if( redirect.equals( "" ) )
 				return null;

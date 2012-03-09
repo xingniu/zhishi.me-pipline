@@ -21,8 +21,8 @@ import me.zhishi.tools.file.TripleWriter;
 public class NTStorer
 {
 	public static double releaseVersion = 3.0;
-//	public static String source = URICenter.source_name_baidu;
-	public static String source = URICenter.source_name_hudong;
+	public static String source = URICenter.source_name_baidu;
+//	public static String source = URICenter.source_name_hudong;
 	public static String[] contents = {
 		"label",
 		"category",

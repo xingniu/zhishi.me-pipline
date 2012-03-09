@@ -66,11 +66,6 @@ public class StreamingDriver
 				
 				for( String t : article.toTriples() )
 				{
-//					if( t.contains( "---------------> ." ) )
-//					{
-//						System.err.println( entry.getName() );
-//						throw new Exception( "!!!!!!!!!" + entry.getName() );
-//					}
 					System.out.println( t );
 				}
 			}

@@ -25,8 +25,8 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class SortByPredicate
 {
-	public static String source = URICenter.source_name_hudong;
-//	public static String source = URICenter.source_name_baidu;
+//	public static String source = URICenter.source_name_hudong;
+	public static String source = URICenter.source_name_baidu;
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
 	
@@ -80,23 +80,24 @@ public class SortByPredicate
 				else
 					tripleSet.add( triple );
 				TripleReader tr = new TripleReader( triple );
-				if( contents.contains( "label" ) && tr.getPredicate().equals( URICenter.predicate_rdfs_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
+				String pre = tr.getBarePredicate();
+				if( contents.contains( "label" ) && pre.equals( URICenter.predicate_rdfs_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
 					mos.write( "label", NullWritable.get(), val );
-				else if( contents.contains( "category" ) && tr.getPredicate().equals( URICenter.predicate_category ) )
+				else if( contents.contains( "category" ) && pre.equals( URICenter.predicate_category ) )
 					mos.write( "category", NullWritable.get(), val );
-				else if( contents.contains( "abstract" ) && tr.getPredicate().equals( URICenter.predicate_abstract ) )
+				else if( contents.contains( "abstract" ) && pre.equals( URICenter.predicate_abstract ) )
 					mos.write( "abstract", NullWritable.get(), val );
-				else if( contents.contains( "relatedPage" ) && tr.getPredicate().equals( URICenter.predicate_relatedPage ) )
+				else if( contents.contains( "relatedPage" ) && pre.equals( URICenter.predicate_relatedPage ) )
 					mos.write( "relatedPage", NullWritable.get(), val );
-				else if( contents.contains( "internalLink" ) && tr.getPredicate().equals( URICenter.predicate_internalLink ) )
+				else if( contents.contains( "internalLink" ) && pre.equals( URICenter.predicate_internalLink ) )
 					mos.write( "internalLink", NullWritable.get(), val );
-				else if( contents.contains( "externalLink" ) && tr.getPredicate().equals( URICenter.predicate_externalLink ) )
+				else if( contents.contains( "externalLink" ) && pre.equals( URICenter.predicate_externalLink ) )
 					mos.write( "externalLink", NullWritable.get(), val );
-				else if( contents.contains( "redirect" ) && tr.getPredicate().equals( URICenter.predicate_redirect ) )
+				else if( contents.contains( "redirect" ) && pre.equals( URICenter.predicate_redirect ) )
 					mos.write( "redirect", NullWritable.get(), val );
-				else if( contents.contains( "disambiguation" ) && tr.getPredicate().equals( URICenter.predicate_disambiguation ) )
+				else if( contents.contains( "disambiguation" ) && pre.equals( URICenter.predicate_disambiguation ) )
 					mos.write( "disambiguation", NullWritable.get(), val );
-				else if( contents.contains( "articleLink" ) && tr.getPredicate().equals( URICenter.predicate_foaf_page ) )
+				else if( contents.contains( "articleLink" ) && pre.equals( URICenter.predicate_foaf_page ) )
 				{
 					String resource = tr.getSubject();
 					String articleLink = tr.getObject();
@@ -106,21 +107,21 @@ public class SortByPredicate
 					mos.write( "articleLink", NullWritable.get(), lang );
 					mos.write( "articleLink", NullWritable.get(), val );
 				}
-				else if( contents.contains( "image" ) && tr.getPredicate().equals( URICenter.predicate_foaf_depiction ) )
+				else if( contents.contains( "image" ) && pre.equals( URICenter.predicate_foaf_depiction ) )
 					mos.write( "image", NullWritable.get(), val );
-				else if( contents.contains( "image" ) && tr.getPredicate().equals( URICenter.predicate_depictionThumbnail ) )
+				else if( contents.contains( "image" ) && pre.equals( URICenter.predicate_depictionThumbnail ) )
 					mos.write( "image", NullWritable.get(), val );
-				else if( contents.contains( "image" ) && tr.getPredicate().equals( URICenter.predicate_relatedImage ) )
+				else if( contents.contains( "image" ) && pre.equals( URICenter.predicate_relatedImage ) )
 					mos.write( "image", NullWritable.get(), val );
-				else if( contents.contains( "imageInfo" ) && tr.getPredicate().equals( URICenter.predicate_rdfs_label ) && !tr.getSubject().startsWith( "<" + URICenter.domainName ) )
+				else if( contents.contains( "imageInfo" ) && pre.equals( URICenter.predicate_rdfs_label ) && !tr.getSubject().startsWith( "<" + URICenter.domainName ) )
 					mos.write( "imageInfo", NullWritable.get(), val );
-				else if( contents.contains( "imageInfo" ) && tr.getPredicate().equals( URICenter.predicate_dc_rights ) )
+				else if( contents.contains( "imageInfo" ) && pre.equals( URICenter.predicate_dc_rights ) )
 					mos.write( "imageInfo", NullWritable.get(), val );
-				else if( contents.contains( "imageInfo" ) && tr.getPredicate().equals( URICenter.predicate_foaf_thumbnail ) )
+				else if( contents.contains( "imageInfo" ) && pre.equals( URICenter.predicate_foaf_thumbnail ) )
 					mos.write( "imageInfo", NullWritable.get(), val );
-				else if( contents.contains( "infobox" ) && tr.getPredicate().matches( "<http://zhishi.me/.*/property/.*" ) )
+				else if( contents.contains( "infobox" ) && pre.matches( "<http://zhishi.me/.*/property/.*" ) )
 					mos.write( "infobox", NullWritable.get(), val );
-				else if( contents.contains( "exception" ) && tr.getPredicate().equals( "<exception>" ) )
+				else if( contents.contains( "exception" ) && pre.equals( "<exception>" ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}
 		}
