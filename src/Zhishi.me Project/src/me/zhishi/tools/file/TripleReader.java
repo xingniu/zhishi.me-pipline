@@ -35,6 +35,12 @@ public class TripleReader
 		return triple.substring( SE + 1, PE );
 	}
 	
+	public String getBarePredicate()
+	{
+		String str = getPredicate();
+		return str.substring( 1, str.length() - 1 );
+	}
+	
 	public String getPredicateContent()
 	{
 		String str = getPredicate();
@@ -67,7 +73,7 @@ public class TripleReader
 	{
 		TripleReader tr = new TripleReader( "<http://zhishi.me//resource/%E3%80%8A%E4%B8%AD> <http://www.w3.org/2000/01/rdf-schema#label> \"\u300A\u4E2D\"@zh ." );
 		System.out.println( tr.getSubject() );
-		System.out.println( tr.getPredicate() );
+		System.out.println( tr.getBarePredicate() );
 		System.out.println( tr.getObject() );
 	}
 }

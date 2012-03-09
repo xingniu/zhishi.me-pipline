@@ -62,7 +62,7 @@ public class NTriplesToJSON
 					source = URICenter.source_name_zhwiki;
 				}
 				
-				String pre = tr.getPredicate();
+				String pre = tr.getBarePredicate();
 				
 				if( predicateSet.contains( "label" ) && pre.equals( URICenter.predicate_rdfs_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
 				{

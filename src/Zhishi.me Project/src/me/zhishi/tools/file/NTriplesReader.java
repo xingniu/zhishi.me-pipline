@@ -62,7 +62,8 @@ public class NTriplesReader
 		try
 		{
 			FileSystem fs = FileSystem.get( URI.create( path ), conf );
-			stringReader = new BufferedReader( new InputStreamReader( fs.open( new Path( path ) ) ) );
+			fin = fs.open( new Path( path ) );
+			stringReader = new BufferedReader( new InputStreamReader( fin ) );
 			System.out.println( "Loading " + path );
 			return true;
 		}
