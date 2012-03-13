@@ -1,39 +1,27 @@
 package me.zhishi.analyzer;
 
-import me.zhishi.tools.Path;
 import me.zhishi.tools.URICenter;
-import me.zhishi.tools.file.NTriplesReader;
 import me.zhishi.tools.file.TripleReader;
 
-public class LabelAnalyzer
+public class LabelAnalyzer extends DataAnalyzer
 {
-	private NTriplesReader labelReader;
-	private Path fileName;
-	
 	public static void main( String[] args )
 	{
-		LabelAnalyzer ana = new LabelAnalyzer( URICenter.source_name_hudong );
+		LabelAnalyzer ana = new LabelAnalyzer( 3.0, URICenter.source_name_baidu );
 		ana.driver();
 		ana.closeReader();
 	}
 	
-	public LabelAnalyzer( String source )
+	public LabelAnalyzer( double version, String source )
 	{
-		fileName = new Path( 2.0 );
-		fileName.setSource( source );
-		labelReader = new NTriplesReader( fileName.getNTriplesFile( "label" ) );
-	}
-	
-	public void closeReader()
-	{
-		labelReader.close();
+		super( version, source, "label" );
 	}
 	
 	public void driver()
 	{
-		while( labelReader.readNextLine() != null )
+		while( fileReader.readNextLine() != null )
 		{
-			TripleReader tr = labelReader.getTripleReader();
+			TripleReader tr = fileReader.getTripleReader();
 			String label = tr.getObjectValue();
 			System.out.println( label );
 		}
