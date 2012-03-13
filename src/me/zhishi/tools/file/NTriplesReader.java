@@ -42,7 +42,8 @@ public class NTriplesReader
 		}
 		else if( path.toLowerCase().endsWith( ".bz2" ) )
 		{
-			// TODO
+			if( !loadBZ2File( path ) )
+				System.err.println( "An error is found in loading " + path );
 		}
 		else 
 		{
@@ -50,6 +51,8 @@ public class NTriplesReader
 				System.out.println( "GZipped file is found, using it instaed." );
 			else if( loadZipFile( path + ".zip" ) )
 				System.out.println( "Zipped file is found, using it instaed." );
+			else if( loadBZ2File( path + ".bz2" ) )
+				System.out.println( "BZipped file is found, using it instaed." );
 			else if( !loadTextFile( path ) )
 				System.err.println(  path + " was not found!");
 		}
@@ -105,6 +108,24 @@ public class NTriplesReader
 		catch( IOException e )
 		{
 			System.err.println( path + " has no entries!" );
+			return false;
+		}
+	}
+	
+	private boolean loadBZ2File( String path )
+	{
+		try
+		{
+			InputStream fileIS = new FileInputStream( path );
+			fileIS.read();
+			fileIS.read();
+			fin = new CBZip2InputStream( fileIS );
+			stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName( "UTF-8" ) ) );
+			System.out.println( "Loading " + path );
+			return true;
+		}
+		catch( IOException e )
+		{
 			return false;
 		}
 	}
@@ -172,6 +193,11 @@ public class NTriplesReader
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public String getCurrentLine()
+	{
+		return currentLine;
 	}
 	
 	public TripleReader getTripleReader()

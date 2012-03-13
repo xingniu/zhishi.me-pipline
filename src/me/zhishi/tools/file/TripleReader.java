@@ -19,6 +19,11 @@ public class TripleReader
 		OE = triple.lastIndexOf( "." ) -1;
 	}
 	
+	public String getTriple()
+	{
+		return triple;
+	}
+	
 	public String getSubject()
 	{
 		return triple.substring( 0, SE );
