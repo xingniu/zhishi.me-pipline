@@ -29,6 +29,11 @@ public class TripleReader
 		return triple.substring( 0, SE );
 	}
 	
+	public String getBareSubject()
+	{
+		return triple.substring( 1, SE - 1 );
+	}
+	
 	public String getSubjectContent()
 	{
 		String str = getSubject();
@@ -42,8 +47,7 @@ public class TripleReader
 	
 	public String getBarePredicate()
 	{
-		String str = getPredicate();
-		return str.substring( 1, str.length() - 1 );
+		return triple.substring( SE + 2, PE - 1 );
 	}
 	
 	public String getPredicateContent()
@@ -55,6 +59,11 @@ public class TripleReader
 	public String getObject()
 	{
 		return triple.substring( PE + 1, OE );
+	}
+	
+	public String getBareObject()
+	{
+		return triple.substring( PE + 2, OE - 1 );
 	}
 	
 	public String getObjectContent()
