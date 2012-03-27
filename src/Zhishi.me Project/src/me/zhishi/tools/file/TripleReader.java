@@ -14,7 +14,7 @@ public class TripleReader
 	public TripleReader( String triple )
 	{
 		this.triple = triple;
-		SE = triple.indexOf( "> <" ) + 1;
+		SE = triple.indexOf( " <" );
 		PE = triple.indexOf( "> ", SE + 1 ) + 1;
 		OE = triple.lastIndexOf( "." ) -1;
 	}
