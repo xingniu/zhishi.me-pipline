@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipInputStream;
 
 import org.apache.tools.bzip2.CBZip2InputStream;
 
@@ -22,6 +24,15 @@ public class CompressedFileStream
 				fileIS.read();
 				fileIS.read();
 				is = new CBZip2InputStream( fileIS );
+			}
+			else if( fileName.endsWith( ".gz" ) )
+			{
+				is = new GZIPInputStream( fileIS );
+			}
+			else if( fileName.endsWith( ".zip" ) )
+			{
+				is = new ZipInputStream( fileIS );
+				((ZipInputStream) is).getNextEntry();
 			}
 			else
 			{

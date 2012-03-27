@@ -64,7 +64,7 @@ public class NTriplesToJSON
 				
 				String pre = tr.getBarePredicate();
 				
-				if( predicateSet.contains( "label" ) && pre.equals( URICenter.predicate_rdfs_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
+				if( predicateSet.contains( "label" ) && pre.equals( URICenter.predicate_rdfs_label ) && tr.getBareSubject().startsWith( URICenter.domainName ) )
 				{
 					String label = tr.getObjectValue();
 					JSONObject main = new JSONObject();
@@ -145,7 +145,7 @@ public class NTriplesToJSON
 					main.put( "value", tr.getObjectValue() );
 					context.write( new Text( tr.getSubject() ), new Text( main.toString() ) );
 				}
-				else if( predicateSet.contains( "infoboxValue" ) && pre.matches( "<http://zhishi.me/.*/property/.*" ) )
+				else if( predicateSet.contains( "infoboxValue" ) && pre.matches( "http://zhishi.me/.*/property/.*" ) )
 				{
 					JSONObject main = new JSONObject();
 					main.put( "uri", tr.getSubject() );
