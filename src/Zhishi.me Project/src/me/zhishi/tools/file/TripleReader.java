@@ -75,12 +75,17 @@ public class TripleReader
 	public String getObjectValue()
 	{
 		String str = getObject();
+		return getValue( str );
+	}
+	
+	public static String getValue( String str )
+	{
 		if( str.contains( "\"^^<" ) )
 			return TextTools.UnicodeToString(str.substring( 1, str.indexOf( "\"^^<" ) ));
 		else if( str.contains( "\"@" ) )
 			return TextTools.UnicodeToString(str.substring( 1, str.lastIndexOf( "\"@" ) ));
 		else
-			return "";
+			return TextTools.UnicodeToString( str.substring( 1, str.length() - 1 ) );
 	}
 	
 	public static void main(String args[])
@@ -88,6 +93,6 @@ public class TripleReader
 		TripleReader tr = new TripleReader( "<http://zhishi.me//resource/%E3%80%8A%E4%B8%AD> <http://www.w3.org/2000/01/rdf-schema#label> \"\u300A\u4E2D\"@zh ." );
 		System.out.println( tr.getSubject() );
 		System.out.println( tr.getBarePredicate() );
-		System.out.println( tr.getObject() );
+		System.out.println( tr.getObjectValue() );
 	}
 }
