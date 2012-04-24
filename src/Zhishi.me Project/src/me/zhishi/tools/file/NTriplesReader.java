@@ -159,7 +159,7 @@ public class NTriplesReader
 		stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName( "UTF-8" ) ) );
 	}
 
-	public NTriplesReader( CBZip2InputStream fin )
+	public NTriplesReader( InputStream fin )
 	{
 		this.fin = fin;
 		stringReader = new BufferedReader( new InputStreamReader( fin, Charset.forName("UTF-8") ) );
