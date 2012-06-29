@@ -1,5 +1,5 @@
-1、StreamingDriver_Baidu.xml && StreamingDriver_Hudong.xml 处理HTML文件，生成RawStructuredData@HDFS
-2、SortByPredicate.xml 生成按类型分割的NTriples@HDFS
+1、Ant执行StreamingDriver_Baidu.xml和StreamingDriver_Hudong.xml 处理HTML文件，生成RawStructuredData@HDFS
+2、Ant执行SortByPredicate.xml 为百度和互动生成按谓词类型分割的NTriples@HDFS
 3、Segment.java 为IM生成词条特征文本的分词结果->HDFS
 4、NTriplesToJSON 生成IM的原始输入文件@HDFS
 5、MRMatcher.xml 生成匹配原始文件@HDFS

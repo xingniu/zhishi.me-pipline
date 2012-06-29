@@ -49,7 +49,7 @@
 		<scp file="build/StreamingDriver.jar" todir="apexlab-xingniu:422871@172.16.7.11:programs/StreamingDriver.jar" trust="true" />
 		<sshexec host="172.16.7.11" username="apexlab-xingniu" password="422871" trust="true" command="
 				hadoop dfs -rmr /Users/xingniu/CLOD/RawStructuredData/Hudong;
-				hadoop jar /usr/lib/hadoop/contrib/streaming/hadoop-streaming-0.20.2-cdh3u1.jar
+				hadoop jar /usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming.jar
 					-input /Users/xingniu/CLOD/BaikePages/Hudong/FileList.txt
 					-output /Users/xingniu/CLOD/RawStructuredData/Hudong
 					-file programs/StreamingDriver.jar
@@ -58,6 +58,6 @@
 					-numReduceTasks 0
 					-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat
 					-jobconf mapred.line.input.format.linespermap=2
-					-jobconf mapred.job.name='Parse Hudong Baike HTML'"/>
+					-jobconf mapred.job.name='ZHISHI.ME#Parse Hudong Baike HTML'"/>
 	</target>
 </project>

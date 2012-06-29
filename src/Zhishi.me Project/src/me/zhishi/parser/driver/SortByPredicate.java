@@ -2,6 +2,8 @@ package me.zhishi.parser.driver;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 
 import me.zhishi.tools.SmallTools;
@@ -11,8 +13,8 @@ import me.zhishi.tools.file.TripleWriter;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -25,10 +27,14 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class SortByPredicate
 {
-//	public static String source = URICenter.source_name_hudong;
-	public static String source = URICenter.source_name_baidu;
 	public static double releaseVersion = 3.0;
-	private static int numReduceTasks = 10;
+	private static int numReduceTasks = 20;
+	
+	public static void main( String[] args ) throws Exception
+	{
+		run( URICenter.source_name_baidu );
+		run( URICenter.source_name_hudong );
+	}
 	
 	private static HashSet<String> contents = new HashSet<String>();
 	static
@@ -119,9 +125,9 @@ public class SortByPredicate
 					mos.write( "imageInfo", NullWritable.get(), val );
 				else if( contents.contains( "imageInfo" ) && pre.equals( URICenter.predicate_foaf_thumbnail ) )
 					mos.write( "imageInfo", NullWritable.get(), val );
-				else if( contents.contains( "infobox" ) && pre.matches( "<http://zhishi.me/.*/property/.*" ) )
+				else if( contents.contains( "infobox" ) && pre.matches( URICenter.domainName + ".*/property/.*" ) )
 					mos.write( "infobox", NullWritable.get(), val );
-				else if( contents.contains( "exception" ) && pre.equals( "<exception>" ) )
+				else if( contents.contains( "exception" ) && pre.equals( "exception" ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}
 		}
@@ -144,7 +150,7 @@ public class SortByPredicate
 		}
 	}
 	
-	public static void main( String[] args ) throws Exception
+	public static void run( String source ) throws Exception
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
@@ -157,7 +163,7 @@ public class SortByPredicate
 		FileSystem fs = FileSystem.get( conf );
 		fs.delete( new Path( outputPath ), true );
 		
-		Job job = new Job( conf, "sort NTs by predicate: " + source );
+		Job job = new Job( conf, "ZHISHI.ME#Sorting NTs by predicate: " + source );
 		
 		job.setNumReduceTasks( numReduceTasks );
 
@@ -178,7 +184,7 @@ public class SortByPredicate
 		{
 			for( String s : contents )
 			{
-				System.out.println( "Start moving files: " + s );
+				System.out.println( "Start moveMerging files: " + s );
 				moveMergeFiles( fs, s, p.getNTriplesFile( s ), conf, outputPath );
 			}
 			fs.delete( new Path( outputPath ), true );
@@ -187,28 +193,34 @@ public class SortByPredicate
 	
 	public static void moveMergeFiles( FileSystem fs, String prefix, String target, Configuration conf, String folder ) throws IOException
 	{
-		String tempFolder = folder + "Temp/";
-		Path tempPath = new Path( tempFolder );
-		fs.mkdirs( tempPath );
-		
-		for( int i = 0; i < numReduceTasks; ++ i )
+		OutputStream out = fs.create( new Path( target ) );
+		try
 		{
-			String fileName = SmallTools.getHadoopOutputName( prefix, i );
-			try
+			for( int i = 0; i < numReduceTasks; ++ i )
 			{
-				System.out.println( "Copying " + fileName );
-				FileUtil.copy( fs, new Path(folder+fileName), fs, new Path(tempFolder+fileName), true, conf );
-			}
-			catch( FileNotFoundException e )
-			{
-				System.err.println( folder + fileName + " not found" );
+				String fileName = SmallTools.getHadoopOutputName( prefix, i );
+				try
+				{
+					Path src = new Path( folder + fileName );
+					InputStream in = fs.open( src );
+					try
+					{
+						IOUtils.copyBytes( in, out, conf, false );
+					}
+					finally
+					{
+						in.close();
+					}
+					fs.delete( src, true );
+				}
+				catch( FileNotFoundException e )
+				{
+				}
 			}
 		}
-		
-		Path targetPath = new Path( target );
-		fs.delete( targetPath, true );
-		System.out.println( "Merging..." );
-		FileUtil.copyMerge( fs, tempPath, fs, targetPath, true, conf, "" );
-		fs.delete( tempPath, true );
+		finally
+		{
+			out.close();
+		}
 	}
 }
