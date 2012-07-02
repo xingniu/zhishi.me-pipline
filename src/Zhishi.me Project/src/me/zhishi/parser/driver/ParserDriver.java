@@ -67,7 +67,7 @@ public class ParserDriver
 				catch( Exception e )
 				{
 					e.printStackTrace();
-					System.out.println( "<" + entry.getName() + "> <exception> \"" + TextTools.getUnicode( e.toString() ) + "\"@zh ." );
+					System.out.println( "<" + entry.getName() + "> <" + URICenter.predicate_temp_exception + "> \"" + TextTools.getUnicode( e.toString() ) + "\"@zh ." );
 					continue;
 				}
 				

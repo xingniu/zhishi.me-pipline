@@ -10,7 +10,7 @@ public class InfoboxAnalyzer extends DataAnalyzer
 {
 	public static void main( String[] args )
 	{
-		InfoboxAnalyzer ana = new InfoboxAnalyzer( 3.0, URICenter.source_name_baidu );
+		InfoboxAnalyzer ana = new InfoboxAnalyzer( 3.0, URICenter.source_name_hudong );
 		ana.driver();
 		ana.closeReader();
 	}
