@@ -50,7 +50,7 @@ public class SortByPredicate
 		contents.add( "articleLink" );
 		contents.add( "image" );
 		contents.add( "imageInfo" );
-		contents.add( "infobox" );
+		contents.add( "infoboxText" );
 		contents.add( "exception" );
 	}
 	
@@ -87,7 +87,7 @@ public class SortByPredicate
 					tripleSet.add( triple );
 				TripleReader tr = new TripleReader( triple );
 				String pre = tr.getBarePredicate();
-				if( contents.contains( "label" ) && pre.equals( URICenter.predicate_rdfs_label ) && tr.getSubject().startsWith( "<" + URICenter.domainName ) )
+				if( contents.contains( "label" ) && pre.equals( URICenter.predicate_rdfs_label ) && tr.getBareSubject().startsWith( URICenter.domainName ) )
 					mos.write( "label", NullWritable.get(), val );
 				else if( contents.contains( "category" ) && pre.equals( URICenter.predicate_category ) )
 					mos.write( "category", NullWritable.get(), val );
@@ -125,9 +125,9 @@ public class SortByPredicate
 					mos.write( "imageInfo", NullWritable.get(), val );
 				else if( contents.contains( "imageInfo" ) && pre.equals( URICenter.predicate_foaf_thumbnail ) )
 					mos.write( "imageInfo", NullWritable.get(), val );
-				else if( contents.contains( "infobox" ) && pre.matches( URICenter.domainName + ".*/property/.*" ) )
-					mos.write( "infobox", NullWritable.get(), val );
-				else if( contents.contains( "exception" ) && pre.equals( "exception" ) )
+				else if( contents.contains( "infoboxText" ) && pre.matches( URICenter.domainName + ".*/property/.*" ) )
+					mos.write( "infoboxText", NullWritable.get(), val );
+				else if( contents.contains( "exception" ) && pre.equals( URICenter.predicate_temp_exception ) )
 					mos.write( "exception", NullWritable.get(), val );
 			}
 		}

@@ -45,6 +45,7 @@ public class Path
 		fileNameMap.put( "image", "images" );
 		fileNameMap.put( "imageInfo", "image_information" );
 		fileNameMap.put( "infobox", "infobox_properties" );
+		fileNameMap.put( "infoboxText", "infobox_properties_text" );
 		fileNameMap.put( "propertyLabel", "infobox_property_definitions" );
 		
 		fileNameMap.put( "baiduLink", "baidubaike_links" );

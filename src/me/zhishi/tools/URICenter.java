@@ -13,19 +13,21 @@ public class URICenter
 	public static String namespace_baidu = namespace_zhishi + "baidubaike/";
 	public static String namespace_hudong = namespace_zhishi + "hudongbaike/";
 	public static String namespace_zhwiki = namespace_zhishi + "zhwiki/";
+	public static String namespace_ontology = namespace_zhishi + "ontology/";
 	
-	public static String predicate_category = namespace_zhishi + "ontology/category";
-	public static String predicate_abstract = namespace_zhishi + "ontology/abstract";
-	public static String predicate_relatedPage = namespace_zhishi + "ontology/relatedPage";
-	public static String predicate_redirect = namespace_zhishi + "ontology/pageRedirects";
-	public static String predicate_internalLink = namespace_zhishi + "ontology/internalLink";
-	public static String predicate_externalLink = namespace_zhishi + "ontology/externalLink";
-	public static String predicate_disambiguation = namespace_zhishi + "ontology/pageDisambiguates";
-	public static String predicate_depictionThumbnail = namespace_zhishi + "ontology/depictionThumbnail";
-	public static String predicate_relatedImage = namespace_zhishi + "ontology/relatedImage";
+	public static String predicate_category = namespace_ontology + "category";
+	public static String predicate_abstract = namespace_ontology + "abstract";
+	public static String predicate_relatedPage = namespace_ontology + "relatedPage";
+	public static String predicate_redirect = namespace_ontology + "pageRedirects";
+	public static String predicate_internalLink = namespace_ontology + "internalLink";
+	public static String predicate_externalLink = namespace_ontology + "externalLink";
+	public static String predicate_disambiguation = namespace_ontology + "pageDisambiguates";
+	public static String predicate_depictionThumbnail = namespace_ontology + "depictionThumbnail";
+	public static String predicate_relatedImage = namespace_ontology + "relatedImage";
 	// TODO : Pay attention here
 	public static String predicate_category_old = "http://purl.org/dc/terms/subject";
 	
+	public static String predicate_temp_exception = "exception";
 	public static String predicate_temp_featureTags = "featureTags";
 	public static String predicate_temp_lookup = "lookup";
 	
@@ -51,7 +53,7 @@ public class URICenter
 	public static String object_owl_ObjectProperty = "http://www.w3.org/2002/07/owl#ObjectProperty";
 	public static String object_foaf_Image = "http://xmlns.com/foaf/0.1/Image";
 	public static String object_foaf_Document = "http://xmlns.com/foaf/0.1/Document";
-	public static String object_zhishi = namespace_zhishi + "ontology/";
+	public static String object_zhishi = namespace_ontology;
 	
 	public static String class_skos_concept = "http://www.w3.org/2004/02/skos/core#Concept";
 	
