@@ -1,6 +1,7 @@
 package me.zhishi.parser.driver;
 
 import java.io.IOException;
+import java.util.LinkedList;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -9,21 +10,17 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
-import me.zhishi.parser.driver.SortByPredicate.SortByPredicateMapper;
-import me.zhishi.parser.driver.SortByPredicate.SortByPredicateReducer;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.file.TripleReader;
 
 public class IdentifyInstances
 {
 	public static double releaseVersion = 3.0;
-	private static int numReduceTasks = 20;
+	private static int numReduceTasks = 10;
 	
 	public static void main( String[] args ) throws Exception
 	{
@@ -33,21 +30,63 @@ public class IdentifyInstances
 	
 	public static class IndexByTerms extends Mapper<Object, Text, Text, Text>
 	{
+		@Override
 		public void map( Object key, Text value, Context context ) throws IOException, InterruptedException
 		{
 			TripleReader tr = new TripleReader( value.toString() );
-			String text = tr.getObjectValue();
-			if( tr.getBarePredicate().equals( URICenter.predicate_rdfs_label ) )
+			String pre = tr.getBarePredicate();
+			if( pre.equals( URICenter.predicate_rdfs_label ) )
 			{
 				//label
-				context.write( new Text( text ), value );
+				context.write( new Text( tr.getObjectValue() ), value );
+			}
+			else if( pre.equals( URICenter.predicate_redirect ) )
+			{
+				//redirect
+				context.write( new Text( tr.getSubjectContent() ), value );
 			}
 			else
 			{
 				//infobox property
-				context.write( new Text( text ), value );
+				context.write( new Text( tr.getObjectValue() ), value );
 			}
 			
+		}
+	}
+	
+	public static class ValueToURI extends Reducer<Object, Text, NullWritable, Text>
+	{
+		@Override
+		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
+		{
+			LinkedList<String> infoSP = new LinkedList<String>();
+			String uri = null;
+			for( Text val : values )
+			{
+				TripleReader tr = new TripleReader( val.toString() );
+				String pre = tr.getBarePredicate();
+				if( pre.equals( URICenter.predicate_rdfs_label ) )
+				{
+					uri = tr.getSubject();
+				}
+				else if( pre.equals( URICenter.predicate_redirect ) )
+				{
+					uri = tr.getObject();
+				}
+				else
+				{
+					infoSP.add( tr.getSubject() + " " + tr.getPredicate() );
+				}
+			}
+			
+			if( uri != null )
+			{
+				for( String triple : infoSP )
+				{
+					Text text = new Text( triple + " " + uri + " ." );
+					context.write( NullWritable.get(), text );
+				}
+			}
 		}
 	}
 
@@ -68,6 +107,7 @@ public class IdentifyInstances
 		fs.mkdirs( in );
 		fs.rename( new Path( p.getNTriplesFile( "label" ) ), new Path( inputPath + "label" ) );
 		fs.rename( new Path( p.getNTriplesFile( "infoboxText" ) ), new Path( inputPath + "infoboxText" ) );
+		fs.rename( new Path( p.getNTriplesFile( "redirect" ) ), new Path( inputPath + "redirect" ) );
 		
 		try
 		{
@@ -77,7 +117,7 @@ public class IdentifyInstances
 	
 			job.setJarByClass( IdentifyInstances.class );
 			job.setMapperClass( IndexByTerms.class );
-//			job.setReducerClass( SortByPredicateReducer.class );
+			job.setReducerClass( ValueToURI.class );
 			
 			job.setOutputKeyClass( Text.class );
 			job.setOutputValueClass( Text.class );
@@ -97,6 +137,7 @@ public class IdentifyInstances
 		{
 			fs.rename( new Path( inputPath + "label" ), new Path( p.getNTriplesFile( "label" ) ) );
 			fs.rename( new Path( inputPath + "infoboxText" ), new Path( p.getNTriplesFile( "infoboxText" ) ) );
+			fs.rename( new Path( inputPath + "redirect" ), new Path( p.getNTriplesFile( "redirect" ) ) );
 			fs.delete( in, true );
 		}
 	}
