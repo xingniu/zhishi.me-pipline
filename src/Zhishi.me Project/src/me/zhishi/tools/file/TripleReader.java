@@ -88,6 +88,16 @@ public class TripleReader
 			return TextTools.UnicodeToString( str.substring( 1, str.length() - 1 ) );
 	}
 	
+	public boolean objectIsLiteral()
+	{
+		return getObject().startsWith( "\"" );
+	}
+	
+	public boolean objectIsURIRef()
+	{
+		return getObject().startsWith( "<" );
+	}
+	
 	public static void main(String args[])
 	{
 		TripleReader tr = new TripleReader( "<http://zhishi.me//resource/%E3%80%8A%E4%B8%AD> <http://www.w3.org/2000/01/rdf-schema#label> \"\u300A\u4E2D\"@zh ." );

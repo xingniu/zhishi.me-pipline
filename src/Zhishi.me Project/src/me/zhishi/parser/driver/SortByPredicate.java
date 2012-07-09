@@ -163,7 +163,7 @@ public class SortByPredicate
 		FileSystem fs = FileSystem.get( conf );
 		fs.delete( new Path( outputPath ), true );
 		
-		Job job = new Job( conf, "ZHISHI.ME#Sorting NTs by predicate: " + source );
+		Job job = new Job( conf, "ZHISHI.ME# Sorting NTs by predicate: " + source );
 		
 		job.setNumReduceTasks( numReduceTasks );
 

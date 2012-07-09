@@ -58,6 +58,6 @@
 					-numReduceTasks 0
 					-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat
 					-jobconf mapred.line.input.format.linespermap=1
-					-jobconf mapred.job.name='ZHISHI.ME#Parse Baidu Baike HTML'"/>
+					-jobconf mapred.job.name='ZHISHI.ME# Parse Baidu Baike HTML'"/>
 	</target>
 </project>
