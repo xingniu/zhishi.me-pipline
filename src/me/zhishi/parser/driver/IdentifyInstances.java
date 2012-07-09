@@ -1,6 +1,7 @@
 package me.zhishi.parser.driver;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.apache.hadoop.conf.Configuration;
@@ -24,8 +25,10 @@ public class IdentifyInstances
 	
 	public static void main( String[] args ) throws Exception
 	{
-		run( URICenter.source_name_baidu );
-//		run( URICenter.source_name_hudong );
+		String source = URICenter.source_name_hudong;
+//		String source = URICenter.source_name_baidu;
+//		identify( source );
+		statistics( source );
 	}
 	
 	public static class IndexByTerms extends Mapper<Object, Text, Text, Text>
@@ -89,13 +92,44 @@ public class IdentifyInstances
 			}
 		}
 	}
+	
+	public static class IndexByProperties extends Mapper<Object, Text, Text, Text>
+	{
+		@Override
+		public void map( Object key, Text value, Context context ) throws IOException, InterruptedException
+		{
+			TripleReader tr = new TripleReader( value.toString() );
+			context.write( new Text( tr.getPredicateContent() ), value );
+		}
+	}
+	
+	public static class PropertyStatistics extends Reducer<Object, Text, NullWritable, Text>
+	{
+		@Override
+		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
+		{
+			HashSet<String> LiteralObjSet = new HashSet<String>();
+			HashSet<String> URIRefObjSet = new HashSet<String>();
+			for( Text val : values )
+			{
+				TripleReader tr = new TripleReader( val.toString() );
+				if( tr.objectIsLiteral() )
+					LiteralObjSet.add( tr.getSubjectContent() );
+				else if( tr.objectIsURIRef() )
+					URIRefObjSet.add( tr.getSubjectContent() );
+			}
+			
+			Text text = new Text( key + " " + URIRefObjSet.size() + "/" + LiteralObjSet.size() );
+			context.write( NullWritable.get(), text );
+		}
+	}
 
-	public static void run( String source ) throws Exception
+	public static void identify( String source ) throws Exception
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
-		String inputPath = p.getNTriplesFolder() + source + "_IN/";
-		String outputPath = p.getNTriplesFolder() + source + "_OUT/";
+		String inputPath = p.getNTriplesFolder() + source + "_ID_IN/";
+		String outputPath = p.getNTriplesFolder() + source + "_ID_OUT/";
 		
 		Configuration conf = new Configuration();
 		
@@ -111,7 +145,7 @@ public class IdentifyInstances
 		
 		try
 		{
-			Job job = new Job( conf, "ZHISHI.ME#Identifying Instances: " + source );
+			Job job = new Job( conf, "ZHISHI.ME# Identifying Instances: " + source );
 			
 			job.setNumReduceTasks( numReduceTasks );
 	
@@ -139,6 +173,48 @@ public class IdentifyInstances
 			fs.rename( new Path( inputPath + "infoboxText" ), new Path( p.getNTriplesFile( "infoboxText" ) ) );
 			fs.rename( new Path( inputPath + "redirect" ), new Path( p.getNTriplesFile( "redirect" ) ) );
 			fs.delete( in, true );
+		}
+	}
+	
+	public static void statistics( String source ) throws Exception
+	{
+		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
+		
+		String inputPath = p.getNTriplesFolder() + source + "_ID_OUT/";
+		String outputPath = p.getNTriplesFolder() + source + "_ST_OUT/";
+		
+		Configuration conf = new Configuration();
+		
+		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
+		FileSystem fs = FileSystem.get( conf );
+		fs.delete( new Path( outputPath ), true );
+		
+		fs.rename( new Path( p.getNTriplesFile( "infoboxText" ) ), new Path( inputPath + "infoboxText" ) );
+		
+		try
+		{
+			Job job = new Job( conf, "ZHISHI.ME# Property Statistics: " + source );
+			
+			job.setNumReduceTasks( numReduceTasks );
+			
+			job.setJarByClass( IdentifyInstances.class );
+			job.setMapperClass( IndexByProperties.class );
+			job.setReducerClass( PropertyStatistics.class );
+			
+			job.setOutputKeyClass( Text.class );
+			job.setOutputValueClass( Text.class );
+	
+			FileInputFormat.addInputPath( job, new Path( inputPath ) );
+			FileOutputFormat.setOutputPath( job, new Path( outputPath ) );
+			
+			if( job.waitForCompletion( true ) )
+			{
+//				fs.delete( new Path( outputPath ), true );
+			}
+		}
+		finally
+		{
+			fs.rename( new Path( inputPath + "infoboxText" ), new Path( p.getNTriplesFile( "infoboxText" ) ) );
 		}
 	}
 }
