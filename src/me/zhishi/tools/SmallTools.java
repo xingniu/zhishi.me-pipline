@@ -1,6 +1,13 @@
 package me.zhishi.tools;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.io.IOUtils;
 
 import me.zhishi.tools.file.GZIPFileWriter;
 import me.zhishi.tools.file.NTriplesReader;
@@ -57,5 +64,38 @@ public class SmallTools
 		}
 		writer.close();
 		reader.close();
+	}
+	
+	public static void moveMergeFiles( FileSystem fs, String prefix, String target, Configuration conf, String folder, int numReduceTasks ) throws IOException
+	{
+		OutputStream out = fs.create( new org.apache.hadoop.fs.Path( target ) );
+		try
+		{
+			for( int i = 0; i < numReduceTasks; ++ i )
+			{
+				String fileName = SmallTools.getHadoopOutputName( prefix, i );
+				try
+				{
+					org.apache.hadoop.fs.Path src = new org.apache.hadoop.fs.Path( folder + fileName );
+					InputStream in = fs.open( src );
+					try
+					{
+						IOUtils.copyBytes( in, out, conf, false );
+					}
+					finally
+					{
+						in.close();
+					}
+					fs.delete( src, true );
+				}
+				catch( FileNotFoundException e )
+				{
+				}
+			}
+		}
+		finally
+		{
+			out.close();
+		}
 	}
 }

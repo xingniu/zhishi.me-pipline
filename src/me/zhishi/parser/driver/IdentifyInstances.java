@@ -14,7 +14,10 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
+import me.zhishi.tools.SmallTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.file.TripleReader;
 
@@ -25,10 +28,15 @@ public class IdentifyInstances
 	
 	public static void main( String[] args ) throws Exception
 	{
-		String source = URICenter.source_name_hudong;
-//		String source = URICenter.source_name_baidu;
-//		identify( source );
-		statistics( source );
+//		String source = URICenter.source_name_hudong;
+		String source = URICenter.source_name_baidu;
+		run( source );
+	}
+	
+	public static void run( String source ) throws Exception
+	{
+		identify( source );
+		output( source );
 	}
 	
 	public static class IndexByTerms extends Mapper<Object, Text, Text, Text>
@@ -105,22 +113,68 @@ public class IdentifyInstances
 	
 	public static class PropertyStatistics extends Reducer<Object, Text, NullWritable, Text>
 	{
+		private MultipleOutputs<NullWritable, Text> mos;
+		
+		@Override
+		protected void setup( Context context ) throws IOException, InterruptedException
+		{
+			super.setup( context );
+			mos = new MultipleOutputs<NullWritable, Text>( context );
+		}
+		
+		@Override
+		public void cleanup( Context context )
+		{
+			try
+			{
+				mos.close();
+			}
+			catch( IOException e )
+			{
+				e.printStackTrace();
+			}
+			catch( InterruptedException e )
+			{
+				e.printStackTrace();
+			}
+		}
+		
 		@Override
 		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
 		{
 			HashSet<String> LiteralObjSet = new HashSet<String>();
 			HashSet<String> URIRefObjSet = new HashSet<String>();
+			LinkedList<String> LiteralObjList = new LinkedList<String>();
+			LinkedList<String> URIRefObjList = new LinkedList<String>();
 			for( Text val : values )
 			{
-				TripleReader tr = new TripleReader( val.toString() );
+				String triple = val.toString();
+				TripleReader tr = new TripleReader( triple );
 				if( tr.objectIsLiteral() )
+				{
 					LiteralObjSet.add( tr.getSubjectContent() );
+					LiteralObjList.add( triple );
+				}
 				else if( tr.objectIsURIRef() )
+				{
 					URIRefObjSet.add( tr.getSubjectContent() );
+					URIRefObjList.add( triple );
+				}
 			}
 			
 			Text text = new Text( key + " " + URIRefObjSet.size() + "/" + LiteralObjSet.size() );
-			context.write( NullWritable.get(), text );
+			mos.write( "statistics", NullWritable.get(), text );
+			// precondition
+			if( URIRefObjSet.size() > 10000 )
+			{
+				for( String triple : URIRefObjList )
+					context.write( NullWritable.get(), new Text( triple ) );
+			}
+			else
+			{
+				for( String triple : LiteralObjList )
+					context.write( NullWritable.get(), new Text( triple ) );
+			}
 		}
 	}
 
@@ -176,7 +230,7 @@ public class IdentifyInstances
 		}
 	}
 	
-	public static void statistics( String source ) throws Exception
+	public static void output( String source ) throws Exception
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
@@ -203,12 +257,16 @@ public class IdentifyInstances
 			
 			job.setOutputKeyClass( Text.class );
 			job.setOutputValueClass( Text.class );
+			
+			MultipleOutputs.addNamedOutput( job, "statistics", TextOutputFormat.class, NullWritable.class, Text.class );
 	
 			FileInputFormat.addInputPath( job, new Path( inputPath ) );
 			FileOutputFormat.setOutputPath( job, new Path( outputPath ) );
 			
 			if( job.waitForCompletion( true ) )
 			{
+				System.out.println( "Start moveMerging files ..." );
+				SmallTools.moveMergeFiles( fs, "part", p.getNTriplesFile( "infobox" ), conf, outputPath, numReduceTasks );
 //				fs.delete( new Path( outputPath ), true );
 			}
 		}
