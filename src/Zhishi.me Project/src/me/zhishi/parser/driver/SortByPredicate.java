@@ -1,9 +1,6 @@
 package me.zhishi.parser.driver;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashSet;
 
 import me.zhishi.tools.SmallTools;
@@ -14,7 +11,6 @@ import me.zhishi.tools.file.TripleWriter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -185,42 +181,9 @@ public class SortByPredicate
 			for( String s : contents )
 			{
 				System.out.println( "Start moveMerging files: " + s );
-				moveMergeFiles( fs, s, p.getNTriplesFile( s ), conf, outputPath );
+				SmallTools.moveMergeFiles( fs, s, p.getNTriplesFile( s ), conf, outputPath, numReduceTasks );
 			}
 			fs.delete( new Path( outputPath ), true );
-		}
-	}
-	
-	public static void moveMergeFiles( FileSystem fs, String prefix, String target, Configuration conf, String folder ) throws IOException
-	{
-		OutputStream out = fs.create( new Path( target ) );
-		try
-		{
-			for( int i = 0; i < numReduceTasks; ++ i )
-			{
-				String fileName = SmallTools.getHadoopOutputName( prefix, i );
-				try
-				{
-					Path src = new Path( folder + fileName );
-					InputStream in = fs.open( src );
-					try
-					{
-						IOUtils.copyBytes( in, out, conf, false );
-					}
-					finally
-					{
-						in.close();
-					}
-					fs.delete( src, true );
-				}
-				catch( FileNotFoundException e )
-				{
-				}
-			}
-		}
-		finally
-		{
-			out.close();
 		}
 	}
 }
