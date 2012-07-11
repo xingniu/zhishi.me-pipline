@@ -1,7 +1,6 @@
 package me.zhishi.analyzer;
+
 import junit.framework.Assert;
-
-
 import org.junit.Test;
 
 public class TestSegment {
@@ -42,6 +41,13 @@ public class TestSegment {
 		Assert.assertEquals("西杨村", InfoboxAnalyzer.segement("郭原乡","辖王沟圈村、西杨村、寺沟村8个村，85个村民小组").get(1));
 		Assert.assertEquals("寺沟村8个村", InfoboxAnalyzer.segement("郭原乡","辖王沟圈村、西杨村、寺沟村8个村，85个村民小组").get(2));
 		Assert.assertEquals("85个村民小组", InfoboxAnalyzer.segement("郭原乡","辖王沟圈村、西杨村、寺沟村8个村，85个村民小组").get(3));
+		
+		Assert.assertEquals("伯曼", InfoboxAnalyzer.segement("《一切坚固的东西都烟消云散了》","伯曼 (Berman Marshall) (作者), 周宪 (编者), 许钧 (编者), 徐大建 (").get(0));
+		Assert.assertEquals("周宪", InfoboxAnalyzer.segement("《一切坚固的东西都烟消云散了》","伯曼 (Berman Marshall) (作者), 周宪 (编者), 许钧 (编者), 徐大建 (").get(1));
+		Assert.assertEquals("许钧", InfoboxAnalyzer.segement("《一切坚固的东西都烟消云散了》","伯曼 (Berman Marshall) (作者), 周宪 (编者), 许钧 (编者), 徐大建 (").get(2));
+		Assert.assertEquals("徐大建", InfoboxAnalyzer.segement("《一切坚固的东西都烟消云散了》","伯曼 (Berman Marshall) (作者), 周宪 (编者), 许钧 (编者), 徐大建 (").get(3));
+	
+		Assert.assertEquals("2010-01-01", InfoboxAnalyzer.segement("《\"婚活\"时代》","2010年").get(0));
 	}
 	
 	@Test
@@ -51,5 +57,3 @@ public class TestSegment {
 	}
 
 }
-
-//TODO 空格        类别

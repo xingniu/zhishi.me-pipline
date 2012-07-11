@@ -17,9 +17,11 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
+import me.zhishi.analyzer.InfoboxAnalyzer;
 import me.zhishi.tools.SmallTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.file.TripleReader;
+import me.zhishi.tools.file.TripleWriter;
 
 public class IdentifyInstances
 {
@@ -28,8 +30,8 @@ public class IdentifyInstances
 	
 	public static void main( String[] args ) throws Exception
 	{
-//		String source = URICenter.source_name_hudong;
-		String source = URICenter.source_name_baidu;
+		String source = URICenter.source_name_hudong;
+//		String source = URICenter.source_name_baidu;
 		run( source );
 	}
 	
@@ -59,7 +61,10 @@ public class IdentifyInstances
 			else
 			{
 				//infobox property
-				context.write( new Text( tr.getObjectValue() ), value );
+				for( String seg : InfoboxAnalyzer.segement( tr.getSubjectContent(), tr.getObjectValue() ) )
+				{
+					context.write( new Text( seg ), new Text( TripleWriter.getStringValueTriple(tr.getBareSubject(), tr.getBarePredicate(), seg) ) );
+				}
 			}
 			
 		}
