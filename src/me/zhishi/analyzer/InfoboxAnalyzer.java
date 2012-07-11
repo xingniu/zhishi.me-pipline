@@ -57,7 +57,10 @@ public class InfoboxAnalyzer extends DataAnalyzer
 	}
 
 	public static LinkedList<String> segement(String lemma, String value) {
+		
 		LinkedList<String> ls = new LinkedList<String>();
+		Pattern patt = Pattern.compile("[0-9]+年([0-9]+月([0-9]+日)?)?$");
+		
 		if (value.equals(lemma))
 		{
 			ls.add(value);
@@ -70,6 +73,10 @@ public class InfoboxAnalyzer extends DataAnalyzer
 			value = value.replaceAll( "（[^（）]*）", "" );
 			value = value.replaceAll( "\\([^（）]*）", "" );
 			value = value.replaceAll( "（[^（）]*\\)", "" );
+			value = value.replaceAll( "（*", "" );
+			value = value.replaceAll( "）*", "" );
+			value = value.replaceAll( "\\(*", "" );
+			value = value.replaceAll( "\\)*", "" );
 			value = value.replaceAll( " 著 ", "，" );
 			value = value.replaceAll( " 译 ", "，" );
 			value = value.replaceAll( " 编 ", "，" );
@@ -81,9 +88,10 @@ public class InfoboxAnalyzer extends DataAnalyzer
 			{
 				value = value.replaceAll("\\/", "，");
 			}
-			if( value.contains( "，" ) || value.contains( "、" ) || value.contains( "；" ) )
+			if( value.contains( "，" ) || value.contains( "、" ) || value.contains( "；" ) ||
+				value.contains( "," ) || value.contains( ";" ) )
 			{
-				valueSegs = value.split( "[，、；]" );
+				valueSegs = value.split( "[，、；,;]" );
 			}
 			else
 			{
@@ -95,7 +103,8 @@ public class InfoboxAnalyzer extends DataAnalyzer
 				
 			for( int i = 0; i < listLength; ++i )
 			{
-				if( i == 0 ) {
+				if( i == 0 )
+				{
 					if (valueSegs[i].indexOf(":") == 0) valueSegs[i] = valueSegs[i].replaceFirst( ":", "" );
 					if (valueSegs[i].indexOf("：") == 0) valueSegs[i] = valueSegs[i].replaceFirst( "：", "" );
 				}
@@ -104,7 +113,23 @@ public class InfoboxAnalyzer extends DataAnalyzer
 				valueSegs[i] = valueSegs[i].replaceAll( "(　)?[等著译编](著)?$", "" );
 
 				valueSegs[i] = valueSegs[i].trim();
-				if (  !valueSegs[i].equals("")  ) ls.add(valueSegs[i]);
+				
+				if ( patt.matcher( valueSegs[i] ).matches() )
+				{
+					String[] date1 = valueSegs[i].split("[年月日]");
+					String[] date = new String[3];
+					for (int leng = 0; leng < date1.length; ++leng) date[leng] = date1[leng];
+					for (int leng = date1.length; leng<3; ++leng) date[leng] = "1";
+					
+					valueSegs[i] = "";
+					for (int leng = 0; leng < 4-date[0].length(); ++leng) valueSegs[i] += "0"; 
+					valueSegs[i] += date[0] + "-" ;
+					for (int leng = 0; leng < 2-date[1].length(); ++leng) valueSegs[i] += "0";
+					valueSegs[i] += date[1] + "-" ;
+					for (int leng = 0; leng < 2-date[2].length(); ++leng) valueSegs[i] += "0";
+					valueSegs[i] += date[2];
+				}
+				if ( !valueSegs[i].equals("") ) ls.add(valueSegs[i]);
 			}
 		}
 		else
