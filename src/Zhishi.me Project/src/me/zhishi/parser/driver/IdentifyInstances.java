@@ -1,8 +1,10 @@
 package me.zhishi.parser.driver;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -27,18 +29,69 @@ public class IdentifyInstances
 {
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
+	private static HashSet<String> WhiteList = new HashSet<String>();
+	
 	
 	public static void main( String[] args ) throws Exception
 	{
+		//WhiteList.add(e)
 		String source = URICenter.source_name_hudong;
 //		String source = URICenter.source_name_baidu;
-		run( source );
+//		run( source );
+		datatype( source );
 	}
 	
 	public static void run( String source ) throws Exception
 	{
 		identify( source );
 		output( source );
+	}
+	
+	public static class DatatypeStatistics extends Reducer<Object, Text, NullWritable, Text>
+	{
+		@Override
+		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
+		{
+			Pattern TypePatt = Pattern.compile("[0-9]+(\\.[0-9]+)?[^0-9，、。；,;]*$");
+			HashMap<String, Integer> TypeOccur =  new HashMap<String, Integer>();
+			LinkedList<String> TypeList = new LinkedList<String>();
+			
+			for( Text val : values )
+			{
+				String triple = val.toString();
+				TripleReader tr = new TripleReader( triple );
+				String oc = tr.getObjectValue();
+				oc = oc.replaceAll( "\\([^\\(\\)]*\\)", "" );
+				oc = oc.replaceAll( "（[^（）]*）", "" );
+				oc = oc.replaceAll( "\\([^（）]*）", "" );
+				oc = oc.replaceAll( "（[^（）]*\\)", "" );
+				oc = oc.replaceAll( "（*", "" );
+				oc = oc.replaceAll( "）*", "" );
+				oc = oc.replaceAll( "\\(*", "" );
+				oc = oc.replaceAll( "\\)*", "" );
+				if ( TypePatt.matcher( oc ).matches() )
+				{
+					oc = oc.replaceFirst("[0-9]+(\\.[0-9]+)?", "");
+					oc = oc.replaceAll("[余多　左右以上下 ])", "");
+					if ( TypeOccur.containsKey(oc) )
+					{
+						TypeOccur.put(oc , TypeOccur.get(oc) + 1);
+					}
+					else
+					{
+						TypeList.add(oc);
+						TypeOccur.put(oc , 1);
+					}
+				}
+			}
+			
+			for( String type : TypeList )
+			{
+				Text text = new Text( key + " " + type + " : " + TypeOccur.get(type) );
+				context.write( NullWritable.get(), text );
+			}
+			
+		}
 	}
 	
 	public static class IndexByTerms extends Mapper<Object, Text, Text, Text>
@@ -180,6 +233,54 @@ public class IdentifyInstances
 				for( String triple : LiteralObjList )
 					context.write( NullWritable.get(), new Text( triple ) );
 			}
+		}
+	}
+	
+	public static void datatype( String source ) throws Exception
+	{
+		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
+		
+		String inputPath = p.getNTriplesFolder() + source + "_DT_IN/";
+		String outputPath = p.getNTriplesFolder() + source + "_DT_OUT/";
+		
+		Configuration conf = new Configuration();
+		
+		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
+		FileSystem fs = FileSystem.get( conf );
+		fs.delete( new Path( outputPath ), true );
+		
+		Path in = new Path( inputPath );
+		fs.mkdirs( in );
+		fs.rename( new Path( p.getNTriplesFile( "infoboxText" ) ), new Path( inputPath + "infoboxText" ) );
+		
+		try
+		{
+			Job job = new Job( conf, "ZHISHI.ME# Identifying Datatype: " + source );
+			
+			job.setNumReduceTasks( numReduceTasks );
+	
+			job.setJarByClass( IdentifyInstances.class );
+			job.setMapperClass( IndexByProperties.class );
+			job.setReducerClass( DatatypeStatistics.class );
+			
+			job.setOutputKeyClass( Text.class );
+			job.setOutputValueClass( Text.class );
+			
+//			for( String s : contents )
+//				MultipleOutputs.addNamedOutput( job, s, TextOutputFormat.class, NullWritable.class, Text.class );
+	
+			FileInputFormat.addInputPath( job, new Path( inputPath ) );
+			FileOutputFormat.setOutputPath( job, new Path( outputPath ) );
+	
+			if( job.waitForCompletion( true ) )
+			{
+//				fs.delete( new Path( outputPath ), true );
+			}
+		}
+		finally
+		{
+			fs.rename( new Path( inputPath + "infoboxText" ), new Path( p.getNTriplesFile( "infoboxText" ) ) );
+			fs.delete( in, true );
 		}
 	}
 
