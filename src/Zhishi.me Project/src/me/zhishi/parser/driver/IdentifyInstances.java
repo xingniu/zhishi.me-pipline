@@ -31,7 +31,6 @@ public class IdentifyInstances
 	private static int numReduceTasks = 10;
 	private static HashSet<String> WhiteList = new HashSet<String>();
 	
-	
 	public static void main( String[] args ) throws Exception
 	{
 		//WhiteList.add(e)

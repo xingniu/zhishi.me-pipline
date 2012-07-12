@@ -76,7 +76,7 @@ public class NTStorer
 			if( inKey.equals( "category" ) )
 				writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( c ), URICenter.predicate_rdfs_label, c ) );
 			else if( inKey.equals( "infobox" ) )
-				writer.writeLine( TripleWriter.getStringValueTriple( uc.getURIByKey( "property", c ), URICenter.predicate_rdfs_label, c ) );
+				writer.writeLine( TripleWriter.getStringValueTriple( uc.getPropertyPredicate( c ), URICenter.predicate_rdfs_label, c ) );
 		}
 		
 		reader.close();

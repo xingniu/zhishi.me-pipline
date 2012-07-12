@@ -71,17 +71,17 @@ public class URICenter
 	
 	public String getResourceURI( String label )
 	{
-		return namespace + "resource/" + zhishiEncode( label );
+		return getURIByKey( "resource", label );
 	}
 	
 	public String getCategoryURI( String label )
 	{
-		return namespace + "category/" + zhishiEncode( label );
+		return getURIByKey( "category", label );
 	}
 	
 	public String getPropertyPredicate( String label )
 	{
-		return namespace + "property/" + zhishiEncode( label );
+		return getURIByKey( "property", label );
 	}
 	
 	public String getURIByKey( String key, String label )
