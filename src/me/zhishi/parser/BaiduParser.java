@@ -205,6 +205,7 @@ public class BaiduParser implements ZhishiParser
 			{
 				String property = info.text();
 				property = property.replaceAll( "[：:].*", "" );
+				property = property.replaceAll( "[　 ]", "" );
 				properties.add( new StringPair( property, null ) );
 			}
 			int i = 0;

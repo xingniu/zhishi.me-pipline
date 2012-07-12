@@ -255,6 +255,7 @@ public class HudongParser implements ZhishiParser
 						hasProperty = true;
 						pv.first = e.text();
 						pv.first = pv.first.replaceAll( "[：:].*", "" );
+						pv.first = pv.first.replaceAll( "[　 ]", "" );
 					}
 					if( e.hasAttr( "style" ) )
 					{
