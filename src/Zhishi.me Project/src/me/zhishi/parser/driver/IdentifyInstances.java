@@ -28,14 +28,13 @@ import me.zhishi.tools.file.TripleWriter;
 public class IdentifyInstances
 {
 	public static double releaseVersion = 3.0;
-	private static int numReduceTasks = 10;
-	private static HashSet<String> WhiteList = new HashSet<String>();
+	private static int numReduceTasks = 5;
+	private static HashSet<String> Whitelist = WhiteList.List;
 	
 	public static void main( String[] args ) throws Exception
 	{
-		//WhiteList.add(e)
-		String source = URICenter.source_name_hudong;
-//		String source = URICenter.source_name_baidu;
+//		String source = URICenter.source_name_hudong;
+		String source = URICenter.source_name_baidu;
 //		run( source );
 		datatype( source );
 	}
@@ -50,6 +49,17 @@ public class IdentifyInstances
 	{
 		@Override
 		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
+		{
+		if ( !key.toString().equals("英文名") && !key.toString().equals("其他信息") &&
+			 !key.toString().equals("化学式") && !key.toString().equals("下辖地区") &&
+			 !key.toString().equals("亚种") && !key.toString().equals("其他") &&
+			 !key.toString().equals("创建时间") && !key.toString().equals("院系设置") &&
+			 !key.toString().equals("曾获奖项") && !key.toString().equals("毕业院校") &&
+			 !key.toString().equals("建立时间") && !key.toString().equals("标准变速器") &&
+			 !key.toString().equals("电影公司") && !key.toString().equals("发行商") &&
+			 !key.toString().equals("成就") && !key.toString().equals("重要事件") &&
+			 !key.toString().equals("中文名") && !key.toString().equals("开发商") &&
+			 !key.toString().equals("页数") && !key.toString().equals("员工数") ) 
 		{
 			Pattern TypePatt = Pattern.compile("[0-9]+(\\.[0-9]+)?[^0-9，、。；,;]*$");
 			HashMap<String, Integer> TypeOccur =  new HashMap<String, Integer>();
@@ -71,7 +81,33 @@ public class IdentifyInstances
 				if ( TypePatt.matcher( oc ).matches() )
 				{
 					oc = oc.replaceFirst("[0-9]+(\\.[0-9]+)?", "");
-					oc = oc.replaceAll("[余多　左右以上下 ])", "");
+					oc = oc.replaceAll("[起余多　左右以上下 .]", "");
+					oc = oc.replaceAll("[人口名个户位学生字]", "");
+					oc = oc.replaceAll("[十百千万兆亿]", "");
+					oc = oc.replaceAll("^人名币$", "人民币");
+					oc = oc.replaceAll("^公理$", "公里");
+					oc = oc.replaceAll("^k㎡$", "平方公里");
+					oc = oc.replaceAll("^km²$", "平方公里");
+					oc = oc.replaceAll("^平房公里$", "平方公里");
+					oc = oc.replaceAll("^[平方]公里$", "平方公里");
+					oc = oc.replaceAll("^平方[公里]$", "平方公里");
+					oc = oc.replaceAll("^km?$", "平方公里");
+					oc = oc.replaceAll("^立方米立方米$", "立方米");
+					oc = oc.replaceAll("^立方米每秒立方米$", "立方米");
+					oc = oc.replaceAll("^m[/／]s立方米$", "立方米");
+					oc = oc.replaceAll("^立方米[/／]秒立方米$", "立方米");
+					oc = oc.replaceAll("^[kK][gG]$", "公斤");
+					oc = oc.replaceAll("^g/ml$", "g/mL");
+					oc = oc.replaceAll("^g/l$", "g/L");
+					oc = oc.replaceAll("^(元)?人民币$", "元");
+					oc = oc.replaceAll("^[cC][mM]$", "cm");
+					oc = oc.replaceAll("^㎝$", "cm");
+					oc = oc.replaceAll("^亩耕地$", "亩");
+					oc = oc.replaceAll("^㎡$", "平方米");
+					oc = oc.replaceAll("^立方立米$", "立方厘米");
+					oc = oc.replaceAll("^[kK][mM]/[hH]$", "km/h");
+					oc = oc.replaceAll("^[mM]i[nN](s)?$", "min");
+					oc = oc.replaceAll("^分种$", "分钟");
 					if ( TypeOccur.containsKey(oc) )
 					{
 						TypeOccur.put(oc , TypeOccur.get(oc) + 1);
@@ -85,11 +121,13 @@ public class IdentifyInstances
 			}
 			
 			for( String type : TypeList )
+			if ( TypeOccur.get(type) > 1 )
 			{
 				Text text = new Text( key + " " + type + " : " + TypeOccur.get(type) );
 				context.write( NullWritable.get(), text );
 			}
 			
+		}
 		}
 	}
 	
