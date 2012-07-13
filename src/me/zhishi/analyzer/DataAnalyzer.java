@@ -7,7 +7,7 @@ public class DataAnalyzer
 {
 
 	protected NTriplesReader fileReader;
-	private Path fileName;
+	protected Path fileName;
 	
 	public DataAnalyzer( double version, String source, String type )
 	{
