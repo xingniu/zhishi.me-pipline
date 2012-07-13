@@ -29,7 +29,7 @@ public class IdentifyInstances
 {
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 5;
-	private static HashSet<String> Whitelist = WhiteList.List;
+	private static HashSet<String> Whitelist = TypeNormalize.List();
 	
 	public static void main( String[] args ) throws Exception
 	{
@@ -62,6 +62,7 @@ public class IdentifyInstances
 			 !key.toString().equals("页数") && !key.toString().equals("员工数") ) 
 		{
 			Pattern TypePatt = Pattern.compile("[0-9]+(\\.[0-9]+)?[^0-9，、。；,;]*$");
+			Pattern LeadZero = Pattern.compile("0[0-9]+(\\.[0-9]+)?[^0-9，、。；,;]*$");
 			HashMap<String, Integer> TypeOccur =  new HashMap<String, Integer>();
 			LinkedList<String> TypeList = new LinkedList<String>();
 			
@@ -78,36 +79,14 @@ public class IdentifyInstances
 				oc = oc.replaceAll( "）*", "" );
 				oc = oc.replaceAll( "\\(*", "" );
 				oc = oc.replaceAll( "\\)*", "" );
-				if ( TypePatt.matcher( oc ).matches() )
+				oc = oc.replaceAll( "[￥]", "" );
+				if ( TypePatt.matcher( oc ).matches() && !LeadZero.matcher( oc ).matches() )
 				{
 					oc = oc.replaceFirst("[0-9]+(\\.[0-9]+)?", "");
 					oc = oc.replaceAll("[起余多　左右以上下 .]", "");
-					oc = oc.replaceAll("[人口名个户位学生字]", "");
 					oc = oc.replaceAll("[十百千万兆亿]", "");
-					oc = oc.replaceAll("^人名币$", "人民币");
-					oc = oc.replaceAll("^公理$", "公里");
-					oc = oc.replaceAll("^k㎡$", "平方公里");
-					oc = oc.replaceAll("^km²$", "平方公里");
-					oc = oc.replaceAll("^平房公里$", "平方公里");
-					oc = oc.replaceAll("^[平方]公里$", "平方公里");
-					oc = oc.replaceAll("^平方[公里]$", "平方公里");
-					oc = oc.replaceAll("^km?$", "平方公里");
-					oc = oc.replaceAll("^立方米立方米$", "立方米");
-					oc = oc.replaceAll("^立方米每秒立方米$", "立方米");
-					oc = oc.replaceAll("^m[/／]s立方米$", "立方米");
-					oc = oc.replaceAll("^立方米[/／]秒立方米$", "立方米");
-					oc = oc.replaceAll("^[kK][gG]$", "公斤");
-					oc = oc.replaceAll("^g/ml$", "g/mL");
-					oc = oc.replaceAll("^g/l$", "g/L");
-					oc = oc.replaceAll("^(元)?人民币$", "元");
-					oc = oc.replaceAll("^[cC][mM]$", "cm");
-					oc = oc.replaceAll("^㎝$", "cm");
-					oc = oc.replaceAll("^亩耕地$", "亩");
-					oc = oc.replaceAll("^㎡$", "平方米");
-					oc = oc.replaceAll("^立方立米$", "立方厘米");
-					oc = oc.replaceAll("^[kK][mM]/[hH]$", "km/h");
-					oc = oc.replaceAll("^[mM]i[nN](s)?$", "min");
-					oc = oc.replaceAll("^分种$", "分钟");
+					oc = TypeNormalize.Normalize(oc);
+					oc = oc.replaceAll("[人口名个户位学生字]", "");
 					if ( TypeOccur.containsKey(oc) )
 					{
 						TypeOccur.put(oc , TypeOccur.get(oc) + 1);
