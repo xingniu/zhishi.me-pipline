@@ -42,13 +42,29 @@ public class AbstractAnalyzer extends DataAnalyzer
 		
 		String noSense = "[\\s，：]";
 		
-		Pattern pattern = Pattern.compile( "(" + Pattern.quote(label) + "(（.*?）)?" + noSense + "?(，?(又称|又叫|也叫|简称).*?，)?|这|他|她|它)(指的是|是指|是)(.*?)。" );
-		Matcher matcher = pattern.matcher( abs );
+		String[] absegs = abs.split( "。" );
+		
+		Pattern pattern = Pattern.compile( "^(.*?" + Pattern.quote(label) + "(（.*?）)?" + noSense + "?(，?(又称|又叫|也叫|简称).*?，)?|这|他|她|它)(指的是|是指|是)(.*)" );
+		Matcher matcher = pattern.matcher( absegs[0] );
 		
 		ArrayList<String> absArray = new ArrayList<String>();
-		while( matcher.find() )
+		if( matcher.find() )
 		{
-			absArray.add( matcher.group( 6 ) );
+//			absArray.add( matcher.group( 6 ) );
+		}
+		else
+		{
+			pattern = Pattern.compile( "^(" + Pattern.quote(label) + "(（.*?）)?.*)，(指的是|是指|是)(.*)" );
+			matcher = pattern.matcher( absegs[0] );
+			if( matcher.find() )
+			{
+//				absArray.add( matcher.group( 4 ) );
+			}
+			else
+			{
+				if( absegs[0].contains( label + "是" ) )
+					absArray.add( absegs[0] );
+			}
 		}
 		return absArray;
 	}
