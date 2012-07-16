@@ -32,7 +32,6 @@ public class IdentifyInstances
 {
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
-	private static HashSet<String> Whitelist = TypeNormalize.List();
 	
 	public static void main( String[] args ) throws Exception
 	{
@@ -53,9 +52,7 @@ public class IdentifyInstances
 		@Override
 		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
 		{
-			Pattern TypePatt = Pattern.compile("[0-9]+(\\.[0-9]+)?[^0-9，、。；,;]*$");
-			Pattern LeadZero = Pattern.compile("0[0-9]+(\\.[0-9]+)?[^0-9，、。；,;]*$");
-			HashMap<String, Integer> TypeOccur =  new HashMap<String, Integer>();
+			HashMap<String, Integer> TypeOccur = new HashMap<String, Integer>();
 			LinkedList<String> TypeList = new LinkedList<String>();
 			
 			for( Text val : values )
@@ -63,26 +60,18 @@ public class IdentifyInstances
 				String triple = val.toString();
 				TripleReader tr = new TripleReader( triple );
 				String oc = tr.getObjectValue();
-				oc = TypeNormalize.RemoveParen(oc);
-				oc = oc.replaceAll( "[￥]", "" );
-				if ( TypePatt.matcher( oc ).matches() && !LeadZero.matcher( oc ).matches() )
+				oc = TypeNormalize.CheckType(oc);
+
+				if ( oc != null )
 				{
-					oc = oc.replaceFirst("[0-9]+(\\.[0-9]+)?", "");
-					oc = oc.replaceAll("[起余多　左右以上下 .]", "");
-					oc = oc.replaceAll("[十百千万兆亿]", "");
-					oc = TypeNormalize.Normalize(oc);
-//					oc = oc.replaceAll("[人口名个户位学生字]", "");
-					if ( Whitelist.contains(oc) )
+					if ( TypeOccur.containsKey(oc) )
 					{
-						if ( TypeOccur.containsKey(oc) )
-						{
-							TypeOccur.put(oc , TypeOccur.get(oc) + 1);
-						}
-						else
-						{
-							TypeList.add(oc);
-							TypeOccur.put(oc , 1);
-						}
+						TypeOccur.put(oc , TypeOccur.get(oc) + 1);
+					}
+					else
+					{
+						TypeList.add(oc);
+						TypeOccur.put(oc , 1);
 					}
 				}
 			}
@@ -109,26 +98,6 @@ public class IdentifyInstances
 	
 	public static class IndexByTerms extends Mapper<Object, Text, Text, Text>
 	{
-		private HashMap<String,String> propUnitMap;
-		
-		@Override
-		protected void setup( Context context ) throws IOException, InterruptedException
-		{
-			propUnitMap = new HashMap<String, String>();
-			Configuration conf = context.getConfiguration();
-			FileSystem fs = FileSystem.get( conf );
-			
-			Path path = new Path( conf.get( "datatypeStatistics" ) );
-			BufferedReader reader = new BufferedReader( new InputStreamReader( fs.open( path ) ) );
-			String line;
-			while( (line = reader.readLine()) != null )
-			{
-				String[] segs = line.split( "\t" );
-				propUnitMap.put( segs[0], segs[1] );
-			}
-			reader.close();
-		}
-		
 		@Override
 		public void map( Object key, Text value, Context context ) throws IOException, InterruptedException
 		{
@@ -158,15 +127,42 @@ public class IdentifyInstances
 	
 	public static class ValueToURI extends Reducer<Object, Text, NullWritable, Text>
 	{
+		private HashMap<String,String> propUnitMap;
+		
+		@Override
+		protected void setup( Context context ) throws IOException, InterruptedException
+		{
+			propUnitMap = new HashMap<String, String>();
+			Configuration conf = context.getConfiguration();
+			FileSystem fs = FileSystem.get( conf );
+			
+			Path path = new Path( conf.get( "datatypeStatistics" ) );
+			BufferedReader reader = new BufferedReader( new InputStreamReader( fs.open( path ) ) );
+			String line;
+			while( (line = reader.readLine()) != null )
+			{
+				String[] segs = line.split( "\t" );
+				propUnitMap.put( segs[0], segs[1] );
+			}
+			reader.close();
+		}
+		
 		@Override
 		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
 		{
+			//key has unit?
+			boolean hasUnit = true;
+			String datatypeValue = "2009";
+			String datatype = URICenter.datatype_xmls_string;
+			String unit = "厘米";
+			
 			LinkedList<String> infoSP = new LinkedList<String>();
 			String uri = null;
 			for( Text val : values )
 			{
 				TripleReader tr = new TripleReader( val.toString() );
 				String pre = tr.getBarePredicate();
+				
 				if( pre.equals( URICenter.predicate_rdfs_label ) )
 				{
 					uri = tr.getSubject();
@@ -178,6 +174,14 @@ public class IdentifyInstances
 				else
 				{
 					infoSP.add( tr.getSubject() + " " + tr.getPredicate() );
+				}
+				
+				if( hasUnit )
+				{
+					Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
+					context.write( NullWritable.get(), text );
+					text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
+					context.write( NullWritable.get(), text );
 				}
 			}
 			

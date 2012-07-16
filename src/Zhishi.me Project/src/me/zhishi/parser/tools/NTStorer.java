@@ -247,7 +247,7 @@ public class NTStorer
 		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_abstract, URICenter.predicate_rdfs_label, "has abstract", "en" ) );
 		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_abstract, URICenter.predicate_rdfs_label, "摘要", "zh" ) );
 		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
-		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdfs_range, URICenter.object_xmls_string ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_abstract, URICenter.predicate_rdfs_range, URICenter.datatype_xmls_string ) );
 		
 		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_disambiguation, URICenter.predicate_rdf_type, URICenter.object_owl_ObjectProperty ) );
 		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_disambiguation, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
