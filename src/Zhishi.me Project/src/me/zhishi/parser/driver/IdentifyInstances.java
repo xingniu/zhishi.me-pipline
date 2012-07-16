@@ -1,6 +1,8 @@
 package me.zhishi.parser.driver;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -20,6 +22,7 @@ import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import me.zhishi.analyzer.InfoboxAnalyzer;
+import me.zhishi.parser.tools.TypeNormalize;
 import me.zhishi.tools.SmallTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.file.TripleReader;
@@ -28,7 +31,7 @@ import me.zhishi.tools.file.TripleWriter;
 public class IdentifyInstances
 {
 	public static double releaseVersion = 3.0;
-	private static int numReduceTasks = 5;
+	private static int numReduceTasks = 10;
 	private static HashSet<String> Whitelist = TypeNormalize.List();
 	
 	public static void main( String[] args ) throws Exception
@@ -68,7 +71,7 @@ public class IdentifyInstances
 					oc = oc.replaceAll("[起余多　左右以上下 .]", "");
 					oc = oc.replaceAll("[十百千万兆亿]", "");
 					oc = TypeNormalize.Normalize(oc);
-					oc = oc.replaceAll("[人口名个户位学生字]", "");
+//					oc = oc.replaceAll("[人口名个户位学生字]", "");
 					if ( Whitelist.contains(oc) )
 					{
 						if ( TypeOccur.containsKey(oc) )
@@ -106,6 +109,26 @@ public class IdentifyInstances
 	
 	public static class IndexByTerms extends Mapper<Object, Text, Text, Text>
 	{
+		private HashMap<String,String> propUnitMap;
+		
+		@Override
+		protected void setup( Context context ) throws IOException, InterruptedException
+		{
+			propUnitMap = new HashMap<String, String>();
+			Configuration conf = context.getConfiguration();
+			FileSystem fs = FileSystem.get( conf );
+			
+			Path path = new Path( conf.get( "datatypeStatistics" ) );
+			BufferedReader reader = new BufferedReader( new InputStreamReader( fs.open( path ) ) );
+			String line;
+			while( (line = reader.readLine()) != null )
+			{
+				String[] segs = line.split( "\t" );
+				propUnitMap.put( segs[0], segs[1] );
+			}
+			reader.close();
+		}
+		
 		@Override
 		public void map( Object key, Text value, Context context ) throws IOException, InterruptedException
 		{
@@ -275,15 +298,13 @@ public class IdentifyInstances
 			
 			job.setOutputKeyClass( Text.class );
 			job.setOutputValueClass( Text.class );
-			
-//			for( String s : contents )
-//				MultipleOutputs.addNamedOutput( job, s, TextOutputFormat.class, NullWritable.class, Text.class );
 	
 			FileInputFormat.addInputPath( job, new Path( inputPath ) );
 			FileOutputFormat.setOutputPath( job, new Path( outputPath ) );
 	
 			if( job.waitForCompletion( true ) )
 			{
+				SmallTools.moveMergeFiles( fs, "part", outputPath + "statistics", conf, outputPath, numReduceTasks );
 //				fs.delete( new Path( outputPath ), true );
 			}
 		}
@@ -300,6 +321,7 @@ public class IdentifyInstances
 		
 		String inputPath = p.getNTriplesFolder() + source + "_ID_IN/";
 		String outputPath = p.getNTriplesFolder() + source + "_ID_OUT/";
+		String dtStatistics = p.getNTriplesFolder() + source + "_DT_OUT/statistics";
 		
 		Configuration conf = new Configuration();
 		
@@ -315,6 +337,7 @@ public class IdentifyInstances
 		
 		try
 		{
+			conf.set( "datatypeStatistics", dtStatistics );
 			Job job = new Job( conf, "ZHISHI.ME# Identifying Instances: " + source );
 			
 			job.setNumReduceTasks( numReduceTasks );
@@ -334,6 +357,7 @@ public class IdentifyInstances
 	
 			if( job.waitForCompletion( true ) )
 			{
+//				fs.delete( new Path( dtStatistics ), true );
 //				fs.delete( new Path( outputPath ), true );
 			}
 		}
