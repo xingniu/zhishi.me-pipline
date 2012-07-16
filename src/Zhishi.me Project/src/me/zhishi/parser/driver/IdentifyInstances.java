@@ -50,17 +50,6 @@ public class IdentifyInstances
 		@Override
 		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
 		{
-		if ( !key.toString().equals("英文名") && !key.toString().equals("其他信息") &&
-			 !key.toString().equals("化学式") && !key.toString().equals("下辖地区") &&
-			 !key.toString().equals("亚种") && !key.toString().equals("其他") &&
-			 !key.toString().equals("创建时间") && !key.toString().equals("院系设置") &&
-			 !key.toString().equals("曾获奖项") && !key.toString().equals("毕业院校") &&
-			 !key.toString().equals("建立时间") && !key.toString().equals("标准变速器") &&
-			 !key.toString().equals("电影公司") && !key.toString().equals("发行商") &&
-			 !key.toString().equals("成就") && !key.toString().equals("重要事件") &&
-			 !key.toString().equals("中文名") && !key.toString().equals("开发商") &&
-			 !key.toString().equals("页数") && !key.toString().equals("员工数") ) 
-		{
 			Pattern TypePatt = Pattern.compile("[0-9]+(\\.[0-9]+)?[^0-9，、。；,;]*$");
 			Pattern LeadZero = Pattern.compile("0[0-9]+(\\.[0-9]+)?[^0-9，、。；,;]*$");
 			HashMap<String, Integer> TypeOccur =  new HashMap<String, Integer>();
@@ -71,14 +60,7 @@ public class IdentifyInstances
 				String triple = val.toString();
 				TripleReader tr = new TripleReader( triple );
 				String oc = tr.getObjectValue();
-				oc = oc.replaceAll( "\\([^\\(\\)]*\\)", "" );
-				oc = oc.replaceAll( "（[^（）]*）", "" );
-				oc = oc.replaceAll( "\\([^（）]*）", "" );
-				oc = oc.replaceAll( "（[^（）]*\\)", "" );
-				oc = oc.replaceAll( "（*", "" );
-				oc = oc.replaceAll( "）*", "" );
-				oc = oc.replaceAll( "\\(*", "" );
-				oc = oc.replaceAll( "\\)*", "" );
+				oc = TypeNormalize.RemoveParen(oc);
 				oc = oc.replaceAll( "[￥]", "" );
 				if ( TypePatt.matcher( oc ).matches() && !LeadZero.matcher( oc ).matches() )
 				{
@@ -87,26 +69,38 @@ public class IdentifyInstances
 					oc = oc.replaceAll("[十百千万兆亿]", "");
 					oc = TypeNormalize.Normalize(oc);
 					oc = oc.replaceAll("[人口名个户位学生字]", "");
-					if ( TypeOccur.containsKey(oc) )
+					if ( Whitelist.contains(oc) )
 					{
-						TypeOccur.put(oc , TypeOccur.get(oc) + 1);
-					}
-					else
-					{
-						TypeList.add(oc);
-						TypeOccur.put(oc , 1);
+						if ( TypeOccur.containsKey(oc) )
+						{
+							TypeOccur.put(oc , TypeOccur.get(oc) + 1);
+						}
+						else
+						{
+							TypeList.add(oc);
+							TypeOccur.put(oc , 1);
+						}
 					}
 				}
 			}
 			
+			int max = 0;
+			String represent = null;
 			for( String type : TypeList )
-			if ( TypeOccur.get(type) > 1 )
 			{
-				Text text = new Text( key + " " + type + " : " + TypeOccur.get(type) );
+				if ( TypeOccur.get(type) > max )
+				{
+					max = TypeOccur.get(type);
+					represent = type;
+				}
+//				Text text = new Text( key + " " + type + " : " + TypeOccur.get(type) );
+//				context.write( NullWritable.get(), text );
+			}
+			if ( represent != null )
+			{
+				Text text = new Text( key + "\t" + represent );
 				context.write( NullWritable.get(), text );
 			}
-			
-		}
 		}
 	}
 	
