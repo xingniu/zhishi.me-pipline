@@ -30,6 +30,7 @@ public class URICenter
 	public static String predicate_temp_exception = "exception";
 	public static String predicate_temp_featureTags = "featureTags";
 	public static String predicate_temp_lookup = "lookup";
+	public static String predicate_temp_unit = "unit";
 	
 	public static String predicate_foaf_primaryTopic = "http://xmlns.com/foaf/0.1/primaryTopic";
 	public static String predicate_foaf_depiction = "http://xmlns.com/foaf/0.1/depiction";
@@ -47,7 +48,11 @@ public class URICenter
 	public static String predicate_rdfs_range = "http://www.w3.org/2000/01/rdf-schema#range";
 	public static String predicate_owl_sameAs = "http://www.w3.org/2002/07/owl#sameAs";
 	
-	public static String object_xmls_string = "http://www.w3.org/2001/XMLSchema#string";
+	public static String datatype_xmls_string = "http://www.w3.org/2001/XMLSchema#string";
+	public static String datatype_xmls_int = "http://www.w3.org/2001/XMLSchema#int";
+	public static String datatype_xmls_double = "http://www.w3.org/2001/XMLSchema#double";
+	public static String datatype_xmls_date = "http://www.w3.org/2001/XMLSchema#date";
+	
 	public static String object_owl_Thing = "http://www.w3.org/2002/07/owl#Thing";
 	public static String object_owl_DatatypeProperty = "http://www.w3.org/2002/07/owl#DatatypeProperty";
 	public static String object_owl_ObjectProperty = "http://www.w3.org/2002/07/owl#ObjectProperty";
