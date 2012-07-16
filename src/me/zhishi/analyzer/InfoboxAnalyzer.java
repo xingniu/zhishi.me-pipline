@@ -12,14 +12,14 @@ public class InfoboxAnalyzer extends DataAnalyzer
 {
 	public static void main( String[] args ) throws IOException
 	{
-		InfoboxAnalyzer ana = new InfoboxAnalyzer( 3.0, URICenter.source_name_hudong );
+		InfoboxAnalyzer ana = new InfoboxAnalyzer( 3.0, URICenter.source_name_baidu );
 		ana.driver();
 		ana.closeReader();
 	}
 	
 	public InfoboxAnalyzer( double version, String source )
 	{
-		super( version, source, "infobox" );
+		super( version, source, "infoboxText" );
 	}
 	
 	public void driver() throws IOException

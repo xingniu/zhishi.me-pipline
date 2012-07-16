@@ -8,10 +8,11 @@ public class TypeNormalize {
 	public static HashSet<String> List() {
 		//time
 		List.add("秒");		List.add("分");		List.add("时");		List.add("天");
+		List.add("月");
 		
 		//weight
 		List.add("克");		List.add("公斤");		List.add("吨");		List.add("磅");		
-		List.add("斤");
+		List.add("斤");		List.add("毫克");
 		
 		//length
 		List.add("米");		List.add("公里");		List.add("毫米");		List.add("厘米");
@@ -20,20 +21,38 @@ public class TypeNormalize {
 		List.add("平方公里");	List.add("平方米");	List.add("亩");		List.add("公顷");
 		
 		//volume
-		List.add("立方米");	List.add("立方厘米");	List.add("升");		List.add("毫升");
+		List.add("立方米");	List.add("立方厘米");	List.add("升");
 		
 		//speed
-		List.add("公里/小时");	List.add("米/小时");	
+		List.add("公里/小时");	List.add("米/小时");	List.add("公里/秒");
 		
 		//size
 		List.add("MB");		List.add("GB");		List.add("G");
 		
+		//density
+		List.add("克/立方厘米");					List.add("克/升");	
+		
 		//other
 		List.add("kw");		List.add("/平方公里");	List.add("/平方米");	List.add("A");
-		List.add("摄氏度");	List.add("KW/rpm");	List.add("N·m/rpm");List.add("");
+		List.add("摄氏度");	List.add("KW/rpm");	List.add("N·m/rpm");List.add("升/公里");
 		
-		List.add("");		List.add("");		List.add("");		List.add("");
+		//null
+		List.add("");
 		return List;
+	}
+	
+	public static String RemoveParen(String oc)
+	{
+		oc = oc.replaceAll( "\\([^\\(\\)]*\\)", "" );
+		oc = oc.replaceAll( "（[^（）]*）", "" );
+		oc = oc.replaceAll( "\\([^（）]*）", "" );
+		oc = oc.replaceAll( "（[^（）]*\\)", "" );
+		oc = oc.replaceAll( "（*", "" );
+		oc = oc.replaceAll( "）*", "" );
+		oc = oc.replaceAll( "\\(*", "" );
+		oc = oc.replaceAll( "\\)*", "" );
+		
+		return oc;
 	}
 	
 	public static String Normalize(String oc)
@@ -66,7 +85,7 @@ public class TypeNormalize {
 		oc = oc.replaceAll("^分钟$", "分");
 		oc = oc.replaceAll("^min$", "分");
 		oc = oc.replaceAll("^小时$", "时");
-		oc = oc.replaceAll("^h$", "时");
+		oc = oc.replaceAll("^[hH]$", "时");
 		oc = oc.replaceAll("^g$", "克");
 		oc = oc.replaceAll("^[kK][gG]$", "公斤");
 		oc = oc.replaceAll("^lbs$", "磅");
@@ -76,14 +95,20 @@ public class TypeNormalize {
 		oc = oc.replaceAll("^[mM][mM]$", "毫米");
 		oc = oc.replaceAll("^公分$", "厘米");
 		oc = oc.replaceAll("^平米$", "平方米");
+		oc = oc.replaceAll("^平方$", "平方米");
 		oc = oc.replaceAll("^立方$", "立方米");
 		oc = oc.replaceAll("^L$", "升");
 		oc = oc.replaceAll("^cc$", "毫升");
-		oc = oc.replaceAll("^mL$", "毫升");
+		oc = oc.replaceAll("^[mM][lL]$", "毫升");
+		oc = oc.replaceAll("^毫升$", "立方厘米");
+		oc = oc.replaceAll("^[mM][gG]$", "毫克");
 		oc = oc.replaceAll("^[kK][mM]/[hH]$", "公里/小时");
 		oc = oc.replaceAll("^℃$", "摄氏度");
-		
-		
+		oc = oc.replaceAll("^L/公里$", "升/公里");
+		oc = oc.replaceAll("^g/cm³$", "克/立方厘米");
+		oc = oc.replaceAll("^g/mL$", "克/立方厘米");
+		oc = oc.replaceAll("^g/L$", "克/升");
+		oc = oc.replaceAll("^KM/S$", "公里/秒");		
 		
 		return oc;
 	}
