@@ -32,13 +32,15 @@ public class IdentifyInstances
 {
 	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 10;
+	private static int maxUnitLength = 3;
 	
 	public static void main( String[] args ) throws Exception
 	{
-//		String source = URICenter.source_name_hudong;
-		String source = URICenter.source_name_baidu;
-//		run( source );
+		String source = URICenter.source_name_hudong;
+//		String source = URICenter.source_name_baidu;
 		datatype( source );
+//		identify( source );
+//		run( source );
 	}
 	
 	public static void run( String source ) throws Exception
@@ -54,16 +56,20 @@ public class IdentifyInstances
 		{
 			HashMap<String, Integer> TypeOccur = new HashMap<String, Integer>();
 			LinkedList<String> TypeList = new LinkedList<String>();
+			String valuetype = "0";
 			
 			for( Text val : values )
 			{
 				String triple = val.toString();
 				TripleReader tr = new TripleReader( triple );
 				String oc = tr.getObjectValue();
+				
 				oc = TypeNormalize.CheckType(oc);
-
+				
 				if ( oc != null )
 				{
+					if ( oc.charAt(0) == '1' ) valuetype = "1";
+					oc = oc.replaceAll("[01]", "");
 					if ( TypeOccur.containsKey(oc) )
 					{
 						TypeOccur.put(oc , TypeOccur.get(oc) + 1);
@@ -91,6 +97,8 @@ public class IdentifyInstances
 			if ( represent != null )
 			{
 				Text text = new Text( key + "\t" + represent );
+				context.write( NullWritable.get(), text );
+				text = new Text( key + "\t" + (valuetype == "0" ? "Int" : "Double") );
 				context.write( NullWritable.get(), text );
 			}
 		}
@@ -128,11 +136,13 @@ public class IdentifyInstances
 	public static class ValueToURI extends Reducer<Object, Text, NullWritable, Text>
 	{
 		private HashMap<String,String> propUnitMap;
+		private HashMap<String,String> propValueType;
 		
 		@Override
 		protected void setup( Context context ) throws IOException, InterruptedException
 		{
 			propUnitMap = new HashMap<String, String>();
+			propValueType = new HashMap<String, String>();
 			Configuration conf = context.getConfiguration();
 			FileSystem fs = FileSystem.get( conf );
 			
@@ -142,7 +152,15 @@ public class IdentifyInstances
 			while( (line = reader.readLine()) != null )
 			{
 				String[] segs = line.split( "\t" );
-				propUnitMap.put( segs[0], segs[1] );
+				if ( segs.length == 2 )	propUnitMap.put( segs[0], segs[1] );
+				else
+				{
+					propUnitMap.put( segs[0], "" );
+				}
+				
+				line = reader.readLine();
+				segs = line.split( "\t" );
+				propValueType.put( segs[0], segs[1] );
 			}
 			reader.close();
 		}
@@ -150,12 +168,6 @@ public class IdentifyInstances
 		@Override
 		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
 		{
-			//key has unit?
-			boolean hasUnit = true;
-			String datatypeValue = "2009";
-			String datatype = URICenter.datatype_xmls_string;
-			String unit = "厘米";
-			
 			LinkedList<String> infoSP = new LinkedList<String>();
 			String uri = null;
 			for( Text val : values )
@@ -176,8 +188,63 @@ public class IdentifyInstances
 					infoSP.add( tr.getSubject() + " " + tr.getPredicate() );
 				}
 				
-				if( hasUnit )
+				boolean hasUnit = false;
+				String unit = TypeNormalize.CheckType(key.toString());
+				String datatypeValue = "";
+				String datatype = "";
+				
+				//get unit
+				if ( unit != null )
 				{
+					unit = unit.replaceAll("[01]", "");
+					if ( unit == propUnitMap.get(pre) || TypeNormalize.Table.containsKey(unit + " " + propUnitMap.get(pre)) )
+					{
+						hasUnit = true;
+					}
+					else
+					{
+						if ( unit.length() <= maxUnitLength )
+						{
+							unit = propUnitMap.get(pre);
+							hasUnit = true;
+						}
+					}
+				}
+				else
+				{
+					unit = TypeNormalize.getBareType(key.toString());
+					if ( unit != null && unit.length() <= maxUnitLength )
+					{
+						unit = propUnitMap.get(pre);
+						hasUnit = true;
+					}
+				}
+				
+				if ( TypeNormalize.isDate( key.toString() ) )
+				{
+					unit = "";
+					datatype = URICenter.datatype_xmls_date;
+					datatypeValue = key.toString();
+					
+					Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
+					context.write( NullWritable.get(), text );
+					text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
+					context.write( NullWritable.get(), text );
+				}
+				
+				if ( hasUnit )
+				{
+					if ( propValueType.get(pre) == "Int" ) datatype = URICenter.datatype_xmls_int;
+					else datatype = URICenter.datatype_xmls_double;
+					
+					datatypeValue = TypeNormalize.getValue( key.toString() );
+					
+					if ( propValueType.get(pre) == "Int" && datatypeValue.length() > 9 )
+					{
+						propValueType.put(pre, "Double");
+						datatype = URICenter.datatype_xmls_double;
+					}
+					
 					Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
 					context.write( NullWritable.get(), text );
 					text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
