@@ -81,14 +81,15 @@ public class TypeNormalize {
 		while ( oc.indexOf("兆") > -1 )	{	dot += 6;	oc = oc.replaceFirst("兆", "");	}
 		while ( oc.indexOf("亿") > -1 )	{	dot += 8;	oc = oc.replaceFirst("亿", "");	}
 		
-		ret.replaceAll(".", "");
-		if (dot < 0)
+		ret = ret.replaceAll("\\.", "");
+		if ( dot < 0 )
 		{
 			ret = ret.substring(0, ret.length() + dot) + "." + ret.substring(ret.length() + dot, ret.length());
 		}
 		else
 		{
-			for (int i=0; i<dot; ++i) ret = ret + "0";
+			for ( int i = 0; i < dot; ++i ) ret = ret + "0";
+			while ( ret.indexOf("0") == 0 ) ret = ret.replaceFirst("0", "");
 		}
 		return ret;
 	}

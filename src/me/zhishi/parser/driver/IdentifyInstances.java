@@ -38,8 +38,8 @@ public class IdentifyInstances
 	{
 		String source = URICenter.source_name_hudong;
 //		String source = URICenter.source_name_baidu;
-		datatype( source );
-//		identify( source );
+//		datatype( source );
+		identify( source );
 //		run( source );
 	}
 	
@@ -186,69 +186,75 @@ public class IdentifyInstances
 				else
 				{
 					infoSP.add( tr.getSubject() + " " + tr.getPredicate() );
-				}
-				
-				boolean hasUnit = false;
-				String unit = TypeNormalize.CheckType(key.toString());
-				String datatypeValue = "";
-				String datatype = "";
-				
-				//get unit
-				if ( unit != null )
-				{
-					unit = unit.replaceAll("[01]", "");
-					if ( unit == propUnitMap.get(pre) || TypeNormalize.Table.containsKey(unit + " " + propUnitMap.get(pre)) )
+					
+					String preContent = tr.getPredicateContent();
+					if ( propUnitMap.containsKey(preContent) )
 					{
-						hasUnit = true;
-					}
-					else
-					{
-						if ( unit.length() <= maxUnitLength )
+						boolean hasUnit = false;
+						String unit = TypeNormalize.CheckType(key.toString());
+						String datatypeValue = "";
+						String datatype = "";
+						
+						//get unit
+						if ( unit != null )
 						{
-							unit = propUnitMap.get(pre);
-							hasUnit = true;
+							unit = unit.replaceAll("[01]", "");
+							if ( unit == propUnitMap.get(preContent) || TypeNormalize.Table.containsKey(unit + " " + propUnitMap.get(preContent)) )
+							{
+								hasUnit = true;
+							}
+							else
+							{
+								if ( unit.length() <= maxUnitLength )
+								{
+									unit = propUnitMap.get(preContent);
+									hasUnit = true;
+								}
+							}
+						}
+						else
+						{
+							unit = TypeNormalize.getBareType(key.toString());
+							if ( unit != null && unit.length() <= maxUnitLength )
+							{
+								unit = propUnitMap.get(preContent);
+								hasUnit = true;
+							}
+						}
+						
+						if ( TypeNormalize.isDate( key.toString() ) )
+						{
+							unit = "";
+							datatype = URICenter.datatype_xmls_date;
+							datatypeValue = key.toString();
+							
+							Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
+							context.write( NullWritable.get(), text );
+							text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
+							context.write( NullWritable.get(), text );
+						}
+						
+						if ( hasUnit )
+						{
+							//if (unit == null) System.out.println(preContent);
+							if ( propValueType.get(preContent) == "Int" ) datatype = URICenter.datatype_xmls_int;
+							else datatype = URICenter.datatype_xmls_double;
+							//get data value
+							datatypeValue = TypeNormalize.getValue( key.toString() );
+							
+							//modify data type
+							if ( propValueType.get(preContent) == "Int" && datatypeValue.length() > 9 )
+							{
+								propValueType.put(preContent, "Double");
+								datatype = URICenter.datatype_xmls_double;
+							}
+							
+							Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
+							context.write( NullWritable.get(), text );
+							text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
+							context.write( NullWritable.get(), text );
 						}
 					}
-				}
-				else
-				{
-					unit = TypeNormalize.getBareType(key.toString());
-					if ( unit != null && unit.length() <= maxUnitLength )
-					{
-						unit = propUnitMap.get(pre);
-						hasUnit = true;
-					}
-				}
-				
-				if ( TypeNormalize.isDate( key.toString() ) )
-				{
-					unit = "";
-					datatype = URICenter.datatype_xmls_date;
-					datatypeValue = key.toString();
-					
-					Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
-					context.write( NullWritable.get(), text );
-					text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
-					context.write( NullWritable.get(), text );
-				}
-				
-				if ( hasUnit )
-				{
-					if ( propValueType.get(pre) == "Int" ) datatype = URICenter.datatype_xmls_int;
-					else datatype = URICenter.datatype_xmls_double;
-					
-					datatypeValue = TypeNormalize.getValue( key.toString() );
-					
-					if ( propValueType.get(pre) == "Int" && datatypeValue.length() > 9 )
-					{
-						propValueType.put(pre, "Double");
-						datatype = URICenter.datatype_xmls_double;
-					}
-					
-					Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
-					context.write( NullWritable.get(), text );
-					text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
-					context.write( NullWritable.get(), text );
 				}
 			}
 			
