@@ -4,9 +4,9 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 public class TestSegment {
-
 	@Test
 	public void testAuthor() {
+		
 		Assert.assertEquals(2, InfoboxAnalyzer.segement("《今天你可以不生气：让你快乐每一天的心理学智慧》","（韩）全谦求 著 千太阳 译").size());
 		Assert.assertEquals("全谦求", InfoboxAnalyzer.segement("《今天你可以不生气：让你快乐每一天的心理学智慧》","（韩）全谦求 著 千太阳 译").get(0));
 		Assert.assertEquals("千太阳", InfoboxAnalyzer.segement("《今天你可以不生气：让你快乐每一天的心理学智慧》","（韩）全谦求 著 千太阳 译").get(1));

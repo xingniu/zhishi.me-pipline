@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.regex.Pattern;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -31,14 +29,14 @@ import me.zhishi.tools.file.TripleWriter;
 public class IdentifyInstances
 {
 	public static double releaseVersion = 3.0;
+	public static int maxUnitLength = 3;
 	private static int numReduceTasks = 10;
-	private static int maxUnitLength = 3;
 	
 	public static void main( String[] args ) throws Exception
 	{
-		String source = URICenter.source_name_hudong;
-//		String source = URICenter.source_name_baidu;
-//		datatype( source );
+//		String source = URICenter.source_name_hudong;
+		String source = URICenter.source_name_baidu;
+		datatype( source );
 		identify( source );
 //		run( source );
 	}
@@ -62,22 +60,22 @@ public class IdentifyInstances
 			{
 				String triple = val.toString();
 				TripleReader tr = new TripleReader( triple );
-				String oc = tr.getObjectValue();
+				String obj = tr.getObjectValue();
 				
-				oc = TypeNormalize.CheckType(oc);
+				String unit = TypeNormalize.CheckType(obj);
 				
-				if ( oc != null )
+				if ( unit != null )
 				{
-					if ( oc.charAt(0) == '1' ) valuetype = "1";
-					oc = oc.replaceAll("[01]", "");
-					if ( TypeOccur.containsKey(oc) )
+					String datavalue = TypeNormalize.getValue(obj);
+					if ( datavalue.contains(".") ) valuetype = "1";
+					if ( TypeOccur.containsKey(unit) )
 					{
-						TypeOccur.put(oc , TypeOccur.get(oc) + 1);
+						TypeOccur.put(unit , TypeOccur.get(unit) + 1);
 					}
 					else
 					{
-						TypeList.add(oc);
-						TypeOccur.put(oc , 1);
+						TypeList.add(unit);
+						TypeOccur.put(unit , 1);
 					}
 				}
 			}
@@ -91,11 +89,10 @@ public class IdentifyInstances
 					max = TypeOccur.get(type);
 					represent = type;
 				}
-//				Text text = new Text( key + " " + type + " : " + TypeOccur.get(type) );
-//				context.write( NullWritable.get(), text );
 			}
 			if ( represent != null )
 			{
+				if ( !TypeNormalize.List.contains(represent) ) represent = "";
 				Text text = new Text( key + "\t" + represent );
 				context.write( NullWritable.get(), text );
 				text = new Text( key + "\t" + (valuetype == "0" ? "Int" : "Double") );
@@ -191,65 +188,52 @@ public class IdentifyInstances
 					if ( propUnitMap.containsKey(preContent) )
 					{
 						boolean hasUnit = false;
-						String unit = TypeNormalize.CheckType(key.toString());
-						String datatypeValue = "";
-						String datatype = "";
+						String dataValue = "";
+						String valueType = "";
 						
 						//get unit
+						String unit = TypeNormalize.CheckType( key.toString() );
 						if ( unit != null )
 						{
-							unit = unit.replaceAll("[01]", "");
-							if ( unit == propUnitMap.get(preContent) || TypeNormalize.Table.containsKey(unit + " " + propUnitMap.get(preContent)) )
-							{
+							if ( unit == propUnitMap.get(preContent) || 
+								 TypeNormalize.Table.containsKey(unit + " " + propUnitMap.get(preContent)) )
 								hasUnit = true;
-							}
-							else
-							{
-								if ( unit.length() <= maxUnitLength )
-								{
-									unit = propUnitMap.get(preContent);
-									hasUnit = true;
-								}
-							}
-						}
-						else
-						{
-							unit = TypeNormalize.getBareType(key.toString());
-							if ( unit != null && unit.length() <= maxUnitLength )
+							else if ( unit.length() <= maxUnitLength )
 							{
 								unit = propUnitMap.get(preContent);
 								hasUnit = true;
 							}
 						}
 						
+						//date data
 						if ( TypeNormalize.isDate( key.toString() ) )
 						{
 							unit = "";
-							datatype = URICenter.datatype_xmls_date;
-							datatypeValue = key.toString();
+							valueType = URICenter.datatype_xmls_date;
+							dataValue = key.toString();
 							
-							Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
+							Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), dataValue, valueType ) );
 							context.write( NullWritable.get(), text );
 							text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
 							context.write( NullWritable.get(), text );
 						}
 						
+						//other data
 						if ( hasUnit )
 						{
-							//if (unit == null) System.out.println(preContent);
-							if ( propValueType.get(preContent) == "Int" ) datatype = URICenter.datatype_xmls_int;
-							else datatype = URICenter.datatype_xmls_double;
-							//get data value
-							datatypeValue = TypeNormalize.getValue( key.toString() );
+							//get value type
+							if ( propValueType.get(preContent) == "Int" ) valueType = URICenter.datatype_xmls_int;
+							else valueType = URICenter.datatype_xmls_double;
 							
-							//modify data type
-							if ( propValueType.get(preContent) == "Int" && datatypeValue.length() > 9 )
+							//get data value and normalize the unit
+							dataValue = TypeNormalize.getValue( key.toString() );
+							if ( unit != propUnitMap.get(preContent) )
 							{
-								propValueType.put(preContent, "Double");
-								datatype = URICenter.datatype_xmls_double;
+								dataValue = TypeNormalize.unitTrans( dataValue, unit, propUnitMap.get(preContent), propValueType.get(preContent) );
+								unit = propUnitMap.get(preContent);
 							}
 							
-							Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), datatypeValue, datatype ) );
+							Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), dataValue, valueType ) );
 							context.write( NullWritable.get(), text );
 							text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
 							context.write( NullWritable.get(), text );
