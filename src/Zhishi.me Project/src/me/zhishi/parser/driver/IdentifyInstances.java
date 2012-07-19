@@ -34,9 +34,9 @@ public class IdentifyInstances
 	
 	public static void main( String[] args ) throws Exception
 	{
-//		String source = URICenter.source_name_hudong;
-		String source = URICenter.source_name_baidu;
-		datatype( source );
+		String source = URICenter.source_name_hudong;
+//		String source = URICenter.source_name_baidu;
+//		datatype( source );
 		identify( source );
 //		run( source );
 	}
@@ -214,7 +214,7 @@ public class IdentifyInstances
 							
 							Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), dataValue, valueType ) );
 							context.write( NullWritable.get(), text );
-							text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
+							text = new Text( TripleWriter.getStringValueTriple( tr.getBarePredicate(), URICenter.predicate_temp_unit, unit ) );
 							context.write( NullWritable.get(), text );
 						}
 						
@@ -235,7 +235,7 @@ public class IdentifyInstances
 							
 							Text text = new Text( TripleWriter.getValueTriple( tr.getBareSubject(), tr.getBarePredicate(), dataValue, valueType ) );
 							context.write( NullWritable.get(), text );
-							text = new Text( TripleWriter.getStringValueTriple( tr.getBareSubject(), URICenter.predicate_temp_unit, unit ) );
+							text = new Text( TripleWriter.getStringValueTriple( tr.getBarePredicate(), URICenter.predicate_temp_unit, unit ) );
 							context.write( NullWritable.get(), text );
 						}
 					}
