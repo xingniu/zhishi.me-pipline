@@ -1,7 +1,6 @@
 package me.zhishi.analyzer;
 
 import java.util.LinkedList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
 
