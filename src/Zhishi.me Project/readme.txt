@@ -1,5 +1,9 @@
-1、Ant执行StreamingDriver_Baidu.xml和StreamingDriver_Hudong.xml 处理HTML文件，生成RawStructuredData@HDFS
-2、Ant执行SortByPredicate.xml 为百度和互动生成按谓词类型分割的NTriples@HDFS
+1、将打包的百科网页上传至HDFS的/Users/xingniu/CLOD/BaikePages/文件夹下
+2、执行StreamingFileList.java：生成Streaming程序用的FileList@HDFS
+3、Ant执行StreamingDriver_Baidu.xml和StreamingDriver_Hudong.xml：处理HTML文件，生成RawStructuredData@HDFS
+4、Ant执行SortByPredicate.xml：为百度和互动生成按谓词类型分割的NTriples@HDFS
+
+
 3、Segment.java 为IM生成词条特征文本的分词结果->HDFS
 4、NTriplesToJSON 生成IM的原始输入文件@HDFS
 5、MRMatcher.xml 生成匹配原始文件@HDFS
