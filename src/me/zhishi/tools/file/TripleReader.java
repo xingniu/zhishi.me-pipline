@@ -93,6 +93,11 @@ public class TripleReader
 		return getObject().startsWith( "\"" );
 	}
 	
+	public boolean objectIsTypedData()
+	{
+		return objectIsLiteral() && getObject().contains( "\"^^<" );
+	}
+	
 	public boolean objectIsURIRef()
 	{
 		return getObject().startsWith( "<" );

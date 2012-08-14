@@ -34,15 +34,17 @@ public class IdentifyInstances
 	
 	public static void main( String[] args ) throws Exception
 	{
-		String source = URICenter.source_name_hudong;
-//		String source = URICenter.source_name_baidu;
+//		String source = URICenter.source_name_hudong;
+		String source = URICenter.source_name_baidu;
 //		datatype( source );
-		identify( source );
+//		identify( source );
+		output( source );
 //		run( source );
 	}
 	
 	public static void run( String source ) throws Exception
 	{
+		datatype( source );
 		identify( source );
 		output( source );
 	}
@@ -54,48 +56,50 @@ public class IdentifyInstances
 		{
 			HashMap<String, Integer> TypeOccur = new HashMap<String, Integer>();
 			LinkedList<String> TypeList = new LinkedList<String>();
-			String valuetype = "0";
+			boolean isDouble = false;
 			
 			for( Text val : values )
 			{
 				String triple = val.toString();
 				TripleReader tr = new TripleReader( triple );
 				String obj = tr.getObjectValue();
-				
-				String unit = TypeNormalize.CheckType(obj);
-				
-				if ( unit != null )
+
+				String unit = TypeNormalize.CheckType( obj );
+
+				if( unit != null )
 				{
-					String datavalue = TypeNormalize.getValue(obj);
-					if ( datavalue.contains(".") ) valuetype = "1";
-					if ( TypeOccur.containsKey(unit) )
+					String datavalue = TypeNormalize.getValue( obj );
+					if( datavalue.contains( "." ) )
+						isDouble = true;
+					if( TypeOccur.containsKey( unit ) )
 					{
-						TypeOccur.put(unit , TypeOccur.get(unit) + 1);
+						TypeOccur.put( unit, TypeOccur.get( unit ) + 1 );
 					}
 					else
 					{
-						TypeList.add(unit);
-						TypeOccur.put(unit , 1);
+						TypeList.add( unit );
+						TypeOccur.put( unit, 1 );
 					}
 				}
 			}
-			
+
 			int max = 0;
 			String represent = null;
 			for( String type : TypeList )
 			{
-				if ( TypeOccur.get(type) > max )
+				if( TypeOccur.get( type ) > max )
 				{
-					max = TypeOccur.get(type);
+					max = TypeOccur.get( type );
 					represent = type;
 				}
 			}
-			if ( represent != null )
+			if( represent != null )
 			{
-				if ( !TypeNormalize.List.contains(represent) ) represent = "";
+				if( !TypeNormalize.List.contains( represent ) )
+					represent = "";
 				Text text = new Text( key + "\t" + represent );
 				context.write( NullWritable.get(), text );
-				text = new Text( key + "\t" + (valuetype == "0" ? "Int" : "Double") );
+				text = new Text( key + "\t" + (isDouble ? "Double" : "Int") );
 				context.write( NullWritable.get(), text );
 			}
 		}
@@ -259,7 +263,10 @@ public class IdentifyInstances
 		public void map( Object key, Text value, Context context ) throws IOException, InterruptedException
 		{
 			TripleReader tr = new TripleReader( value.toString() );
-			context.write( new Text( tr.getPredicateContent() ), value );
+			if( tr.getBarePredicate().equals( URICenter.predicate_temp_unit ) )
+				context.write( new Text( URICenter.predicate_temp_unit ), value );
+			else
+				context.write( new Text( tr.getPredicateContent() ), value );
 		}
 	}
 	
@@ -294,38 +301,65 @@ public class IdentifyInstances
 		@Override
 		public void reduce( Object key, Iterable<Text> values, Context context ) throws IOException, InterruptedException
 		{
-			HashSet<String> LiteralObjSet = new HashSet<String>();
+			boolean isString = false;
+			
+			if( key.toString().equals( URICenter.predicate_temp_unit ) )
+			{
+				return;
+			}
+			else if( key.toString().endsWith( "名" ) || key.toString().endsWith( "称" ) )
+			{
+				isString = true;
+			}
+			
+			HashSet<String> StringObjSet = new HashSet<String>();
+			HashSet<String> TypedDataObjSet = new HashSet<String>();
 			HashSet<String> URIRefObjSet = new HashSet<String>();
-			LinkedList<String> LiteralObjList = new LinkedList<String>();
+			LinkedList<String> StringObjList = new LinkedList<String>();
+			LinkedList<String> TypedDataObjList = new LinkedList<String>();
 			LinkedList<String> URIRefObjList = new LinkedList<String>();
 			for( Text val : values )
 			{
 				String triple = val.toString();
 				TripleReader tr = new TripleReader( triple );
-				if( tr.objectIsLiteral() )
-				{
-					LiteralObjSet.add( tr.getSubjectContent() );
-					LiteralObjList.add( triple );
-				}
-				else if( tr.objectIsURIRef() )
+				if( tr.objectIsURIRef() && !isString )
 				{
 					URIRefObjSet.add( tr.getSubjectContent() );
 					URIRefObjList.add( triple );
 				}
+				else if( tr.objectIsTypedData() && !isString )
+				{
+					TypedDataObjSet.add( tr.getSubjectContent() );
+					TypedDataObjList.add( triple );
+				}
+				else
+				{
+					StringObjSet.add( tr.getSubjectContent() );
+					StringObjList.add( triple );
+				}
 			}
 			
-			Text text = new Text( key + " " + URIRefObjSet.size() + "/" + LiteralObjSet.size() );
-			mos.write( "statistics", NullWritable.get(), text );
+			Text text = new Text( key + " " + URIRefObjSet.size() + "|" + TypedDataObjSet.size() + "|" + StringObjSet.size() );
 			// precondition
-			if( URIRefObjSet.size() > 10000 )
+			if( TypedDataObjSet.size() >= URIRefObjSet.size() && TypedDataObjSet.size() * 1.0 / StringObjSet.size() >= 0.3 )
+			{
+				for( String triple : TypedDataObjList )
+					context.write( NullWritable.get(), new Text( triple ) );
+				mos.write( "statistics", NullWritable.get(), new Text( text + " TypedData" ) );
+			}
+			else if( ( URIRefObjSet.size() * 1.0 / StringObjSet.size() >= 0.3 && URIRefObjSet.size() >= 10 )
+					|| URIRefObjSet.size() * 1.0 / StringObjSet.size() >= 0.7
+					|| ( URIRefObjSet.size() > TypedDataObjSet.size() && URIRefObjSet.size() >= 1000 ) )
 			{
 				for( String triple : URIRefObjList )
 					context.write( NullWritable.get(), new Text( triple ) );
+				mos.write( "statistics", NullWritable.get(), new Text( text + " URIRef" ) );
 			}
 			else
 			{
-				for( String triple : LiteralObjList )
+				for( String triple : StringObjList )
 					context.write( NullWritable.get(), new Text( triple ) );
+				mos.write( "statistics", NullWritable.get(), new Text( text + " String" ) );
 			}
 		}
 	}
