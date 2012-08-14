@@ -42,30 +42,35 @@ public class AbstractAnalyzer extends DataAnalyzer
 		
 		String noSense = "[\\s，：]";
 		
+		Pattern pattern;
+		Matcher matcher;
+		ArrayList<String> absArray = new ArrayList<String>();
 		String[] absegs = abs.split( "。" );
 		
-		Pattern pattern = Pattern.compile( "^(.*?" + Pattern.quote(label) + "(（.*?）)?" + noSense + "?(，?(又称|又叫|也叫|简称).*?，)?|这|他|她|它)(指的是|是指|是)(.*)" );
-		Matcher matcher = pattern.matcher( absegs[0] );
-		
-		ArrayList<String> absArray = new ArrayList<String>();
+		pattern = Pattern.compile( "^(.*?" + Pattern.quote(label) + "(（.*?）)?" + noSense + "?(，?(又称|又叫|也叫|简称).*?，)?|这|他|她|它)(指的是|是指|是)(.*)" );
+		matcher = pattern.matcher( absegs[0] );
 		if( matcher.find() )
 		{
 //			absArray.add( matcher.group( 6 ) );
 		}
-		else
+		pattern = Pattern.compile( "^(" + Pattern.quote(label) + "(（.*?）)?.*)，(指的是|是指|是)(.*)" );
+		matcher = pattern.matcher( absegs[0] );
+		if( absArray.size() == 0 && matcher.find() )
 		{
-			pattern = Pattern.compile( "^(" + Pattern.quote(label) + "(（.*?）)?.*)，(指的是|是指|是)(.*)" );
-			matcher = pattern.matcher( absegs[0] );
-			if( matcher.find() )
-			{
-//				absArray.add( matcher.group( 4 ) );
-			}
-			else
-			{
-				if( absegs[0].contains( label + "是" ) )
-					absArray.add( absegs[0] );
-			}
+//			absArray.add( matcher.group( 4 ) );
 		}
+		pattern = Pattern.compile( "^(" + Pattern.quote(label) + "(（.*?）)?)，(.*)" );
+		matcher = pattern.matcher( absegs[0] );
+		if( absArray.size() == 0 && matcher.find() )
+		{
+			absArray.add( matcher.group( 3 ) );
+		}
+		
+		if( absArray.size() == 0 )
+		{
+			
+		}
+			
 		return absArray;
 	}
 }

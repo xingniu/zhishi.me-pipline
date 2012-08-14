@@ -2,7 +2,7 @@ package me.zhishi.tools;
 
 public class URICenter
 {
-	public static String domainName = "http://zhishime.cn/";
+	public static String domainName = "http://zhishi.me/";
 	
 	public static String source_name_zhishi = "Zhishi";
 	public static String source_name_baidu = "Baidu";
