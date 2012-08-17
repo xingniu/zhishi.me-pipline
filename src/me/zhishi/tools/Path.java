@@ -78,8 +78,10 @@ public class Path
 		String dumpVersion = null;
 		if( releaseVersion >= 2.0 && releaseVersion < 2.9 )
 			dumpVersion = "2011";
-		else if( releaseVersion >= 2.9 && releaseVersion < 4.0 )
+		else if( releaseVersion >= 2.9 && releaseVersion <= 3.0 )
 			dumpVersion = "2011.12";
+		else if( releaseVersion >= 3.1 )
+			dumpVersion = "2012";
 		this.dumpVersion = dumpVersion;
 		
 		dumpPath = projectDataPath + dumpVersion + "/";	
@@ -137,6 +139,11 @@ public class Path
 	public String getDumpVersion()
 	{
 		return dumpVersion;
+	}
+	
+	public String getDumpPath()
+	{
+		return dumpPath + source + "/";
 	}
 	
 	public void setReleaseVersion( double newVersion )
