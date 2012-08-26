@@ -70,7 +70,7 @@ public class ZhishiArticle implements Article
 			if( redirect != null )
 			{
 				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_rdfs_label, label ) );
-				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_page, articleLink ) );
+				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_isPrimaryTopicOf, articleLink ) );
 				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_redirect, ic.getResourceURI( redirect ) ) );
 			}
 			if( !isDisambiguationPage )
@@ -82,7 +82,7 @@ public class ZhishiArticle implements Article
 			if( label != null )
 			{
 				tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_rdfs_label, label ) );
-				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_page, articleLink ) );
+				tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_isPrimaryTopicOf, articleLink ) );
 				for( String disam : disambiguationLabels )
 				{
 					tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_disambiguation, ic.getResourceURI( disam ) ) );
@@ -105,7 +105,7 @@ public class ZhishiArticle implements Article
 		if( label != null )
 		{
 			tripleList.add( TripleWriter.getStringValueTriple( ic.getResourceURI( label ), URICenter.predicate_rdfs_label, label ) );
-			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_page, articleLink ) );
+			tripleList.add( TripleWriter.getResourceObjectTriple( ic.getResourceURI( label ), URICenter.predicate_foaf_isPrimaryTopicOf, articleLink ) );
 		}
 		else
 			return tripleList;

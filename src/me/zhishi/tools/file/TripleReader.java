@@ -40,6 +40,12 @@ public class TripleReader
 		return URICenter.zhishiDecode( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
+	public String getIRISubjectContent()
+	{
+		String str = getSubject();
+		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
+	}
+	
 	public String getPredicate()
 	{
 		return triple.substring( SE + 1, PE );
@@ -56,6 +62,12 @@ public class TripleReader
 		return URICenter.zhishiDecode( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
+	public String getIRIPredicateContent()
+	{
+		String str = getPredicate();
+		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
+	}
+	
 	public String getObject()
 	{
 		return triple.substring( PE + 1, OE );
@@ -70,6 +82,12 @@ public class TripleReader
 	{
 		String str = getObject();
 		return URICenter.zhishiDecode( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
+	}
+	
+	public String getIRIObjectContent()
+	{
+		String str = getObject();
+		return TextTools.UnicodeToString( str.substring( str.lastIndexOf( "/" )+1, str.indexOf( ">" ) ) );
 	}
 	
 	public String getObjectValue()

@@ -15,6 +15,12 @@ public class URICenter
 	public static String namespace_zhwiki = namespace_zhishi + "zhwiki/";
 	public static String namespace_ontology = namespace_zhishi + "ontology/";
 	
+	public static String namespace_dbpedia = "http://dbpedia.org/";
+	public static String namespace_dbpedia_ontology = namespace_dbpedia + "ontology/";
+	public static String namespace_zhdbpedia = "http://zh.dbpedia.org/";
+	public static String namespace_zhdbpedia_resource = namespace_zhdbpedia + "resource/";
+	public static String namespace_zhdbpedia_property = namespace_zhdbpedia + "property/";
+	
 	public static String predicate_category = namespace_ontology + "category";
 	public static String predicate_abstract = namespace_ontology + "abstract";
 	public static String predicate_relatedPage = namespace_ontology + "relatedPage";
@@ -32,12 +38,19 @@ public class URICenter
 	public static String predicate_temp_lookup = "lookup";
 	public static String predicate_temp_unit = "unit";
 	
+	public static String predicate_dbpedia_abstract = namespace_dbpedia_ontology + "abstract";
+	public static String predicate_dbpedia_wikiPageExternalLink = namespace_dbpedia_ontology + "wikiPageExternalLink";
+	public static String predicate_dbpedia_wikiPageWikiLink = namespace_dbpedia_ontology + "wikiPageWikiLink";
+	public static String predicate_dbpedia_wikiPageRedirects = namespace_dbpedia_ontology + "wikiPageRedirects";
+	
 	public static String predicate_foaf_primaryTopic = "http://xmlns.com/foaf/0.1/primaryTopic";
+	public static String predicate_foaf_isPrimaryTopicOf = "http://xmlns.com/foaf/0.1/isPrimaryTopicOf";
 	public static String predicate_foaf_depiction = "http://xmlns.com/foaf/0.1/depiction";
-	public static String predicate_foaf_page = "http://xmlns.com/foaf/0.1/page";
+//	public static String predicate_foaf_page = "http://xmlns.com/foaf/0.1/page";
 	public static String predicate_foaf_thumbnail = "http://xmlns.com/foaf/0.1/thumbnail";
 	public static String predicate_dc_language = "http://purl.org/dc/elements/1.1/language";
 	public static String predicate_dc_rights = "http://purl.org/dc/elements/1.1/rights";
+	public static String predicate_dc_subject = "http://purl.org/dc/terms/subject";
 	public static String predicate_skos_broader = "http://www.w3.org/2004/02/skos/core#broader";
 	public static String predicate_skos_narrower = "http://www.w3.org/2004/02/skos/core#narrower";
 	public static String predicate_skos_prefLabel = "http://www.w3.org/2004/02/skos/core#prefLabel";
@@ -47,6 +60,9 @@ public class URICenter
 	public static String predicate_rdfs_domain = "http://www.w3.org/2000/01/rdf-schema#domain";
 	public static String predicate_rdfs_range = "http://www.w3.org/2000/01/rdf-schema#range";
 	public static String predicate_owl_sameAs = "http://www.w3.org/2002/07/owl#sameAs";
+	
+	public static String property_geo_lat = "http://www.w3.org/2003/01/geo/wgs84_pos#lat";
+	public static String property_geo_long = "http://www.w3.org/2003/01/geo/wgs84_pos#long";
 	
 	public static String datatype_xmls_string = "http://www.w3.org/2001/XMLSchema#string";
 	public static String datatype_xmls_int = "http://www.w3.org/2001/XMLSchema#int";
