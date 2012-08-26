@@ -99,12 +99,12 @@ public class SortByPredicate
 					mos.write( "redirect", NullWritable.get(), val );
 				else if( contents.contains( "disambiguation" ) && pre.equals( URICenter.predicate_disambiguation ) )
 					mos.write( "disambiguation", NullWritable.get(), val );
-				else if( contents.contains( "articleLink" ) && pre.equals( URICenter.predicate_foaf_page ) )
+				else if( contents.contains( "articleLink" ) && pre.equals( URICenter.predicate_foaf_isPrimaryTopicOf ) )
 				{
-					String resource = tr.getSubject();
-					String articleLink = tr.getObject();
-					Text pt = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_foaf_primaryTopic, resource ) );
-					Text lang = new Text( TripleWriter.getTripleLine( articleLink, URICenter.predicate_dc_language, "\"zh\"@en" ) );
+					String resource = tr.getBareSubject();
+					String articleLink = tr.getBareObject();
+					Text pt = new Text( TripleWriter.getResourceObjectTriple( articleLink, URICenter.predicate_foaf_primaryTopic, resource ) );
+					Text lang = new Text( TripleWriter.getStringValueTripleAT( articleLink, URICenter.predicate_dc_language, "zh", "en" ) );
 					mos.write( "articleLink", NullWritable.get(), pt );
 					mos.write( "articleLink", NullWritable.get(), lang );
 					mos.write( "articleLink", NullWritable.get(), val );

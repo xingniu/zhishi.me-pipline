@@ -31,26 +31,27 @@ public class Path
 	private static HashMap<String,String> fileNameMap = new HashMap<String,String>();
 	static
 	{
-		fileNameMap.put( "label", "labels" );
-		fileNameMap.put( "category", "article_categories" );
 		fileNameMap.put( "abstract", "abstracts" );
-		fileNameMap.put( "relatedPage", "related_pages" );
-		fileNameMap.put( "internalLink", "internal_links" );
-		fileNameMap.put( "externalLink", "external_links" );
-		fileNameMap.put( "redirect", "redirects" );
-		fileNameMap.put( "disambiguation", "disambiguations" );
 		fileNameMap.put( "articleLink", "article_links" );
+		fileNameMap.put( "category", "article_categories" );
 		fileNameMap.put( "categoryLabel", "category_labels" );
-		fileNameMap.put( "skosCat", "skos_categories" );
+		fileNameMap.put( "disambiguation", "disambiguations" );
+		fileNameMap.put( "externalLink", "external_links" );
 		fileNameMap.put( "image", "images" );
 		fileNameMap.put( "imageInfo", "image_information" );
 		fileNameMap.put( "infobox", "infobox_properties" );
 		fileNameMap.put( "infoboxText", "infobox_properties_text" );
-		fileNameMap.put( "propertyLabel", "infobox_property_definitions" );
+		fileNameMap.put( "internalLink", "internal_links" );
+		fileNameMap.put( "label", "labels" );
+		fileNameMap.put( "propertyDefinition", "infobox_property_definitions" );
+		fileNameMap.put( "redirect", "redirects" );
+		fileNameMap.put( "relatedPage", "related_pages" );
+		fileNameMap.put( "skosCat", "skos_categories" );
 		
 		fileNameMap.put( "baiduLink", "baidubaike_links" );
 		fileNameMap.put( "hudongLink", "hudongbaike_links" );
 		fileNameMap.put( "zhwikiLink", "zhwiki_links" );
+		fileNameMap.put( "dbpediaLink", "dbpedia_links" );
 		
 		fileNameMap.put( "ontology", "ontology" );
 		fileNameMap.put( "lookup", "lookup" );

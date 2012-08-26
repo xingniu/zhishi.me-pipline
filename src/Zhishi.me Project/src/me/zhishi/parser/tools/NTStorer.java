@@ -47,7 +47,7 @@ public class NTStorer
 //		store( 2.9, URICenter.source_name_zhishi, "lookup" );
 //		storeMatches();
 //		storeLabels( "category", "categoryLabel" );
-//		storeLabels( "infobox", "propertyLabel" );
+//		storeLabels( "infobox", "propertyDefinition" );
 //		storeOntologyDefinition();
 //		storeHudongSKOS();
 	}
