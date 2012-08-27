@@ -86,7 +86,7 @@ public class NTriplesToJSON
 					}
 				}
 				// TODO: predicate_category_old
-				else if( predicateSet.contains( "category" ) && ( pre.equals( URICenter.predicate_category ) || pre.equals( URICenter.predicate_category_old ) ) )
+				else if( predicateSet.contains( "category" ) && pre.equals( URICenter.predicate_category ) )
 				{
 					JSONObject main = new JSONObject();
 					main.put( "uri", tr.getSubject() );

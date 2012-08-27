@@ -28,8 +28,8 @@ public class SortByPredicate
 	
 	public static void main( String[] args ) throws Exception
 	{
-		run( URICenter.source_name_baidu );
 		run( URICenter.source_name_hudong );
+		run( URICenter.source_name_baidu );
 	}
 	
 	private static HashSet<String> contents = new HashSet<String>();

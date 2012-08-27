@@ -303,6 +303,21 @@ public class NTStorer
 		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_category, URICenter.predicate_rdfs_label, "category", "en" ) );
 		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_category, URICenter.predicate_rdfs_label, "开放分类", "zh" ) );
 		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_category, URICenter.predicate_rdfs_domain, URICenter.object_owl_Thing ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_category, URICenter.predicate_rdfs_range, URICenter.class_skos_concept ) );
+		
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_prefUnit, URICenter.predicate_rdf_type, URICenter.object_owl_DatatypeProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_prefUnit, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_prefUnit, URICenter.predicate_rdfs_label, "preferred unit of measurement", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_prefUnit, URICenter.predicate_rdfs_label, "首选度量单位", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_prefUnit, URICenter.predicate_rdfs_domain, URICenter.object_rdf_Property ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_prefUnit, URICenter.predicate_rdfs_range, URICenter.datatype_xmls_string ) );
+		
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_labelWithUnit, URICenter.predicate_rdf_type, URICenter.object_owl_DatatypeProperty ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_labelWithUnit, URICenter.predicate_rdfs_isDefinedBy, URICenter.object_zhishi ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_labelWithUnit, URICenter.predicate_rdfs_label, "label with preferred unit", "en" ) );
+		writer.writeLine( TripleWriter.getStringValueTripleAT( URICenter.predicate_labelWithUnit, URICenter.predicate_rdfs_label, "带单位的标签", "zh" ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_labelWithUnit, URICenter.predicate_rdfs_domain, URICenter.object_rdf_Property ) );
+		writer.writeLine( TripleWriter.getTripleLine( URICenter.predicate_labelWithUnit, URICenter.predicate_rdfs_range, URICenter.datatype_xmls_string ) );
 		
 		writer.close();
 	}
