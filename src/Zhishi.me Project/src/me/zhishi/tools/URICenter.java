@@ -30,8 +30,9 @@ public class URICenter
 	public static String predicate_disambiguation = namespace_ontology + "pageDisambiguates";
 	public static String predicate_depictionThumbnail = namespace_ontology + "depictionThumbnail";
 	public static String predicate_relatedImage = namespace_ontology + "relatedImage";
-	// TODO : Pay attention here
-	public static String predicate_category_old = "http://purl.org/dc/terms/subject";
+	
+	public static String predicate_labelWithUnit = namespace_ontology + "labelWithUnit";
+	public static String predicate_prefUnit = namespace_ontology + "prefUnit";
 	
 	public static String predicate_temp_exception = "exception";
 	public static String predicate_temp_featureTags = "featureTags";
@@ -72,6 +73,7 @@ public class URICenter
 	public static String object_owl_Thing = "http://www.w3.org/2002/07/owl#Thing";
 	public static String object_owl_DatatypeProperty = "http://www.w3.org/2002/07/owl#DatatypeProperty";
 	public static String object_owl_ObjectProperty = "http://www.w3.org/2002/07/owl#ObjectProperty";
+	public static String object_rdf_Property = "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property";
 	public static String object_foaf_Image = "http://xmlns.com/foaf/0.1/Image";
 	public static String object_foaf_Document = "http://xmlns.com/foaf/0.1/Document";
 	public static String object_zhishi = namespace_ontology;
