@@ -99,11 +99,17 @@ public class TripleReader
 	public static String getValue( String str )
 	{
 		if( str.contains( "\"^^<" ) )
-			return TextTools.UnicodeToString(str.substring( 1, str.indexOf( "\"^^<" ) ));
+			return TextTools.UnicodeToString( str.substring( 1, str.indexOf( "\"^^<" ) ) );
 		else if( str.contains( "\"@" ) )
-			return TextTools.UnicodeToString(str.substring( 1, str.lastIndexOf( "\"@" ) ));
+			return TextTools.UnicodeToString( str.substring( 1, str.lastIndexOf( "\"@" ) ) );
 		else
 			return TextTools.UnicodeToString( str.substring( 1, str.length() - 1 ) );
+	}
+	
+	public String getDataType()
+	{
+		String str = getObject();
+		return str.substring( str.indexOf( "\"^^<" ) + 4, str.length()-1 );
 	}
 	
 	public boolean objectIsLiteral()
@@ -123,9 +129,10 @@ public class TripleReader
 	
 	public static void main(String args[])
 	{
-		TripleReader tr = new TripleReader( "<http://zhishi.me//resource/%E3%80%8A%E4%B8%AD> <http://www.w3.org/2000/01/rdf-schema#label> \"\u300A\u4E2D\"@zh ." );
+		TripleReader tr = new TripleReader( "<http://zhishi.me//resource/%E3%80%8A%E4%B8%AD> <http://www.w3.org/2000/01/rdf-schema#label> \"\u300A\u4E2D\"^^<http://www.w3.org/2001/XMLSchema#double> ." );
 		System.out.println( tr.getSubject() );
 		System.out.println( tr.getBarePredicate() );
 		System.out.println( tr.getObjectValue() );
+		System.out.println( tr.getDataType() );
 	}
 }
