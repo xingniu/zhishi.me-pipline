@@ -16,10 +16,11 @@
    *redirects_transitive_zh.nt
    *skos_categories_zh.nt
    *wikipedia_links_zh.nt
-5、Ant执行SortByPredicate.xml：为百度和互动生成按谓词类型分割的NTriples
-   @HDFS#/Users/xingniu/CLOD/NTriples/
-6、Ant执行PreprocessDBpedia.xml：为中文维基生成按谓词类型分割的NTriples
-   @HDFS#/Users/xingniu/CLOD/NTriples/
+5、Ant执行WorkshopDriver.xml
+   A：为百度和互动生成按谓词类型分割的NTriples
+   B：为中文维基生成按谓词类型分割的NTriples
+   C：为百度和互动生成识别了类型的Infobox NTriples
+      @HDFS#/Users/xingniu/CLOD/NTriples/
 
 3、Segment.java 为IM生成词条特征文本的分词结果->HDFS
 4、NTriplesToJSON 生成IM的原始输入文件@HDFS
