@@ -1,4 +1,4 @@
-package me.zhishi.parser.driver;
+package me.zhishi.parser.workshop;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -23,7 +23,6 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class PreprocessDBpedia
 {
-	public static double releaseVersion = 3.1;
 	private static int numReduceTasks = 20;
 	
 	private static HashSet<String> contents = new HashSet<String>();
@@ -216,7 +215,7 @@ public class PreprocessDBpedia
 		}
 	}
 	
-	public static void main( String[] args ) throws Exception
+	public static void run( double releaseVersion ) throws Exception
 	{
 		String source = URICenter.source_name_zhwiki;
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );

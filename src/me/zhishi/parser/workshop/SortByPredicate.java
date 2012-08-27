@@ -1,4 +1,4 @@
-package me.zhishi.parser.driver;
+package me.zhishi.parser.workshop;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -23,14 +23,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class SortByPredicate
 {
-	public static double releaseVersion = 3.0;
 	private static int numReduceTasks = 20;
-	
-	public static void main( String[] args ) throws Exception
-	{
-		run( URICenter.source_name_hudong );
-		run( URICenter.source_name_baidu );
-	}
 	
 	private static HashSet<String> contents = new HashSet<String>();
 	static
@@ -146,7 +139,7 @@ public class SortByPredicate
 		}
 	}
 	
-	public static void run( String source ) throws Exception
+	public static void run( String source, double releaseVersion ) throws Exception
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
