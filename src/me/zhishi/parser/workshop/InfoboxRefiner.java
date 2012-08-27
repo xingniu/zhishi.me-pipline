@@ -1,4 +1,4 @@
-package me.zhishi.parser.driver;
+package me.zhishi.parser.workshop;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,27 +26,16 @@ import me.zhishi.tools.URICenter;
 import me.zhishi.tools.file.TripleReader;
 import me.zhishi.tools.file.TripleWriter;
 
-public class IdentifyInstances
+public class InfoboxRefiner
 {
-	public static double releaseVersion = 3.0;
 	public static int maxUnitLength = 3;
 	private static int numReduceTasks = 10;
 	
-	public static void main( String[] args ) throws Exception
+	public static void run( String source, double releaseVersion ) throws Exception
 	{
-//		String source = URICenter.source_name_hudong;
-		String source = URICenter.source_name_baidu;
-//		datatype( source );
-//		identify( source );
-		output( source );
-//		run( source );
-	}
-	
-	public static void run( String source ) throws Exception
-	{
-		datatype( source );
-		identify( source );
-		output( source );
+		datatype( source, releaseVersion );
+		identify( source, releaseVersion );
+		output( source, releaseVersion );
 	}
 	
 	public static class DatatypeStatistics extends Reducer<Object, Text, NullWritable, Text>
@@ -264,7 +253,7 @@ public class IdentifyInstances
 		{
 			TripleReader tr = new TripleReader( value.toString() );
 			if( tr.getBarePredicate().equals( URICenter.predicate_temp_unit ) )
-				context.write( new Text( URICenter.predicate_temp_unit ), value );
+				context.write( new Text( tr.getSubjectContent() ), value );
 			else
 				context.write( new Text( tr.getPredicateContent() ), value );
 		}
@@ -303,11 +292,7 @@ public class IdentifyInstances
 		{
 			boolean isString = false;
 			
-			if( key.toString().equals( URICenter.predicate_temp_unit ) )
-			{
-				return;
-			}
-			else if( key.toString().endsWith( "名" ) || key.toString().endsWith( "称" ) )
+			if( key.toString().endsWith( "名" ) || key.toString().endsWith( "称" ) )
 			{
 				isString = true;
 			}
@@ -318,10 +303,22 @@ public class IdentifyInstances
 			LinkedList<String> StringObjList = new LinkedList<String>();
 			LinkedList<String> TypedDataObjList = new LinkedList<String>();
 			LinkedList<String> URIRefObjList = new LinkedList<String>();
+			String unit = null;
+			String property = null;
 			for( Text val : values )
 			{
 				String triple = val.toString();
 				TripleReader tr = new TripleReader( triple );
+				if( tr.getBarePredicate().equals( URICenter.predicate_temp_unit ) )
+				{
+					unit = tr.getObjectValue();
+					continue;
+				}
+				else
+				{
+					property = tr.getBarePredicate();
+				}
+				
 				if( tr.objectIsURIRef() && !isString )
 				{
 					URIRefObjSet.add( tr.getSubjectContent() );
@@ -345,6 +342,11 @@ public class IdentifyInstances
 			{
 				for( String triple : TypedDataObjList )
 					context.write( NullWritable.get(), new Text( triple ) );
+				if( !unit.equals( "" ) )
+				{
+					String unitTriple = TripleWriter.getStringValueTriple( property, URICenter.predicate_prefUnit, unit );
+					mos.write( "info", NullWritable.get(), new Text( unitTriple ) );
+				}
 				mos.write( "statistics", NullWritable.get(), new Text( text + " TypedData" ) );
 			}
 			else if( ( URIRefObjSet.size() * 1.0 / StringObjSet.size() >= 0.3 && URIRefObjSet.size() >= 10 )
@@ -361,10 +363,13 @@ public class IdentifyInstances
 					context.write( NullWritable.get(), new Text( triple ) );
 				mos.write( "statistics", NullWritable.get(), new Text( text + " String" ) );
 			}
+			
+			String labelTriple = TripleWriter.getStringValueTriple( property, URICenter.predicate_rdfs_label, key.toString() );
+			mos.write( "info", NullWritable.get(), new Text( labelTriple ) );
 		}
 	}
 	
-	public static void datatype( String source ) throws Exception
+	public static void datatype( String source, double releaseVersion ) throws Exception
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
@@ -387,7 +392,7 @@ public class IdentifyInstances
 			
 			job.setNumReduceTasks( numReduceTasks );
 	
-			job.setJarByClass( IdentifyInstances.class );
+			job.setJarByClass( InfoboxRefiner.class );
 			job.setMapperClass( IndexByProperties.class );
 			job.setReducerClass( DatatypeStatistics.class );
 			
@@ -410,7 +415,7 @@ public class IdentifyInstances
 		}
 	}
 
-	public static void identify( String source ) throws Exception
+	public static void identify( String source, double releaseVersion ) throws Exception
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
@@ -437,15 +442,12 @@ public class IdentifyInstances
 			
 			job.setNumReduceTasks( numReduceTasks );
 	
-			job.setJarByClass( IdentifyInstances.class );
+			job.setJarByClass( InfoboxRefiner.class );
 			job.setMapperClass( IndexByTerms.class );
 			job.setReducerClass( ValueToURI.class );
 			
 			job.setOutputKeyClass( Text.class );
 			job.setOutputValueClass( Text.class );
-			
-//			for( String s : contents )
-//				MultipleOutputs.addNamedOutput( job, s, TextOutputFormat.class, NullWritable.class, Text.class );
 	
 			FileInputFormat.addInputPath( job, new Path( inputPath ) );
 			FileOutputFormat.setOutputPath( job, new Path( outputPath ) );
@@ -465,7 +467,7 @@ public class IdentifyInstances
 		}
 	}
 	
-	public static void output( String source ) throws Exception
+	public static void output( String source, double releaseVersion ) throws Exception
 	{
 		me.zhishi.tools.Path p = new me.zhishi.tools.Path( releaseVersion, source, true );
 		
@@ -486,7 +488,7 @@ public class IdentifyInstances
 			
 			job.setNumReduceTasks( numReduceTasks );
 			
-			job.setJarByClass( IdentifyInstances.class );
+			job.setJarByClass( InfoboxRefiner.class );
 			job.setMapperClass( IndexByProperties.class );
 			job.setReducerClass( PropertyStatistics.class );
 			
@@ -494,6 +496,7 @@ public class IdentifyInstances
 			job.setOutputValueClass( Text.class );
 			
 			MultipleOutputs.addNamedOutput( job, "statistics", TextOutputFormat.class, NullWritable.class, Text.class );
+			MultipleOutputs.addNamedOutput( job, "info", TextOutputFormat.class, NullWritable.class, Text.class );
 	
 			FileInputFormat.addInputPath( job, new Path( inputPath ) );
 			FileOutputFormat.setOutputPath( job, new Path( outputPath ) );
@@ -502,6 +505,7 @@ public class IdentifyInstances
 			{
 				System.out.println( "Start moveMerging files ..." );
 				SmallTools.moveMergeFiles( fs, "part", p.getNTriplesFile( "infobox" ), conf, outputPath, numReduceTasks );
+				SmallTools.moveMergeFiles( fs, "info", p.getNTriplesFile( "propertyDefinition" ), conf, outputPath, numReduceTasks );
 //				fs.delete( new Path( outputPath ), true );
 			}
 		}
