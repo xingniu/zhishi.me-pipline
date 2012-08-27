@@ -3,9 +3,7 @@
    @HDFS#/Users/xingniu/CLOD/BaikePages/*/
 3、Ant执行StreamingDriver_Baidu.xml和StreamingDriver_Hudong.xml：处理HTML文件，生成RawStructuredData
    @HDFS#/Users/xingniu/CLOD/RawStructuredData/
-4、Ant执行SortByPredicate.xml：为百度和互动生成按谓词类型分割的NTriples
-   @HDFS#/Users/xingniu/CLOD/NTriples/
-5、将DBpedia(zh)部分nt文件上传至HDFS的/Users/xingniu/CLOD/RawStructuredData/zhWiki/文件夹下，包括：
+4、将DBpedia(zh)部分nt文件上传至HDFS的/Users/xingniu/CLOD/RawStructuredData/zhWiki/文件夹下，包括：
    *article_categories_zh.nt
    *external_links_zh.nt
    *geo_coordinates_zh.nt
@@ -18,6 +16,8 @@
    *redirects_transitive_zh.nt
    *skos_categories_zh.nt
    *wikipedia_links_zh.nt
+5、Ant执行SortByPredicate.xml：为百度和互动生成按谓词类型分割的NTriples
+   @HDFS#/Users/xingniu/CLOD/NTriples/
 6、Ant执行PreprocessDBpedia.xml：为中文维基生成按谓词类型分割的NTriples
    @HDFS#/Users/xingniu/CLOD/NTriples/
 

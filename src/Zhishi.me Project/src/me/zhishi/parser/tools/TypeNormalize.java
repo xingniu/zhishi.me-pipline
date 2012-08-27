@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.zhishi.parser.driver.IdentifyInstances;
+import me.zhishi.parser.workshop.InfoboxRefiner;
 
 public class TypeNormalize {
 	public static HashSet<String> List = new HashSet<String>();
@@ -32,7 +32,7 @@ public class TypeNormalize {
 			oc = oc.replaceAll("[十百千万兆亿]", "");
 			oc = TypeNormalize.Normalize(oc);
 			if ( List.contains(oc) ) return oc;
-			else if ( oc.length() <= IdentifyInstances.maxUnitLength ) return oc;
+			else if ( oc.length() <= InfoboxRefiner.maxUnitLength ) return oc;
 			else return null;
 		}
 		
