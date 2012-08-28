@@ -46,10 +46,10 @@ public class PropertyRestriction
 				
 				if( tr.objectIsURIRef() )
 					context.write( new Text( tr.getObjectContent() ), new Text( "range\t" + tr.getBarePredicate() ) );
-				else if( tr.objectIsLiteral() )
-					context.write( new Text( dt ), new Text( tr.getBarePredicate() + "\trange\t" + URICenter.datatype_xmls_string ) );
 				else if( tr.objectIsTypedData() )
 					context.write( new Text( dt ), new Text( tr.getBarePredicate() + "\trange\t" + tr.getDataType() ) );
+				else
+					context.write( new Text( dt ), new Text( tr.getBarePredicate() + "\trange\t" + URICenter.datatype_xmls_string ) );
 			}
 		}
 	}

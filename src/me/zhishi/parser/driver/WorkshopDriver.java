@@ -26,5 +26,7 @@ public class WorkshopDriver
 		releaseVersion = 3.0;
 		PropertyRestriction.run( URICenter.source_name_hudong, releaseVersion );
 		PropertyRestriction.run( URICenter.source_name_baidu, releaseVersion );
+		releaseVersion = 3.1;
+		PropertyRestriction.run( URICenter.source_name_zhwiki, releaseVersion );
 	}
 }
