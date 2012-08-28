@@ -16,16 +16,16 @@ public class WorkshopDriver
 //		SortByPredicate.run( URICenter.source_name_hudong, releaseVersion );
 //		SortByPredicate.run( URICenter.source_name_baidu, releaseVersion );
 		
-//		releaseVersion = 3.1;
-//		PreprocessDBpedia.run( releaseVersion );
+		releaseVersion = 3.1;
+		PreprocessDBpedia.run( releaseVersion );
 		
 //		releaseVersion = 3.0;
 //		InfoboxRefiner.run( URICenter.source_name_hudong, releaseVersion );
 //		InfoboxRefiner.run( URICenter.source_name_baidu, releaseVersion );
 		
-		releaseVersion = 3.0;
-		PropertyRestriction.run( URICenter.source_name_hudong, releaseVersion );
-		PropertyRestriction.run( URICenter.source_name_baidu, releaseVersion );
+//		releaseVersion = 3.0;
+//		PropertyRestriction.run( URICenter.source_name_hudong, releaseVersion );
+//		PropertyRestriction.run( URICenter.source_name_baidu, releaseVersion );
 		releaseVersion = 3.1;
 		PropertyRestriction.run( URICenter.source_name_zhwiki, releaseVersion );
 	}
