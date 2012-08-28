@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/fudannlp-1.05.jar"/>
 	<classpathentry kind="lib" path="lib/trove-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
+	<classpathentry kind="lib" path="lib/ZHConverter.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

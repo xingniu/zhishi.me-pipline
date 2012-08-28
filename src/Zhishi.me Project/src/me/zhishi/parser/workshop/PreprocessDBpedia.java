@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 
 import me.zhishi.tools.SmallTools;
+import me.zhishi.tools.TextTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.file.TripleReader;
 import me.zhishi.tools.file.TripleWriter;
@@ -21,24 +22,32 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
+import com.spreada.utils.chinese.ZHConverter;
+
 public class PreprocessDBpedia
 {
 	private static int numReduceTasks = 20;
 	
+	public static void main( String[] args )
+	{
+		ZHConverter converter = ZHConverter.getInstance( ZHConverter.SIMPLIFIED );
+		System.out.println( converter.convert( "上一熱帶氣旋" ) );
+	}
+	
 	private static HashSet<String> contents = new HashSet<String>();
 	static
 	{
-		contents.add( "abstract" );
-		contents.add( "category" );
-		contents.add( "articleLink" );
-		contents.add( "dbpediaLink" );
-		contents.add( "externalLink" );
+//		contents.add( "abstract" );
+//		contents.add( "category" );
+//		contents.add( "articleLink" );
+//		contents.add( "dbpediaLink" );
+//		contents.add( "externalLink" );
 		contents.add( "infobox" );
-		contents.add( "internalLink" );
-		contents.add( "label" );
-		contents.add( "propertyDefinition" );
-		contents.add( "redirect" );
-		contents.add( "skosCat" );
+//		contents.add( "internalLink" );
+//		contents.add( "label" );
+//		contents.add( "propertyDefinition" );
+//		contents.add( "redirect" );
+//		contents.add( "skosCat" );
 		
 //		contents.add( "disambiguation" );
 //		contents.add( "image" );
@@ -47,6 +56,19 @@ public class PreprocessDBpedia
 	
 	public static class SortBySubject extends Mapper<Object, Text, Text, Text>
 	{
+		ZHConverter converter;
+		
+		@Override
+		protected void setup( Context context ) throws IOException, InterruptedException
+		{
+			converter = ZHConverter.getInstance( ZHConverter.SIMPLIFIED );
+		}
+		
+		private String Literal2Simple( String str )
+		{
+			return "\"" + TextTools.getUnicode( converter.convert( str ) ) + "\"@zh";
+		}
+		
 		public void map( Object key, Text value, Context context ) throws IOException, InterruptedException
 		{
 			if( value.toString().startsWith( "<" ) )
@@ -61,33 +83,38 @@ public class PreprocessDBpedia
 					String subject = tr.getBareSubject();
 					if( subject.startsWith( URICenter.namespace_zhdbpedia_resource ) )
 					{
-						String sub = tr.getIRISubjectContent();
+						String sub = converter.convert( tr.getIRISubjectContent() );
 						if( sub.startsWith( "Category:" ) )
 							subject = uc.getCategoryURI( sub.replaceFirst( "Category:", "" ) );
 						else
 							subject = uc.getResourceURI( sub );
 					}
 					else if( subject.startsWith( URICenter.namespace_zhdbpedia_property ) )
-						subject = uc.getPropertyPredicate( tr.getIRISubjectContent() );
+						subject = uc.getPropertyPredicate( converter.convert( tr.getIRISubjectContent() ) );
 					
 					String predicate = tr.getBarePredicate();
 					if( predicate.equals( URICenter.predicate_dbpedia_abstract ) )
+					{
 						predicate = URICenter.predicate_abstract;
+						object = Literal2Simple( tr.getObjectValue() );
+					}
 					else if( predicate.equals( URICenter.predicate_dc_subject ) )
 					{
 						predicate = URICenter.predicate_category;
-						object = "<" + uc.getCategoryURI( tr.getIRIObjectContent().replaceFirst( "Category:", "" ) ) + ">";
+						object = "<" + uc.getCategoryURI( converter.convert( tr.getIRIObjectContent() ).replaceFirst( "Category:", "" ) ) + ">";
 					}
 					else if( predicate.equals( URICenter.predicate_dbpedia_wikiPageExternalLink ) )
 						predicate = URICenter.predicate_externalLink;
 					else if( predicate.startsWith( URICenter.namespace_zhdbpedia_property ) )
 					{
-						String property = tr.getIRIPredicateContent();
+						String property = converter.convert( tr.getIRIPredicateContent() );
 						if( property.equals( "wikiPageUsesTemplate" ) )
 							return;
 						predicate = uc.getPropertyPredicate( property );
 						if( object.startsWith( "<" + URICenter.namespace_zhdbpedia_resource ) )
-							object = "<" + uc.getResourceURI( tr.getIRIObjectContent() ) + ">";
+							object = "<" + uc.getResourceURI( converter.convert( tr.getIRIObjectContent() ) ) + ">";
+						else if( tr.objectIsLiteral() && !tr.objectIsTypedData() )
+							object = Literal2Simple( tr.getObjectValue() );
 					}
 					else if( predicate.equals( URICenter.property_geo_lat ) )
 						predicate = uc.getPropertyPredicate( "纬度" );
@@ -96,17 +123,19 @@ public class PreprocessDBpedia
 					else if( predicate.equals( URICenter.predicate_dbpedia_wikiPageWikiLink ) )
 					{
 						predicate = URICenter.predicate_internalLink;
-						object = "<" + uc.getResourceURI( tr.getIRIObjectContent() ) + ">";
+						object = "<" + uc.getResourceURI( converter.convert( tr.getIRIObjectContent() ) ) + ">";
 					}
 					else if( predicate.equals( URICenter.predicate_dbpedia_wikiPageRedirects ) )
 					{
 						predicate = URICenter.predicate_redirect;
-						object = "<" + uc.getResourceURI( tr.getIRIObjectContent() ) + ">";
+						object = "<" + uc.getResourceURI( converter.convert( tr.getIRIObjectContent() ) ) + ">";
 					}
 					else if( predicate.equals( URICenter.predicate_skos_broader ) )
 					{
-						object = "<" + uc.getCategoryURI( tr.getIRIObjectContent().replaceFirst( "Category:", "" ) ) + ">";
+						object = "<" + uc.getCategoryURI( converter.convert( tr.getIRIObjectContent() ).replaceFirst( "Category:", "" ) ) + ">";
 					}
+					else if( predicate.equals( URICenter.predicate_rdfs_label ) || predicate.equals( URICenter.predicate_skos_prefLabel ) )
+						object = Literal2Simple( tr.getObjectValue() );
 					
 					String triple = TripleWriter.getTripleLine( "<"+subject+">", "<"+predicate+">", object );
 					context.write( new Text( subject ), new Text( triple ) );

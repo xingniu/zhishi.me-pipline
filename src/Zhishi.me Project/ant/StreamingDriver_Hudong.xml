@@ -21,6 +21,7 @@
 		<pathelement location="lib/fudannlp-1.05.jar" />
 		<pathelement location="lib/trove-2.1.0.jar" />
 		<pathelement location="lib/junit-4.8.2.jar" />
+		<pathelement location="lib/ZHConverter.jar" />
 	</path>
 
 	<target name="clean">

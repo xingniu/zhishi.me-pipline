@@ -21,6 +21,7 @@
 		<pathelement location="lib/fudannlp-1.05.jar" />
 		<pathelement location="lib/trove-2.1.0.jar" />
 		<pathelement location="lib/junit-4.8.2.jar" />
+		<pathelement location="lib/ZHConverter.jar" />
 	</path>
 
 	<target name="clean">
@@ -40,6 +41,7 @@
 	<target name="build" depends="build-project">
 		<jar destfile="build/WorkshopDriver.jar">
 			<fileset dir="build" />
+			<zipgroupfileset dir="lib" includes="*.jar" />
 			<manifest>
 				<attribute name="Main-class" value="me.zhishi.parser.driver.WorkshopDriver" />
 			</manifest>
