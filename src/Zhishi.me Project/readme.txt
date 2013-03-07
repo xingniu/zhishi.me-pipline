@@ -27,3 +27,5 @@
 5、MRMatcher.xml 生成匹配原始文件@HDFS
 6、LookupIndexer.xml 生成lookup索引@HDFS
 7、NTStorer.java 从HDFS向Poseidon生成分割压缩NTriples，二次处理生成一些labels，输出ontology定义，在线爬互动的分类树@Poseidon
+
+依赖包：https://ccp.cloudera.com/display/SUPPORT/CDH4+Downloadable+Tarballs
