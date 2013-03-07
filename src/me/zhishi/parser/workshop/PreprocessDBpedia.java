@@ -37,17 +37,17 @@ public class PreprocessDBpedia
 	private static HashSet<String> contents = new HashSet<String>();
 	static
 	{
-//		contents.add( "abstract" );
-//		contents.add( "category" );
-//		contents.add( "articleLink" );
-//		contents.add( "dbpediaLink" );
-//		contents.add( "externalLink" );
+		contents.add( "abstract" );
+		contents.add( "category" );
+		contents.add( "articleLink" );
+		contents.add( "dbpediaLink" );
+		contents.add( "externalLink" );
 		contents.add( "infobox" );
-//		contents.add( "internalLink" );
-//		contents.add( "label" );
-//		contents.add( "propertyDefinition" );
-//		contents.add( "redirect" );
-//		contents.add( "skosCat" );
+		contents.add( "internalLink" );
+		contents.add( "label" );
+		contents.add( "propertyDefinition" );
+		contents.add( "redirect" );
+		contents.add( "skosCat" );
 		
 //		contents.add( "disambiguation" );
 //		contents.add( "image" );
