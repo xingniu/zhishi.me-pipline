@@ -8,7 +8,7 @@ public class Path
 	public static String projectDataPath = "//POSEIDON/Share/Groups/Semantic Group/Chinese LOD/";
 	
 	// Hadoop HDFS
-	public static String hdfs_username = "APEXLAB-xingniu";
+	public static String hdfs_username = "APEXLAB-zhishi";
 	public static String hdfs_fsName = "hdfs://172.16.7.14";
 	public static String hdfs_projectDataPath = "/Users/xingniu/CLOD/";
 	private boolean isHDFS = false;
@@ -81,8 +81,10 @@ public class Path
 			dumpVersion = "2011";
 		else if( releaseVersion >= 2.9 && releaseVersion <= 3.0 )
 			dumpVersion = "2011.12";
-		else if( releaseVersion >= 3.1 )
+		else if( releaseVersion >= 3.1 && releaseVersion < 3.2 )
 			dumpVersion = "2012";
+		else if( releaseVersion >= 3.2 )
+			dumpVersion = "2013";
 		this.dumpVersion = dumpVersion;
 		
 		dumpPath = projectDataPath + dumpVersion + "/";	
