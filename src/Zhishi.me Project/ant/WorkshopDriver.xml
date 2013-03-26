@@ -46,7 +46,7 @@
 				<attribute name="Main-class" value="me.zhishi.parser.driver.WorkshopDriver" />
 			</manifest>
 		</jar>
-		<scp file="build/WorkshopDriver.jar" todir="apexlab-xingniu:422871@172.16.7.11:programs/WorkshopDriver.jar" trust="true" />
-		<sshexec host="172.16.7.11" username="apexlab-xingniu" password="422871" trust="true" command="hadoop jar programs/WorkshopDriver.jar" />
+		<scp file="build/WorkshopDriver.jar" todir="apexlab-zhishi:zhishi.me@172.16.7.11:programs/WorkshopDriver.jar" trust="true" />
+		<sshexec host="172.16.7.11" username="apexlab-zhishi" password="zhishi.me" trust="true" command="hadoop jar programs/WorkshopDriver.jar" />
 	</target>
 </project>

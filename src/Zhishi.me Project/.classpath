@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="lib/hadoop/slf4j-log4j12-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop/hadoop-hdfs-2.0.0-cdh4.2.0.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop/protobuf-java-2.4.0a.jar"/>
+	<classpathentry kind="lib" path="lib/hadoop/commons-io-2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

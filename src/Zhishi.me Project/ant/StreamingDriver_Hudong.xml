@@ -48,8 +48,8 @@
 				<attribute name="Main-class" value="me.zhishi.parser.driver.StreamingDriver" />
 			</manifest>
 		</jar>
-		<scp file="build/StreamingDriver.jar" todir="apexlab-xingniu:422871@172.16.7.11:programs/StreamingDriver.jar" trust="true" />
-		<sshexec host="172.16.7.11" username="apexlab-xingniu" password="422871" trust="true" command="
+		<scp file="build/StreamingDriver.jar" todir="apexlab-zhishi:zhishi.me@172.16.7.11:programs/StreamingDriver.jar" trust="true" />
+		<sshexec host="172.16.7.11" username="apexlab-zhishi" password="zhishi.me" trust="true" command="
 				hadoop dfs -rmr /Users/xingniu/CLOD/RawStructuredData/Hudong;
 				hadoop jar /usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming.jar
 					-input /Users/xingniu/CLOD/BaikePages/Hudong/FileList.txt

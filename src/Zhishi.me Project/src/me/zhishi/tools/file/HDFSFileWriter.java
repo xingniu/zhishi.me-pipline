@@ -15,7 +15,7 @@ public class HDFSFileWriter
 	public HDFSFileWriter( String path, boolean append )
 	{
 		Configuration conf = new Configuration();
-		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
+		conf.set( "fs.defaultFS", me.zhishi.tools.Path.hdfs_fsName );
 		try
 		{
 			FileSystem fs = FileSystem.get( URI.create( path ), conf, me.zhishi.tools.Path.hdfs_username );

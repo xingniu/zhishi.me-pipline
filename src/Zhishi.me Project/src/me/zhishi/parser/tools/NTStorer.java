@@ -21,21 +21,22 @@ import me.zhishi.tools.file.TripleWriter;
 public class NTStorer
 {
 	public static double releaseVersion = 3.0;
-	public static String source = URICenter.source_name_baidu;
-//	public static String source = URICenter.source_name_hudong;
+//	public static String source = URICenter.source_name_baidu;
+	public static String source = URICenter.source_name_hudong;
 	public static String[] contents = {
 		"label",
-		"category",
-		"abstract",
-		"externalLink",
-		"relatedPage",
-		"internalLink",
+//		"category",
+//		"abstract",
+//		"externalLink",
+//		"relatedPage",
+//		"internalLink",
 		"redirect",
 		"disambiguation",
-		"articleLink",
-		"image",
-		"imageInfo",
+//		"articleLink",
+//		"image",
+//		"imageInfo",
 		"infobox",
+		"propertyDefinition",
 		};
 	
 	private static GZIPFileWriter writer;
