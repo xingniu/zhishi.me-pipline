@@ -21,7 +21,7 @@ public class HudongParser implements ZhishiParser
 {
 	public static void main(String args[]) throws Exception
 	{
-		String url = "http://www.hudong.com/wiki/美国";
+		String url = "http://www.baike.com/wiki/%E6%9D%8E%E5%AE%81%5B%E5%8E%9F%E4%BD%93%E6%93%8D%E8%BF%90%E5%8A%A8%E5%91%98%5D";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -95,7 +95,7 @@ public class HudongParser implements ZhishiParser
 		}
 		else
 		{
-			for( Element e : doc.select( "div[class=prompt] > p > a" ) )
+			for( Element e : doc.select( "div[class=polysemy] > p > a" ) )
 				if( e.hasAttr( "href" ) && e.attr( "href" ).contains( "/wiki/" ) )
 				{
 					label = e.text();
@@ -279,7 +279,7 @@ public class HudongParser implements ZhishiParser
 		ArrayList<String> categories = new ArrayList<String>();
 		
 		for( Element cat : doc.select( "div[class=relevantinfo] > dl[id=show_tag] > dd > a" ) )
-			if( cat.hasAttr( "href" ) && cat.attr( "href" ).contains( "/categorypage" ) )
+			if( cat.hasAttr( "href" ) && cat.attr( "href" ).contains( "zhengwenye_left_kuozhan_kaifangfenlei" ) )
 				categories.add( cat.text() );
 		
 		return categories;
@@ -351,7 +351,13 @@ public class HudongParser implements ZhishiParser
 	@Override
 	public boolean isDisambiguationPage()
 	{
-		return !doc.select( "dl[class=polysemy]" ).isEmpty();
+//		return !doc.select( "dl[class=polysemy]" ).isEmpty();
+		String s = doc.select("title").toString();
+		String[] str = s.split("_");
+		int l = str.length;
+		if (l == 3)
+			return true;
+		return false;		
 	}
 	
 	@Override
@@ -359,7 +365,7 @@ public class HudongParser implements ZhishiParser
 	{
 		ArrayList<String> disambiguations = new ArrayList<String>();
 		
-		for( Element e : doc.select( "div[class=prompt] > p > a" ) )
+		for( Element e : doc.select( "div[class=polysemy] > p > a" ) )
 			if( e.hasAttr( "href" ) && e.attr( "href" ).contains( "/wiki/" ) && !e.text().equals( "" ) )
 				disambiguations.add( e.text() );
 
