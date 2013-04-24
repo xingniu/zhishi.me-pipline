@@ -12,10 +12,10 @@ public class WorkshopDriver
 	{
 		double releaseVersion;
 		
-//		releaseVersion = 3.0;
-//		SortByPredicate.run( URICenter.source_name_hudong, releaseVersion );
-//		InfoboxRefiner.run( URICenter.source_name_hudong, releaseVersion );
-//		PropertyRestriction.run( URICenter.source_name_hudong, releaseVersion );
+		releaseVersion = 3.2;
+		SortByPredicate.run( URICenter.source_name_hudong, releaseVersion );
+		InfoboxRefiner.run( URICenter.source_name_hudong, releaseVersion );
+		PropertyRestriction.run( URICenter.source_name_hudong, releaseVersion );
 		
 //		releaseVersion = 3.0;
 //		SortByPredicate.run( URICenter.source_name_baidu, releaseVersion );

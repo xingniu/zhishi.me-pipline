@@ -36,7 +36,7 @@ public class HudongParser implements ZhishiParser
 	
 	public HudongParser( InputStream is, String fileName ) throws IOException
 	{
-		doc = Jsoup.parse( is, "UTF-8", "http://www.hudong.com/" );
+		doc = Jsoup.parse( is, "UTF-8", "http://www.baike.com/" );
 //		this.fileName = fileName;
 	}
 	
@@ -55,7 +55,7 @@ public class HudongParser implements ZhishiParser
 		{
 			article.label = getRedirect();
 			if( article.label != null )
-				article.articleLink = "http://www.hudong.com/wiki/" + TextTools.encoder( article.label );
+				article.articleLink = "http://www.baike.com/wiki/" + TextTools.encoder( article.label );
 			article.redirect = getLabel();
 			return article;
 		}
@@ -63,7 +63,7 @@ public class HudongParser implements ZhishiParser
 		{
 			article.label = getLabel();
 			if( article.label != null )
-				article.articleLink = "http://www.hudong.com/wiki/" + TextTools.encoder( article.label );
+				article.articleLink = "http://www.baike.com/wiki/" + TextTools.encoder( article.label );
 			article.redirect = getRedirect();
 		}
 		
