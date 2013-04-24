@@ -15,7 +15,7 @@ import org.apache.tools.tar.TarInputStream;
 
 public class StreamingDriver
 {
-	public static double releaseVersion = 3.0;
+	public static double releaseVersion = 3.2;
 	
 	public static void main( String[] args ) throws Exception
 	{
