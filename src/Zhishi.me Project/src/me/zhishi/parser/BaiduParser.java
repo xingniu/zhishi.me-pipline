@@ -18,9 +18,9 @@ import me.zhishi.tools.StringPair;
 
 public class BaiduParser implements ZhishiParser
 {
-	public static void main( String[] args ) throws IOException
+	public static void main( String[] args ) throws Exception
 	{
-		String fileName = "1587783.htm";
+		String fileName = "2960716.htm";
 		String url = "http://baike.baidu.com/view/" + fileName;
 		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
@@ -47,7 +47,7 @@ public class BaiduParser implements ZhishiParser
 	}
 
 	@Override
-	public Article parse()
+	public Article parse() throws Exception
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_baidu );
 		

@@ -57,16 +57,15 @@ public class StreamingDriver
 				try
 				{
 					article = parser.parse();
+					for( String t : article.toTriples() )
+					{
+						System.out.println( t );
+					}
 				}
 				catch( Exception e )
 				{
 					System.out.println( "<" + entry.getName() + "> <" + URICenter.predicate_temp_exception + "> \"" + TextTools.getUnicode( e.toString() ) + "\"@zh ." );
 					continue;
-				}
-				
-				for( String t : article.toTriples() )
-				{
-					System.out.println( t );
 				}
 			}
 
