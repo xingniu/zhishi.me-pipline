@@ -23,7 +23,7 @@ public class HudongParser implements ZhishiParser
 	
 	public static void main(String args[]) throws Exception
 	{
-		String url = base + "wiki/%E6%9D%8E%E5%AE%81%5B%E5%8E%9F%E4%BD%93%E6%93%8D%E8%BF%90%E5%8A%A8%E5%91%98%5D";
+		String url = "http://www.baike.com/wiki/%E6%9D%8E%E5%AE%81&prd=button_doc_jinru";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -52,6 +52,10 @@ public class HudongParser implements ZhishiParser
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_hudong );
 		
+		String[] s = doc.select("title").text().split("_");
+		if((s.length == 3) && (s[1].equals("搜索")))
+			return article;
+				
 		article.isRedirect = isRedirectPage();
 		if( article.isRedirect )
 		{
