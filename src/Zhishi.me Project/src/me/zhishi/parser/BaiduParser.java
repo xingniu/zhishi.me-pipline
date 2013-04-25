@@ -22,7 +22,7 @@ public class BaiduParser implements ZhishiParser
 	
 	public static void main( String[] args ) throws Exception
 	{
-		String fileName = "2539.htm";
+		String fileName = "2600.htm?subLemmaId=5091189&fromId=4464";
 		String url = base + "view/" + fileName;
 		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
@@ -56,7 +56,8 @@ public class BaiduParser implements ZhishiParser
 		if( !doc.select( "meta[http-equiv=Refresh]" ).isEmpty() )
 		{
 			String URL = doc.select( "meta[http-equiv=Refresh]" ).attr( "content" );
-			throw new Exception( base + URL.substring( URL.indexOf( "URL=" ) + 5 ) );
+			if( URL.contains( "/view/" ) )
+				throw new Exception( base + URL.substring( URL.indexOf( "URL=" ) + 5 ) );
 		}
 		
 		article.articleLink = base + "view/" + fileName;
@@ -135,11 +136,21 @@ public class BaiduParser implements ZhishiParser
 	public String getRedirect()
 	{
 		String redirect = null;
-		if( !doc.select( "div[class^=view-tip-pannel] > p > a[class$=redirect]" ).isEmpty() )
-			redirect = doc.select( "div[class^=view-tip-pannel]" ).select( "a[href$=hold=syn]" ).text();
+		Element element = doc.body();
+		
+		if( fileName.contains( "subLemmaId" ) )
+		{
+			String subLemmaId = fileName.substring( fileName.indexOf( "subLemmaId" ) + 11 );
+			if( subLemmaId.contains( "&" ) )
+				subLemmaId = subLemmaId.substring( 0, subLemmaId.indexOf( "&" ) );
+			element = element.select( "div[sublemmaid=" + subLemmaId + "]" ).first();
+		}
+		
+		if( !element.select( "div[class^=view-tip-pannel] > p > a[class$=redirect]" ).isEmpty() )
+			redirect = element.select( "div[class^=view-tip-pannel]" ).select( "a[href$=hold=syn]" ).text();
 			// 1366565.htm?fromId=6228850
-		else if( !doc.select( "div[class^=view-tip-pannel] > p > a[class$=synstd]" ).isEmpty() )
-			redirect = doc.select( "div[class^=view-tip-pannel]" ).select( "a[href^=/history/]" ).text();
+		else if( !element.select( "div[class^=view-tip-pannel] > p > a[class$=synstd]" ).isEmpty() )
+			redirect = element.select( "div[class^=view-tip-pannel]" ).select( "a[href^=/history/]" ).text();
 			// 1735.htm?fromId=2539
 		
 		if( redirect != null )

@@ -148,7 +148,7 @@ public class SortByPredicate
 		
 		Configuration conf = new Configuration();
 		
-		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
+		conf.set( "fs.defaultFS", me.zhishi.tools.Path.hdfs_fsName );
 		FileSystem fs = FileSystem.get( conf );
 		fs.delete( new Path( outputPath ), true );
 		

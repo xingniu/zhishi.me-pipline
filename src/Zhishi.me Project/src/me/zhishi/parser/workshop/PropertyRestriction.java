@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
-import me.zhishi.tools.SmallTools;
 import me.zhishi.tools.URICenter;
 import me.zhishi.tools.file.TripleReader;
 import me.zhishi.tools.file.TripleWriter;
@@ -155,7 +154,7 @@ public class PropertyRestriction
 		
 		Configuration conf = new Configuration();
 		
-		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
+		conf.set( "fs.defaultFS", me.zhishi.tools.Path.hdfs_fsName );
 		FileSystem fs = FileSystem.get( conf );
 		fs.delete( new Path( outputPath ), true );
 		
@@ -199,7 +198,7 @@ public class PropertyRestriction
 		
 		Configuration conf = new Configuration();
 		
-		conf.set( "fs.default.name", me.zhishi.tools.Path.hdfs_fsName );
+		conf.set( "fs.defaultFS", me.zhishi.tools.Path.hdfs_fsName );
 		FileSystem fs = FileSystem.get( conf );
 		fs.delete( new Path( outputPath ), true );
 		

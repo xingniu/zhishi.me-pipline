@@ -41,21 +41,21 @@
 	</target>
 
 	<target name="build" depends="build-project">
-		<jar destfile="build/StreamingDriver.jar">
+		<jar destfile="build/StreamingDriver_Hudong.jar">
 			<fileset dir="build" />
 			<zipgroupfileset dir="lib" includes="*.jar" />
 			<manifest>
 				<attribute name="Main-class" value="me.zhishi.parser.driver.StreamingDriver" />
 			</manifest>
 		</jar>
-		<scp file="build/StreamingDriver.jar" todir="apexlab-zhishi:zhishi.me@172.16.7.11:programs/StreamingDriver.jar" trust="true" />
+		<scp file="build/StreamingDriver_Hudong.jar" todir="apexlab-zhishi:zhishi.me@172.16.7.11:programs/StreamingDriver_Hudong.jar" trust="true" />
 		<sshexec host="172.16.7.11" username="apexlab-zhishi" password="zhishi.me" trust="true" command="
 				hadoop dfs -rmr /Users/xingniu/CLOD/RawStructuredData/Hudong;
 				hadoop jar /usr/lib/hadoop-0.20-mapreduce/contrib/streaming/hadoop-streaming.jar
 					-input /Users/xingniu/CLOD/BaikePages/Hudong/FileList.txt
 					-output /Users/xingniu/CLOD/RawStructuredData/Hudong
-					-file programs/StreamingDriver.jar
-					-mapper &quot;java -jar lib/StreamingDriver.jar&quot;
+					-file programs/StreamingDriver_Hudong.jar
+					-mapper &quot;java -jar lib/StreamingDriver_Hudong.jar&quot;
 					-reducer org.apache.hadoop.mapred.lib.IdentityReducer
 					-numReduceTasks 0
 					-inputformat org.apache.hadoop.mapred.lib.NLineInputFormat
