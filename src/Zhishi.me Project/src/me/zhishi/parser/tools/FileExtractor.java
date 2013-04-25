@@ -15,11 +15,11 @@ import org.apache.tools.tar.TarInputStream;
 
 public class FileExtractor
 {
-//	public static String source = URICenter.source_name_baidu;
-	public static String source = URICenter.source_name_hudong;
-	public static double releaseVersion = 3.0;
+	public static String source = URICenter.source_name_baidu;
+//	public static String source = URICenter.source_name_hudong;
+	public static double releaseVersion = 3.2;
 	
-	public static int ID = 2536734;
+	public static int ID = 2960717;
 	
 	public static void main( String[] args ) throws IOException
 	{
