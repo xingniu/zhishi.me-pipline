@@ -64,7 +64,7 @@ public class StreamingDriver
 				}
 				catch( Exception e )
 				{
-					System.out.println( "<" + entry.getName() + "> <" + URICenter.predicate_temp_exception + "> \"" + TextTools.getUnicode( e.toString() ) + "\"@zh ." );
+					System.out.println( "<" + entry.getName() + "> <" + URICenter.predicate_temp_exception + "> \"" + TextTools.getUnicode( e.toString() ) + "\" ." );
 					continue;
 				}
 			}

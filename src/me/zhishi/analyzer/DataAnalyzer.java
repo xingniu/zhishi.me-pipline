@@ -6,7 +6,7 @@ import me.zhishi.tools.file.NTriplesReader;
 public class DataAnalyzer
 {
 
-	protected NTriplesReader fileReader;
+	public NTriplesReader fileReader;
 	protected Path fileName;
 	
 	public DataAnalyzer( double version, String source, String type )

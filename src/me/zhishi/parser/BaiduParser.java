@@ -20,7 +20,7 @@ public class BaiduParser implements ZhishiParser
 {
 	public static void main( String[] args ) throws Exception
 	{
-		String fileName = "2960716.htm";
+		String fileName = "3939.htm";
 		String url = "http://baike.baidu.com/view/" + fileName;
 		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
@@ -224,7 +224,7 @@ public class BaiduParser implements ZhishiParser
 	{
 		ArrayList<String> categories = new ArrayList<String>();
 		
-		for( Element cat : doc.select( "dl#viewExtCati > dd > a" ) )
+		for( Element cat : doc.select( "dl#viewExtCati > dd > a[href^=/fenlei/]" ) )
 		{
 			if( !cat.text().equals( "" ) )
 				categories.add( cat.text() );
