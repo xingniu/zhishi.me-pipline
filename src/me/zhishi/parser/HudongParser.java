@@ -19,9 +19,11 @@ import me.zhishi.tools.StringPair;
 
 public class HudongParser implements ZhishiParser
 {
+	private static String base = "http://www.baike.com/";
+	
 	public static void main(String args[]) throws Exception
 	{
-		String url = "http://www.baike.com/wiki/%E6%9D%8E%E5%AE%81%5B%E5%8E%9F%E4%BD%93%E6%93%8D%E8%BF%90%E5%8A%A8%E5%91%98%5D";
+		String url = base + "wiki/%E6%9D%8E%E5%AE%81%5B%E5%8E%9F%E4%BD%93%E6%93%8D%E8%BF%90%E5%8A%A8%E5%91%98%5D";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -36,7 +38,7 @@ public class HudongParser implements ZhishiParser
 	
 	public HudongParser( InputStream is, String fileName ) throws IOException
 	{
-		doc = Jsoup.parse( is, "UTF-8", "http://www.baike.com/" );
+		doc = Jsoup.parse( is, "UTF-8", base );
 //		this.fileName = fileName;
 	}
 	
@@ -55,7 +57,7 @@ public class HudongParser implements ZhishiParser
 		{
 			article.label = getRedirect();
 			if( article.label != null )
-				article.articleLink = "http://www.baike.com/wiki/" + TextTools.encoder( article.label );
+				article.articleLink = base + "wiki/" + TextTools.encoder( article.label );
 			article.redirect = getLabel();
 			return article;
 		}
@@ -63,7 +65,7 @@ public class HudongParser implements ZhishiParser
 		{
 			article.label = getLabel();
 			if( article.label != null )
-				article.articleLink = "http://www.baike.com/wiki/" + TextTools.encoder( article.label );
+				article.articleLink = base + "wiki/" + TextTools.encoder( article.label );
 			article.redirect = getRedirect();
 		}
 		

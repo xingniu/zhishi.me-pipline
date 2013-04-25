@@ -18,10 +18,12 @@ import me.zhishi.tools.StringPair;
 
 public class BaiduParser implements ZhishiParser
 {
+	private static String base = "http://baike.baidu.com/";
+	
 	public static void main( String[] args ) throws Exception
 	{
-		String fileName = "3939.htm";
-		String url = "http://baike.baidu.com/view/" + fileName;
+		String fileName = "2539.htm";
+		String url = base + "view/" + fileName;
 		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
 		
@@ -36,7 +38,7 @@ public class BaiduParser implements ZhishiParser
 	
 	public BaiduParser( InputStream is, String fileName ) throws IOException
 	{
-		doc = Jsoup.parse( is, "GB18030", "http://baike.baidu.com" );
+		doc = Jsoup.parse( is, "GB18030", base );
 		this.fileName = fileName;
 	}
 
@@ -51,7 +53,13 @@ public class BaiduParser implements ZhishiParser
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_baidu );
 		
-		article.articleLink = "http://baike.baidu.com/view/" + fileName;
+		if( !doc.select( "meta[http-equiv=Refresh]" ).isEmpty() )
+		{
+			String URL = doc.select( "meta[http-equiv=Refresh]" ).attr( "content" );
+			throw new Exception( base + URL.substring( URL.indexOf( "URL=" ) + 5 ) );
+		}
+		
+		article.articleLink = base + "view/" + fileName;
 		article.isRedirect = isRedirectPage();
 		if( article.isRedirect )
 		{
@@ -110,7 +118,7 @@ public class BaiduParser implements ZhishiParser
 	@Override
 	public String getAbstract()
 	{
-		String abs = doc.select( "div[class*=card-summary] > p" ).text().replace( whitespace, "" );
+		String abs = doc.select( "div[class*=card-summary] > div" ).text().replace( whitespace, "" );
 		if( abs.equals( "" ) )
 			return null;
 		else
@@ -127,10 +135,12 @@ public class BaiduParser implements ZhishiParser
 	public String getRedirect()
 	{
 		String redirect = null;
-		if( !doc.select( "div[class^=view-tip-pannel]" ).select( "a[href$=redirect]" ).isEmpty() )
-			redirect = doc.select( "div[class^=view-tip-pannel]" ).select( "a[href$=redirect]" ).text();
-		else if( !doc.select( "div[class^=view-tip-pannel]" ).select( "a[class$=synstd]" ).isEmpty() )
-			redirect = doc.select( "div[class^=view-tip-pannel]" ).select( "a[href*=history]" ).text();
+		if( !doc.select( "div[class^=view-tip-pannel] > p > a[class$=redirect]" ).isEmpty() )
+			redirect = doc.select( "div[class^=view-tip-pannel]" ).select( "a[href$=hold=syn]" ).text();
+			// 1366565.htm?fromId=6228850
+		else if( !doc.select( "div[class^=view-tip-pannel] > p > a[class$=synstd]" ).isEmpty() )
+			redirect = doc.select( "div[class^=view-tip-pannel]" ).select( "a[href^=/history/]" ).text();
+			// 1735.htm?fromId=2539
 		
 		if( redirect != null )
 		{
@@ -163,7 +173,7 @@ public class BaiduParser implements ZhishiParser
 		{
 			if( pic.attr( "class" ).equals( "card-pic-handle" ) )
 				break;
-			for( Element img : pic.getElementsByAttributeValue( "class", "card-image editorImg" ) )
+			for( Element img : pic.getElementsByAttributeValue( "class", "card-image editorImg log-set-param" ) )
 			{
 				String imgURI = getValidURL( img.attr( "src" ) );
 				if( imgURI == null )
@@ -176,20 +186,7 @@ public class BaiduParser implements ZhishiParser
 			}
 		}
 		
-		for( Element pic : doc.select( "div[class=lemma-main-content] a[href^=/albums]" ) )
-		{
-			String album = pic.attr( "href" );
-			for( Element img : pic.getElementsByAttributeValue( "class", "editorImg log-set-param" ) )
-			{
-				String imgURI = getValidURL( getCompleteImg( img.attr( "src" ) ) );
-				if( imgURI == null )
-					continue;
-				imageInfo.relatedImages.add( imgURI );
-				imageInfo.labels.add( new StringPair( imgURI, getCleanImgTitle( img.attr( "title" ) ) ) );
-				imageInfo.rights.add( new StringPair( imgURI, getValidURL( prefix + album ) ) );
-				imageInfo.thumbnails.add( new StringPair( imgURI, img.attr( "src" ) ) );
-			}
-		}
+		//由于百度百科图片的跨站保护，正文图片信息暂停抽取
 		
 		return imageInfo;
 	}
@@ -238,12 +235,12 @@ public class BaiduParser implements ZhishiParser
 	{
 		HashSet<String> internalLinksSet = new HashSet<String>();
 		
-		for( Element link : doc.select( "div[class=lemma-main-content] > a[href^=/view/]" ) )
+		for( Element link : doc.select( "div[class^=lemma-main-content] a[href^=/view/]" ) )
 		{
 			if( link.hasAttr( "href" ) && link.attr( "href" ).endsWith( "htm" ) && !link.text().equals( "" ) )
 				internalLinksSet.add( StringEscapeUtils.unescapeHtml4( link.text() ) );
 		}
-		for( Element link : doc.select( "div[class=card-summary-content] > p > a[href^=/view/]" ) )
+		for( Element link : doc.select( "div[class=card-summary-content] > div > a[href^=/view/]" ) )
 		{
 			if( link.hasAttr( "href" ) && link.attr( "href" ).endsWith( "htm" ) && !link.text().equals( "" ) )
 				internalLinksSet.add( StringEscapeUtils.unescapeHtml4( link.text() ) );
@@ -274,7 +271,7 @@ public class BaiduParser implements ZhishiParser
 			if( link.hasAttr( "href" ) )
 			{
 				String tmp = link.attr( "href" ).toLowerCase();
-				if( !tmp.startsWith( "http://baike.baidu.com/view/" ) && tmp.startsWith( "http" ) )
+				if( !tmp.startsWith( base + "view/" ) && tmp.startsWith( "http" ) )
 				{
 					String url = getValidURL( tmp );
 					if( url != null )
@@ -289,7 +286,7 @@ public class BaiduParser implements ZhishiParser
 	public ArrayList<String> getRelatedPages()
 	{
 		ArrayList<String> relatedPages = new ArrayList<String>();
-		for( Element relat : doc.select( "dl#relatedLemmaDown > dd" ).select( "a" ) )
+		for( Element relat : doc.select( "dl#relatedLemmaDown > dd > div[class=word_more_con]" ).select( "a" ) )
 			if( relat.hasAttr( "href" ) && relat.attr( "href" ).startsWith( "/view/" ) && !relat.text().equals( "" ) )
 				relatedPages.add( StringEscapeUtils.unescapeHtml4( relat.text() ) );
 
@@ -344,7 +341,7 @@ public class BaiduParser implements ZhishiParser
 			doc = Jsoup.parse( list.get( i ) );
 
 			article.label = disList.get( i );
-			article.articleLink = "http://baike.baidu.com/view/" + fileName + anchorList.get( i );
+			article.articleLink = base + "view/" + fileName + anchorList.get( i );
 			article.isRedirect = isDisRedirectPage();
 			if( article.isRedirect )
 			{
@@ -383,7 +380,7 @@ public class BaiduParser implements ZhishiParser
 			if( link.hasAttr( "href" ) )
 			{
 				String tmp = link.attr( "href" );
-				if( !tmp.startsWith( "http://baike.baidu.com/view/" ) && tmp.startsWith( "http" ) )
+				if( !tmp.startsWith( base + "view/" ) && tmp.startsWith( "http" ) )
 				{
 					String url = getValidURL( tmp );
 					if( url != null )
