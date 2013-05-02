@@ -53,10 +53,11 @@ public class HudongParser implements ZhishiParser
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_hudong );
 		
 		String[] s = doc.select("title").text().split("_");
-		if (s.length > 3)
-			throw new Exception("The length is over three!");
-		if((s.length == 3) && (s[1].equals("搜索")))
+		if((!s[0].equals("搜索")) && (s[s.length-2].equals("搜索")))
 			return article;
+		else
+			if (s.length > 3)
+				throw new Exception("The length is over three!");
 				
 		article.isRedirect = isRedirectPage();
 		if( article.isRedirect )
