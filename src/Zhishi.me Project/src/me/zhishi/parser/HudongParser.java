@@ -23,7 +23,7 @@ public class HudongParser implements ZhishiParser
 	
 	public static void main(String args[]) throws Exception
 	{
-		String url = "http://www.baike.com/wiki/%E6%9D%8E%E5%AE%81&prd=button_doc_jinru";
+		String url = "http://www.baike.com/wiki/worm_satan";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -358,11 +358,18 @@ public class HudongParser implements ZhishiParser
 	public boolean isDisambiguationPage()
 	{
 //		return !doc.select( "dl[class=polysemy]" ).isEmpty();
-		String s = doc.select("title").toString();
+		String s = doc.select("title").text();
 		String[] str = s.split("_");
 		int l = str.length;
 		if (l == 3)
-			return true;
+		{
+			int p = str[1].length();
+			if (str[1].contains("["))
+				p = str[1].indexOf("[");
+			String name = str[1].substring(0, p);
+			if (str[0].equals(name))
+				return true;
+		}
 		return false;		
 	}
 	
