@@ -23,7 +23,7 @@ public class HudongParser implements ZhishiParser
 	
 	public static void main(String args[]) throws Exception
 	{
-		String url = "http://www.baike.com/wiki/worm_satan";
+		String url = "http://www.baike.com/wiki/李宁";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -52,11 +52,18 @@ public class HudongParser implements ZhishiParser
 	{
 		ZhishiArticle article = new ZhishiArticle( URICenter.source_name_hudong );
 		
-		String[] s = doc.select("title").text().split("_");
-		if((!s[0].equals("搜索")) && (s[s.length-2].equals("搜索")))
+		if (doc == null)
+			return article;
+		
+		String st = doc.select("title").text();
+		if (!st.contains("_"))
+			return article;
+		
+		String[] s = st.split("_");
+		if ((!s[0].equals("搜索")) && (s[s.length-2].equals("搜索")))
 			return article;
 		else
-			if (s.length > 3)
+			if ((s.length > 3) && st.contains("["))
 				throw new Exception("The length is over three!");
 				
 		article.isRedirect = isRedirectPage();
