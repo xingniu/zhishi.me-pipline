@@ -23,7 +23,7 @@ public class HudongParser implements ZhishiParser
 	
 	public static void main(String args[]) throws Exception
 	{
-		String url = "http://www.baike.com/wiki/李宁";
+		String url = "http://www.baike.com/wiki/美国";
 		HudongParser p = new HudongParser( url );
 		Article article = p.parse();
 		
@@ -208,11 +208,11 @@ public class HudongParser implements ZhishiParser
 			}
 		}
 
-		for( Element pic : doc.select( "div[class=summary] > div[class=img img_r] > a" ) )
+		for( Element pic : doc.select( "div[class=summary] div[class=img img_r] a img" ) )
 		{
-			if( !pic.children().toString().equals( "" ) )
-			{
-				Element img = pic.child( 0 );
+			Element img = pic;
+			if( !pic.toString().equals( "" ) )
+			{	
 				String imgURI = getValidURL( getCompleteImg( img.attr( "src" ) ) );
 				if( imgURI == null || !imgURI.contains( ".att.hudong.com" )  )
 					continue;
@@ -231,12 +231,11 @@ public class HudongParser implements ZhishiParser
 			}
 		}
 		
-		for( Element pic : doc.select( "div[id=content] > div[class=img img_r] > a" ) )
+		for( Element pic : doc.select( "div[id=content] div[class=img img_r] a img" ) )
 		{
-			if( !pic.children().toString().equals( "" ) )
-			{
-				Element img = pic.child( 0 );
-				
+			Element img = pic;
+			if( !pic.toString().equals( "" ) )
+			{	
 				String imgURI = getValidURL( getCompleteImg( img.attr( "src" ) ) );
 				if( imgURI == null )
 					continue;
