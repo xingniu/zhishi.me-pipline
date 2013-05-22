@@ -22,7 +22,7 @@ public class BaiduParser implements ZhishiParser
 	
 	public static void main( String[] args ) throws Exception
 	{
-		String fileName = "2600.htm?subLemmaId=5091189&fromId=4464";
+		String fileName = "1000173.htm";
 		String url = base + "view/" + fileName;
 		BaiduParser p = new BaiduParser( url, fileName );
 		Article article = p.parse();
@@ -58,7 +58,12 @@ public class BaiduParser implements ZhishiParser
 			String URL = doc.select( "meta[http-equiv=Refresh]" ).attr( "content" );
 			if( URL.contains( "/view/" ) )
 				throw new Exception( base + URL.substring( URL.indexOf( "URL=" ) + 5 ) );
+			return article;
 		}
+		if( doc.select( "title" ).text().contains( "操作失败提示" ) )
+			return article;
+		if( !doc.select( "title" ).text().contains( "百度百科" ) )
+			throw new Exception( "Bad Encoding" );
 		
 		article.articleLink = base + "view/" + fileName;
 		article.isRedirect = isRedirectPage();

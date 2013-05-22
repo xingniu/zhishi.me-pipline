@@ -25,7 +25,7 @@ public class Path
 	private String dumpVersion;
 	private String dumpPath;
 	
-	public static int hudongMax = 367;
+	public static int hudongMax = 358;
 	public static int baiduMax = 714;
 	
 	private static HashMap<String,String> fileNameMap = new HashMap<String,String>();
