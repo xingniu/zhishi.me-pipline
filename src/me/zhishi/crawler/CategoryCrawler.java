@@ -47,6 +47,7 @@ public class CategoryCrawler
 			String category = tr.getObjectContent();
 			categorySet.add( category ); 
 		}
+		da.closeReader();
 		int size = categorySet.size();
 		
 		for( String category : categorySet )
@@ -86,14 +87,23 @@ public class CategoryCrawler
 		
 		URICenter uc = new URICenter( URICenter.source_name_baidu );
 		
-		writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( node ), URICenter.predicate_skos_prefLabel, node ) );
-		writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( node ), URICenter.predicate_rdf_type, URICenter.class_skos_concept ) );
-		
-		for( Element e : doc.select( "div[class=g-row p-category log-set-param] > div > a" ) )
+		if( !doc.select( "div[class=g-row bread log-set-param]" ).isEmpty() )
 		{
-			System.out.println( node + " >>> " + e.text() );
-			writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( node ), URICenter.predicate_skos_narrower, uc.getCategoryURI( e.text() ) ) );
-			writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( e.text() ), URICenter.predicate_skos_broader, uc.getCategoryURI( node ) ) );
+			writer.writeLine( TripleWriter.getStringValueTriple( uc.getCategoryURI( node ), URICenter.predicate_skos_prefLabel, node ) );
+			writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( node ), URICenter.predicate_rdf_type, URICenter.class_skos_concept ) );
+			
+			boolean notoutput = true;
+			for( Element e : doc.select( "div[class=g-row bread log-set-param] > div > a" ) )
+			{
+				if( notoutput )
+				{
+					notoutput = false;
+					continue;
+				}
+				System.out.println( node + " <<< " + e.text() );
+				writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( node ), URICenter.predicate_skos_broader, uc.getCategoryURI( e.text() ) ) );
+				writer.writeLine( TripleWriter.getResourceObjectTriple( uc.getCategoryURI( e.text() ), URICenter.predicate_skos_narrower, uc.getCategoryURI( node ) ) );
+			}
 		}
 	}
 	
