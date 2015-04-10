@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="../" default="build" name="Zhishi.me">
+	<property environment="env"/>
+	<property name="debuglevel" value="source,lines,vars"/>
+	<property name="target" value="1.6"/>
+	<property name="source" value="1.6"/>
+	<path id="Zhishi.me.classpath">
+		<pathelement location="bin" />
+		<pathelement location="lib/ant.jar" />
+		<pathelement location="lib/hadoop/commons-cli-1.2.jar" />
+		<pathelement location="lib/hadoop/commons-logging-1.0.4.jar" />
+		<pathelement location="lib/hadoop/hadoop-core-0.20.2-cdh3u2.jar" />
+		<pathelement location="lib/jsoup-1.6.1.jar" />
+		<pathelement location="lib/commons-lang3-3.1.jar" />
+		<pathelement location="lib/json.org.jar" />
+		<pathelement location="lib/fudannlp-1.05.jar" />
+		<pathelement location="lib/trove-2.1.0.jar" />
+	</path>
+
+	<target name="clean">
+		<delete dir="build" />
+	</target>
+
+	<target name="init" depends="clean">
+		<mkdir dir="build" />
+	</target>
+
+	<target name="build-project" depends="init">
+		<javac debug="true" srcdir="src" destdir="build" encoding="UTF-8">
+			<classpath refid="Zhishi.me.classpath" />
+		</javac>
+	</target>
+
+	<target name="build" depends="build-project">
+		<jar destfile="build/MRMatcher.jar">
+			<fileset dir="build" />
+			<zipgroupfileset dir="lib" includes="*.jar" />
+			<manifest>
+				<attribute name="Main-class" value="me.zhishi.matcher.MRMatcher" />
+			</manifest>
+		</jar>
+		<scp file="build/MRMatcher.jar" todir="username:password@172.16.7.11:programs/MRMatcher.jar" trust="true" />
+		<sshexec host="172.16.7.11" username="username" password="password" trust="true" command="hadoop jar programs/MRMatcher.jar" />
+	</target>
+</project>
